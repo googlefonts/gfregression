@@ -40,7 +40,7 @@ def fonts_on_google(local_fonts):
     return a fallback font'''
     fonts = []
     url_prefix = 'https://fonts.googleapis.com/css?family='
-    fallback_font = 'https://fonts.googleapis.com/css?family=Fira+Mono'
+    fallback_font = 'https://fonts.googleapis.com/css?family=Inconsolata'
     for path, font in local_fonts:
         fam_name, style = font.split('-')
         # RubikMonoOne > Rubik+Mono+One
@@ -52,7 +52,7 @@ def fonts_on_google(local_fonts):
             else:
                 fonts.append((fam_name, FONT_WEIGHTS[style], 'normal', url))
         else:
-            fonts.append(('Fira Mono', '400', 'normal', fallback_font))
+            fonts.append(('Inconsolata', '400', 'normal', fallback_font))
     return fonts
 
 

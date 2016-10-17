@@ -60,7 +60,8 @@ def fonts_on_google(local_fonts):
 @app.route("/")
 def test_fonts():
     sep = os.path.sep
-    local_fonts = [(p, ntpath.basename(p)[:-4]) for p in glob.glob("."+ sep + "static" + sep + "*.ttf")]
+    local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4]) 
+        for p in glob.glob("."+ sep + "static" + sep + "*.ttf")]
     google_fonts = fonts_on_google(local_fonts)
     print google_fonts
     return render_template('index.html',
@@ -70,4 +71,5 @@ def test_fonts():
 
 
 if __name__ == "__main__":
+    app.config['STATIC_FOLDER'] = 'static'
     app.run(debug=True)

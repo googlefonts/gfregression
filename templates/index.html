@@ -1,0 +1,109 @@
+<html>
+  <title>Google Fonts Regression Tester</title>
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+
+    {% for fam_name, weight, style, url in google_fonts %}
+      <link href="{{ url }}" rel="stylesheet">
+    {% endfor %}
+  </head>
+  <style>
+    /*Load fonts from static folder*/
+    {% for path, font in fonts %}
+      @font-face{
+        font-family: {{ font }}-local;
+        src: url('{{ path }}');
+      }
+    {% endfor %}
+
+    .mdl-layout__content {
+      padding: 20px;
+    }
+
+
+    /*Create classes from fonts in static folder*/
+    {% for path, font in fonts %}
+      .{{ font }}-new{
+        font-family: {{ font }}-local;
+        height: 200px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        padding-right: 10px;
+      }
+    {% endfor %}
+
+    /*Create classes from fonts on fonts.google.com*/
+    {% for fam_name, weight, style, url in google_fonts %}
+      .{{ fam_name }}-{{ weight }}-{{ style }}-online {
+        font-family: {{ fam_name }};
+        font-style: {{ style }};
+        font-weight: {{ weight }};
+        height: 200px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        padding-right: 10px;
+      }
+    {% endfor %}
+
+
+    #left {
+      float: left;
+      width: 50%;
+    }
+    #right {
+      float: right;
+      width: 50%;
+    }
+    #bar {
+      position: fixed;
+      top: 200px;
+      width: 100%;
+      border: 1px solid red;
+    }
+  </style>
+  <!-- Always shows a header, even in smaller screens. -->
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <span class="mdl-layout-title">Google Fonts Regression Tester</span>
+        <!-- Add spacer, to align navigation to the right -->
+        <div class="mdl-layout-spacer"></div>
+        <!-- Navigation. We hide it in small screens. -->
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
+          <a class="mdl-navigation__link" href="">Vertical Metrics</a>
+        </nav>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">GF R T</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="">Vertical Metrics</a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <div id="bar"></div>
+        <div id="left">
+          {% for path, font in fonts %}
+            <div class="{{ font }}-new" style="font-size: 20px;">
+              <b>{{ font }}</b><br>
+              {{ dummy_text }}
+            </div>
+          {% endfor %}
+        </div>
+        </div>
+        <div id="right">
+          {% for fam_name, weight, style, url in google_fonts %}
+            <div class="{{ fam_name }}-{{ weight }}-{{ style }}-online" style="font-size: 20px;">
+              <b>{{ fam_name }}-{{ weight }}-{{ style }}-online</b><br>
+              {{ dummy_text }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </main>
+  </div>
+</html>

@@ -7,6 +7,7 @@ import glob
 import ntpath
 import requests
 import re
+import os
 
 FONT_WEIGHTS = {
     # Roman
@@ -58,7 +59,8 @@ def fonts_on_google(local_fonts):
 
 @app.route("/")
 def test_fonts():
-    local_fonts = [(p, ntpath.basename(p)[:-4]) for p in glob.glob("./static/*.ttf")]
+    sep = os.path.sep
+    local_fonts = [(p, ntpath.basename(p)[:-4]) for p in glob.glob("."+ sep + "static" + sep + "*.ttf")]
     google_fonts = fonts_on_google(local_fonts)
     print google_fonts
     return render_template('index.html',

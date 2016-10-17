@@ -31,6 +31,7 @@
         overflow: hidden;
         margin-bottom: 20px;
         padding-right: 10px;
+        border: 1px solid black;
       }
     {% endfor %}
 
@@ -44,6 +45,7 @@
         overflow: hidden;
         margin-bottom: 20px;
         padding-right: 10px;
+        border: 1px solid black;
       }
     {% endfor %}
 
@@ -56,12 +58,12 @@
       float: right;
       width: 50%;
     }
-    #bar {
+/*    #bar {
       position: fixed;
       top: 200px;
       width: 100%;
       border: 1px solid red;
-    }
+    }*/
   </style>
   <!-- Always shows a header, even in smaller screens. -->
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -85,11 +87,11 @@
     </div>
     <main class="mdl-layout__content">
       <div class="page-content">
-        <div id="bar"></div>
+        <!-- <div id="bar"></div> -->
         <div id="left">
           {% for path, font in fonts %}
             <div class="{{ font }}-new" style="font-size: 20px;">
-              <b>{{ font }}</b><br>
+              {{ font }}<br>
               {{ dummy_text }}
             </div>
           {% endfor %}
@@ -98,7 +100,7 @@
         <div id="right">
           {% for fam_name, weight, style, url in google_fonts %}
             <div class="{{ fam_name }}-{{ weight }}-{{ style }}-online" style="font-size: 20px;">
-              <b>{{ fam_name }}-{{ weight }}-{{ style }}-online</b><br>
+              {{ fam_name }}-{{ weight }}-{{ style }}-online<br>
               {{ dummy_text }}
             </div>
           {% endfor %}

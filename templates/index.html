@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
-    {% for fam_name, weight, style, url in google_fonts %}
+    {% for fam_name, css_name, weight, style, url in google_fonts %}
       <link href="{{ url }}" rel="stylesheet">
     {% endfor %}
   </head>
@@ -36,9 +36,9 @@
     {% endfor %}
 
     /*Create classes from fonts on fonts.google.com*/
-    {% for fam_name, weight, style, url in google_fonts %}
+    {% for fam_name, css_name, weight, style, url in google_fonts %}
       .{{ fam_name }}-{{ weight }}-{{ style }}-online {
-        font-family: {{ fam_name }};
+        font-family: {{ css_name }};
         font-style: {{ style }};
         font-weight: {{ weight }};
         height: 200px;
@@ -87,7 +87,7 @@
         </div>
         </div>
         <div id="right">
-          {% for fam_name, weight, style, url in google_fonts %}
+          {% for fam_name, css_name, weight, style, url in google_fonts %}
             <div class="{{ fam_name }}-{{ weight }}-{{ style }}-online" style="font-size: 20px;">
               {{ fam_name }}-{{ weight }}-{{ style }}-online<br>
               {{ dummy_text }}

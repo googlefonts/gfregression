@@ -46,21 +46,22 @@ def fonts_on_google(local_fonts):
         fam_name, style = font.split('-')
         # RubikMonoOne > Rubik+Mono+One
         api_fam_name = re.sub('(?!^)([A-Z]+)', r'+\1', fam_name)
+        css_fam_name = re.sub('(?!^)([A-Z]+)', r' \1', fam_name)
         url = '%s%s:%s' % (url_prefix, api_fam_name, FONT_WEIGHTS[style])
         if requests.get(url).status_code == 200:
             if 'i' in FONT_WEIGHTS[style]:
-                fonts.append((fam_name, FONT_WEIGHTS[style][:-1], 'italic', url))
+                fonts.append((fam_name, css_fam_name, FONT_WEIGHTS[style][:-1], 'italic', url))
             else:
-                fonts.append((fam_name, FONT_WEIGHTS[style], 'normal', url))
+                fonts.append((fam_name, css_fam_name, FONT_WEIGHTS[style], 'normal', url))
         else:
-            fonts.append(('Inconsolata', '400', 'normal', fallback_font))
+            fonts.append(('Inconsolata', 'Inconsolata', '400', 'normal', fallback_font))
     return fonts
 
 
 @app.route("/")
 def test_fonts():
     sep = os.path.sep
-    local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4]) 
+    local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4])
         for p in glob.glob("."+ sep + "static" + sep + "*.ttf")]
     google_fonts = fonts_on_google(local_fonts)
     print google_fonts

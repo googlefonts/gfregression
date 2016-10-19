@@ -2,6 +2,8 @@
 
 Compare local font families against the last release, hosted on fonts.google.com.
 
+# ![Font Bakery](screenshot.png)
+
 ## Installation
 - Clone repository
 - Create a new virtualenv

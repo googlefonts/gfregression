@@ -78,6 +78,7 @@
       <div class="page-content">
         <!-- <div id="bar"></div> -->
         <div id="left">
+          <b>Local</b>
           {% for path, font in fonts %}
             <div class="{{ font }}-new" style="font-size: 20px;">
               {{ font }}<br>
@@ -87,6 +88,7 @@
         </div>
         </div>
         <div id="right">
+          <b>fonts.google.com</b>
           {% for fam_name, css_name, weight, style, url in google_fonts %}
             <div class="{{ fam_name }}-{{ weight }}-{{ style }}-online" style="font-size: 20px;">
               {{ fam_name }}-{{ weight }}-{{ style }}-online<br>

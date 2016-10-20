@@ -32,6 +32,10 @@ FONT_WEIGHTS = {
     'BlackItalic': '900i',
 }
 
+FONT_EXCEPTIONS = [
+    'VT323'
+]
+
 app = Flask(__name__)
 dummy_text = open('./dummy_text.txt', 'r').read()
 
@@ -45,8 +49,12 @@ def fonts_on_google(local_fonts):
     for path, font in local_fonts:
         fam_name, style = font.split('-')
         # RubikMonoOne > Rubik+Mono+One
-        api_fam_name = re.sub('(?!^)([A-Z]+)', r'+\1', fam_name)
-        css_fam_name = re.sub('(?!^)([A-Z]+)', r' \1', fam_name)
+        if fam_name not in FONT_EXCEPTIONS:
+            api_fam_name = re.sub('(?!^)([A-Z]+)', r'+\1', fam_name)
+            css_fam_name = re.sub('(?!^)([A-Z]+)', r' \1', fam_name)
+        else:
+            api_fam_name = fam_name
+            css_fam_name = fam_name
         url = '%s%s:%s' % (url_prefix, api_fam_name, FONT_WEIGHTS[style])
         if requests.get(url).status_code == 200:  # Check if font exists
             if 'i' in FONT_WEIGHTS[style]:

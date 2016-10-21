@@ -1,0 +1,7 @@
+web:
+  restart: always
+  build: .
+  volumes:
+    - ./app:/app
+  ports:
+    - "80:80"

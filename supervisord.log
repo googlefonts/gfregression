@@ -1,0 +1,56 @@
+2016-07-23 09:32:58,165 CRIT Supervisor running as root (no user in config file)
+2016-07-23 09:32:58,169 INFO supervisord started with pid 1
+2016-07-23 09:32:59,172 INFO spawned: 'nginx' with pid 7
+2016-07-23 09:32:59,176 INFO spawned: 'uwsgi' with pid 8
+2016-07-23 09:33:00,222 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2016-07-23 09:33:00,222 INFO success: uwsgi entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2016-07-23 09:34:04,318 WARN received SIGTERM indicating exit request
+2016-07-23 09:34:04,328 INFO waiting for nginx, uwsgi to die
+2016-07-23 09:34:04,328 INFO stopped: uwsgi (exit status 30)
+2016-07-23 09:34:04,370 INFO stopped: nginx (exit status 0)
+2016-07-23 09:35:21,346 CRIT Supervisor running as root (no user in config file)
+2016-07-23 09:35:21,350 INFO supervisord started with pid 1
+2016-07-23 09:35:22,353 INFO spawned: 'nginx' with pid 7
+2016-07-23 09:35:22,356 INFO spawned: 'uwsgi' with pid 8
+2016-07-23 09:35:22,371 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:35:23,373 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2016-07-23 09:35:23,375 INFO spawned: 'uwsgi' with pid 10
+2016-07-23 09:35:23,386 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:35:25,391 INFO spawned: 'uwsgi' with pid 11
+2016-07-23 09:35:25,400 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:35:28,407 INFO spawned: 'uwsgi' with pid 12
+2016-07-23 09:35:28,414 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:35:29,417 INFO gave up: uwsgi entered FATAL state, too many start retries too quickly
+2016-07-23 09:36:14,781 WARN received SIGTERM indicating exit request
+2016-07-23 09:36:14,782 INFO waiting for nginx to die
+2016-07-23 09:36:47,549 CRIT Supervisor running as root (no user in config file)
+2016-07-23 09:36:47,554 INFO supervisord started with pid 1
+2016-07-23 09:36:48,557 INFO spawned: 'nginx' with pid 7
+2016-07-23 09:36:48,560 INFO spawned: 'uwsgi' with pid 8
+2016-07-23 09:36:48,574 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:36:49,577 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2016-07-23 09:36:49,580 INFO spawned: 'uwsgi' with pid 10
+2016-07-23 09:36:49,589 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:36:51,592 INFO spawned: 'uwsgi' with pid 11
+2016-07-23 09:36:51,602 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:36:54,610 INFO spawned: 'uwsgi' with pid 12
+2016-07-23 09:36:54,620 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:36:55,623 INFO gave up: uwsgi entered FATAL state, too many start retries too quickly
+2016-07-23 09:37:56,174 WARN received SIGTERM indicating exit request
+2016-07-23 09:37:56,174 INFO waiting for nginx to die
+2016-07-23 09:37:57,220 INFO stopped: nginx (exit status 0)
+2016-07-23 09:39:03,601 CRIT Supervisor running as root (no user in config file)
+2016-07-23 09:39:03,604 INFO supervisord started with pid 1
+2016-07-23 09:39:04,609 INFO spawned: 'nginx' with pid 7
+2016-07-23 09:39:04,614 INFO spawned: 'uwsgi' with pid 8
+2016-07-23 09:39:04,633 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:39:05,636 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2016-07-23 09:39:05,637 INFO spawned: 'uwsgi' with pid 10
+2016-07-23 09:39:05,647 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:39:07,652 INFO spawned: 'uwsgi' with pid 11
+2016-07-23 09:39:07,663 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:39:10,670 INFO spawned: 'uwsgi' with pid 12
+2016-07-23 09:39:10,680 INFO exited: uwsgi (exit status 1; not expected)
+2016-07-23 09:39:11,682 INFO gave up: uwsgi entered FATAL state, too many start retries too quickly
+2016-07-23 09:39:25,629 WARN received SIGTERM indicating exit request
+2016-07-23 09:39:25,629 INFO waiting for nginx to die

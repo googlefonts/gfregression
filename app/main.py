@@ -2,6 +2,7 @@
 Compare local fonts against fonts available on fonts.google.com
 
 '''
+from __future__ import print_function
 from flask import Flask, render_template
 import glob
 import ntpath
@@ -85,7 +86,7 @@ def test_fonts():
     local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4])
                    for p in glob.glob("." + sep + "static" + sep + "*.ttf")]
     google_fonts = fonts_on_google(local_fonts)
-    print google_fonts
+    print('google_fonts')
     return render_template('index.html',
                            dummy_text=dummy_text,
                            fonts=local_fonts,

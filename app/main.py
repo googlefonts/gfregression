@@ -85,8 +85,8 @@ def test_fonts():
     # web browsers use unix slashes, instead of windows
     local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4])
                    for p in glob.glob("." + sep + "static" + sep + "*.ttf")]
+    local_fonts = sorted(local_fonts, key=lambda x: x[1])
     google_fonts = fonts_on_google(local_fonts)
-    print('google_fonts')
     return render_template('index.html',
                            dummy_text=dummy_text,
                            fonts=local_fonts,

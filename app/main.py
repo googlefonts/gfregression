@@ -37,6 +37,8 @@ FONT_EXCEPTIONS = [
     'VT323'
 ]
 
+FONT_FALLBACK = 'Inconsolata'
+
 app = Flask(__name__)
 dummy_text = open('./dummy_text.txt', 'r').read()
 
@@ -46,7 +48,7 @@ def fonts_on_google(local_fonts):
     return a fallback font'''
     fonts = []
     url_prefix = 'https://fonts.googleapis.com/css?family='
-    fallback_font = 'https://fonts.googleapis.com/css?family=Inconsolata'
+    fallback_font = url_prefix + FONT_FALLBACK
     for path, font in local_fonts:
         fam_name, style = font.split('-')
         # RubikMonoOne > Rubik+Mono+One

@@ -42,12 +42,20 @@ app = Flask(__name__)
 dummy_text = open('./dummy_text.txt', 'r').read()
 
 
+def _font_exists(url):
+    '''Check if the url mataches the Google fonts api url'''
+    if requests.get(url).status_code == 200:
+        return True
+    return False
+
+
 def fonts_on_google(local_fonts):
     '''Find the local font on fonts.google.com, if not found
     return a fallback font'''
     fonts = []
     url_prefix = 'https://fonts.googleapis.com/css?family='
     fallback_font = url_prefix + FONT_FALLBACK
+
     for path, font in local_fonts:
         fam_name, style = font.split('-')
         # RubikMonoOne > Rubik+Mono+One
@@ -58,7 +66,7 @@ def fonts_on_google(local_fonts):
             api_fam_name = fam_name
             css_fam_name = fam_name
         url = '%s%s:%s' % (url_prefix, api_fam_name, FONT_WEIGHTS[style])
-        if requests.get(url).status_code == 200:  # Check if font exists
+        if _font_exists(url):
             if 'i' in FONT_WEIGHTS[style]:
                 fonts.append((fam_name,
                               css_fam_name,

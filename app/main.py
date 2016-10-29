@@ -39,6 +39,7 @@ FONT_EXCEPTIONS = [
 FONT_FALLBACK = 'Inconsolata'
 
 app = Flask(__name__)
+
 dummy_text = open('./dummy_text.txt', 'r').read()
 
 
@@ -47,6 +48,14 @@ def _font_exists(url):
     if requests.get(url).status_code == 200:
         return True
     return False
+
+
+def _convert_camelcase(fam_name, seperator=' '):
+    '''RubikMonoOne > Rubik+Mono+One'''
+    if fam_name not in FONT_EXCEPTIONS:
+        return re.sub('(?!^)([A-Z]+)', r'%s\1' % seperator, fam_name)
+    else:
+        return fam_name
 
 
 def fonts_on_google(local_fonts):
@@ -58,14 +67,11 @@ def fonts_on_google(local_fonts):
 
     for path, font in local_fonts:
         fam_name, style = font.split('-')
-        # RubikMonoOne > Rubik+Mono+One
-        if fam_name not in FONT_EXCEPTIONS:
-            api_fam_name = re.sub('(?!^)([A-Z]+)', r'+\1', fam_name)
-            css_fam_name = re.sub('(?!^)([A-Z]+)', r' \1', fam_name)
-        else:
-            api_fam_name = fam_name
-            css_fam_name = fam_name
+
+        api_fam_name = _convert_camelcase(fam_name, '+')
+        css_fam_name = _convert_camelcase(fam_name)
         url = '%s%s:%s' % (url_prefix, api_fam_name, FONT_WEIGHTS[style])
+
         if _font_exists(url):
             if 'i' in FONT_WEIGHTS[style]:
                 fonts.append((fam_name,

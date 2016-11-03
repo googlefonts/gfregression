@@ -147,14 +147,14 @@
   $(document).keypress(function(e) {
     if(e.which == 81) {
       for (i in local_fonts) {
-        $('.' + local_fonts[i]).attr('class', google_fonts[i])
+        $('.box-char ' + '.' + local_fonts[i]).attr('class', google_fonts[i])
         console.log('changed to google version');
         // $('.box-char').css('font-family', 'times');
       }
     }
     if(e.which == 68) {
       for (i in google_fonts) {
-        $('.' + google_fonts[i]).attr('class', local_fonts[i])
+        $('.box-char ' + '.' + google_fonts[i]).attr('class', local_fonts[i])
         console.log('changed to local version');
         // $('.box-char').css('font-family', 'times');
       }

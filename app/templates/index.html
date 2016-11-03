@@ -175,7 +175,7 @@
         {% for path, font, span_name in local_fonts %}
           <h2><a href="#{{ font }}-palette">{{ font }}</a></h2>
         {% endfor %}
-        {% for font in char_maps %}
+        {% for path, font, span_name in local_fonts %}
           <div class="box-large">
             <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
             <div class="box-content">

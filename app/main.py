@@ -3,6 +3,7 @@ Compare local fonts against fonts available on fonts.google.com
 '''
 from __future__ import print_function
 from flask import Flask, render_template
+from fontTools.ttLib import TTFont
 import glob
 import ntpath
 import requests
@@ -94,6 +95,19 @@ def fonts_on_google(local_fonts):
     return fonts
 
 
+def font_glyphs(local_fonts):
+    """return encoded glyphs for each font"""
+    glyphs = {}
+
+    for path, font in local_fonts:
+        ttfont = TTFont(path)
+        glyphs[font] = []
+
+        cmap_tbl = ttfont['cmap'].getcmap(3, 1)
+        glyphs[font] = cmap_tbl.cmap.items()
+    return glyphs
+
+
 @app.route("/")
 def test_fonts():
     sep = os.path.sep
@@ -102,10 +116,12 @@ def test_fonts():
                    for p in glob.glob("." + sep + "static" + sep + "*.ttf")]
     local_fonts = sorted(local_fonts, key=lambda x: x[1])
     google_fonts = fonts_on_google(local_fonts)
+    char_maps = font_glyphs(local_fonts)
     return render_template('index.html',
                            dummy_text=dummy_text,
                            fonts=local_fonts,
-                           google_fonts=google_fonts)
+                           google_fonts=google_fonts,
+                           char_maps=char_maps)
 
 
 if __name__ == "__main__":

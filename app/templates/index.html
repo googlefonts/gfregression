@@ -1,9 +1,10 @@
 <html>
   <title>Google Fonts Regression Tester</title>
   <head>
-<!--     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script> -->
+    <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
 
     {% for fam_name, css_name, weight, style, url in google_fonts %}
       <link href="{{ url }}" rel="stylesheet">
@@ -58,24 +59,41 @@
       float: right;
       width: 50%;
     }
-/*    #bar {
-      position: fixed;
-      top: 200px;
-      width: 100%;
-      border: 1px solid red;
-    }*/
+    .box-large{
+      border: 1px solid black;
+      float: left;
+      margin-top: 20px;
+    }
+    .box-header{
+      border: 1px solid black;
+      font-family: arial;
+      font-weight: bold;
+    }
+    .box-content{
+      border:1px solid black;
+      position: relative;
+      float: left;
+      padding-top: 20px;
+    }
+    .box-char{
+      position: relative;
+      float: left;
+      width: 80px;
+      height: 80px;
+      padding: 10px;
+      margin: 10px;
+      background-color: #f2f2f2;
+      font-family: arial;
+      font-size: 80px;
+      text-align: center;
+      }
   </style>
-  <!-- Always shows a header, even in smaller screens. -->
-<body>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <span class="mdl-layout-title">Google Fonts Regression Tester</span>
-      </div>
-    </header>
 
-    <main class="mdl-layout__content">
+<body>
+  <div class="mdl-layout__content">
+
+    <h1>Google Fonts Regression Tester</h1>
+
       <div class="page-content">
 
         <div id="left">
@@ -86,7 +104,6 @@
               {{ dummy_text }}
             </div>
           {% endfor %}
-        </div>
         </div>
 
         <div id="right">
@@ -100,8 +117,31 @@
         </div>
 
       </div>
-    </main>
+
+      {% for font in char_maps %}
+        <div class="box-large">
+          <div class="box-header">{{ font }}</div>
+          <div class="box-content">
+            {% for uni, name in char_maps[font] %}
+            <div class="box-char">
+                &#{{ uni }};
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
 
   </div>
 </body>
+<script>
+  // Change font with Q or D
+  $(document).keypress(function(e) {
+    if(e.which == 81) {
+        $('.box-char').css('font-family', 'times');
+    }
+    if(e.which == 68) {
+        $('.box-char').css('font-family', 'arial');
+    }
+  });
+</script>
 </html>

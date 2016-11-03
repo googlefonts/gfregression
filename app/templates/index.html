@@ -84,7 +84,7 @@
       font-size: 80px;
       text-align: center;
       }
-    h1, h2, h3, h4, .box-header{
+    h1, h2, h3, h4, .box-header, #alert{
       font-family: arial;
       color: #757575;
     }
@@ -123,6 +123,13 @@
     a {
       text-decoration: none;
       color: #757575;
+    }
+    #alert{
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 5px;
+      background-color: white;
     }
   </style>
 
@@ -188,6 +195,7 @@
           </div>
         {% endfor %}
       </div>
+      <div id="alert"></div>
   </div>
 </body>
 
@@ -203,6 +211,7 @@
     if(e.which == 81) {
       for (i in local_fonts) {
         $('.box-char ' + '.' + local_fonts[i]).attr('class', google_fonts[i])
+        $('#alert').show().text('fonts.google.com')
         console.log('changed to google version');
         // $('.box-char').css('font-family', 'times');
       }
@@ -210,6 +219,7 @@
     if(e.which == 68) {
       for (i in google_fonts) {
         $('.box-char ' + '.' + google_fonts[i]).attr('class', local_fonts[i])
+        $('#alert').show().text('Local')
         console.log('changed to local version');
         // $('.box-char').css('font-family', 'times');
       }
@@ -218,6 +228,7 @@
 
   $('.container-button').on('click', function() {
     $('.pages').hide();
+    $('#alert').hide();
     var page = '#' + $(this).data('page')
     $(page).show()
 

@@ -6,13 +6,13 @@
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
 
-    {% for fam_name, css_name, weight, style, url in google_fonts %}
+    {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
       <link href="{{ url }}" rel="stylesheet">
     {% endfor %}
   </head>
   <style>
     /*Load fonts from static folder*/
-    {% for path, font in fonts %}
+    {% for path, font, span_name in local_fonts %}
       @font-face{
         font-family: {{ font }}-local;
         src: url('{{ path }}');
@@ -25,30 +25,28 @@
 
 
     /*Create classes from fonts in static folder*/
-    {% for path, font in fonts %}
-      .{{ font }}-new{
+    {% for path, font, span_name in local_fonts %}
+      .{{ span_name }}{
         font-family: {{ font }}-local;
-        height: 200px;
-        overflow: hidden;
-        margin-bottom: 20px;
-        padding-right: 10px;
-        border: 1px solid black;
       }
     {% endfor %}
 
     /*Create classes from fonts on fonts.google.com*/
-    {% for fam_name, css_name, weight, style, url in google_fonts %}
-      .{{ fam_name }}-{{ weight }}-{{ style }}-online {
+    {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
+      .{{ span_name }} {
         font-family: {{ css_name }};
         font-style: {{ style }};
         font-weight: {{ weight }};
-        height: 200px;
-        overflow: hidden;
-        margin-bottom: 20px;
-        padding-right: 10px;
-        border: 1px solid black;
       }
     {% endfor %}
+
+    .box-200px{
+      height: 200px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      padding-right: 10px;
+      border: 1px solid black;
+    }
 
 
     #left {
@@ -73,7 +71,7 @@
       border:1px solid black;
       position: relative;
       float: left;
-      padding-top: 20px;
+      padding-top: 10px;
     }
     .box-char{
       position: relative;
@@ -83,13 +81,14 @@
       padding: 10px;
       margin: 10px;
       background-color: #f2f2f2;
-      font-family: arial;
       font-size: 80px;
       text-align: center;
       }
   </style>
 
 <body>
+  <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
+  <meta id="to_google_fonts" data-name="google-fonts" data-str="{{ to_google_fonts }}">
   <div class="mdl-layout__content">
 
     <h1>Google Fonts Regression Tester</h1>
@@ -98,20 +97,24 @@
 
         <div id="left">
           <b>Local</b>
-          {% for path, font in fonts %}
-            <div class="{{ font }}-new" style="font-size: 20px;">
-              {{ font }}<br>
-              {{ dummy_text }}
+          {% for path, font, span_name in local_fonts %}
+            <div class="box-200px">
+              <div class="box-header">{{ font }}</div>
+              <div class="box-content">
+                <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text }}</span>
+              </div>
             </div>
           {% endfor %}
         </div>
 
         <div id="right">
           <b>fonts.google.com</b>
-          {% for fam_name, css_name, weight, style, url in google_fonts %}
-            <div class="{{ fam_name }}-{{ weight }}-{{ style }}-online" style="font-size: 20px;">
-              {{ fam_name }}-{{ weight }}-{{ style }}-online<br>
-              {{ dummy_text }}
+          {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
+            <div class="box-200px">
+                <div class="box-header">{{ span_name }}</div>
+                <div class="box-content">
+                  <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text }}</span>
+                </div>
             </div>
           {% endfor %}
         </div>
@@ -124,7 +127,7 @@
           <div class="box-content">
             {% for uni, name in char_maps[font] %}
             <div class="box-char">
-                &#{{ uni }};
+                <span class="{{ font }}-new">&#{{ uni }};</span>
             </div>
             {% endfor %}
           </div>
@@ -134,14 +137,30 @@
   </div>
 </body>
 <script>
+  local = $('#to_local_fonts').data();
+  local_fonts = local['str'].split(',') 
+
+  google = $('#to_google_fonts').data();
+  google_fonts = google['str'].split(',');
+
   // Change font with Q or D
   $(document).keypress(function(e) {
     if(e.which == 81) {
-        $('.box-char').css('font-family', 'times');
+      for (i in local_fonts) {
+        $('.' + local_fonts[i]).attr('class', google_fonts[i])
+        console.log('changed to google version');
+        // $('.box-char').css('font-family', 'times');
+      }
     }
     if(e.which == 68) {
-        $('.box-char').css('font-family', 'arial');
+      for (i in google_fonts) {
+        $('.' + google_fonts[i]).attr('class', local_fonts[i])
+        console.log('changed to local version');
+        // $('.box-char').css('font-family', 'times');
+      }
     }
   });
+  var datum = $('#my-data').data();
+  console.log(datum);
 </script>
 </html>

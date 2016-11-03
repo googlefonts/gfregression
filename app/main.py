@@ -66,29 +66,36 @@ def fonts_on_google(local_fonts):
     url_prefix = 'https://fonts.googleapis.com/css?family='
     fallback_font = url_prefix + FONT_FALLBACK
 
-    for path, font in local_fonts:
+    for path, font, span_name in local_fonts:
         fam_name, style = font.split('-')
 
         api_fam_name = _convert_camelcase(fam_name, '+')
         css_fam_name = _convert_camelcase(fam_name)
+
         url = '%s%s:%s' % (url_prefix, api_fam_name, FONT_WEIGHTS[style])
 
         if _font_exists(url):
             if 'i' in FONT_WEIGHTS[style]:
+                span_name = '%s-%s-italic-online' % (fam_name, FONT_WEIGHTS[style][:-1])
+
                 fonts.append((fam_name,
                               css_fam_name,
+                              span_name,
                               FONT_WEIGHTS[style][:-1],
                               'italic',
                               url))
             else:
+                span_name = '%s-%s-normal-online' % (fam_name, FONT_WEIGHTS[style])
                 fonts.append((fam_name,
                               css_fam_name,
+                              span_name,
                               FONT_WEIGHTS[style],
                               'normal',
                               url))
         else:
             fonts.append(('Inconsolata',
                           'Inconsolata',
+                          'Inconsolata-400-normal-online',
                           '400',
                           'normal',
                           fallback_font))
@@ -99,7 +106,7 @@ def font_glyphs(local_fonts):
     """return encoded glyphs for each font"""
     glyphs = {}
 
-    for path, font in local_fonts:
+    for path, font, span_name in local_fonts:
         ttfont = TTFont(path)
         glyphs[font] = []
 
@@ -112,16 +119,28 @@ def font_glyphs(local_fonts):
 def test_fonts():
     sep = os.path.sep
     # web browsers use unix slashes, instead of windows
-    local_fonts = [(p.replace('\\', '/'), ntpath.basename(p)[:-4])
-                   for p in glob.glob("." + sep + "static" + sep + "*.ttf")]
+    local_fonts = []
+    ttfs_in_static = glob.glob("." + sep + "static" + sep + "*.ttf")
+    for path in ttfs_in_static:
+        path = path.replace('\\', '/')
+        font_name = ntpath.basename(path)[:-4]
+        span_name = '%s-new' % ntpath.basename(path)[:-4]
+        local_fonts.append((path, font_name, span_name))
+
     local_fonts = sorted(local_fonts, key=lambda x: x[1])
     google_fonts = fonts_on_google(local_fonts)
     char_maps = font_glyphs(local_fonts)
+    to_local_fonts = ','.join([i[2] for i in local_fonts])
+    to_google_fonts = ','.join([i[2] for i in google_fonts])
+    print(to_google_fonts)
+    print(to_local_fonts)
     return render_template('index.html',
                            dummy_text=dummy_text,
-                           fonts=local_fonts,
+                           local_fonts=local_fonts,
                            google_fonts=google_fonts,
-                           char_maps=char_maps)
+                           char_maps=char_maps,
+                           to_local_fonts=to_local_fonts,
+                           to_google_fonts=to_google_fonts)
 
 
 if __name__ == "__main__":

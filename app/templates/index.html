@@ -120,6 +120,10 @@
     #page-glyph-palette{
       display: none;
     }
+    a {
+      text-decoration: none;
+      color: #757575;
+    }
   </style>
 
 <body>
@@ -128,7 +132,7 @@
   <div class="container">
 
     <div id="container-header">
-      <div class="container-title">
+      <div class="container-title" id="home">
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
@@ -138,11 +142,15 @@
     </div>
 
       <div id="page-vertical-metrics" class="pages">
+        {% for path, font, span_name in local_fonts %}
+          <h2><a href="#{{ font }}-vert">{{ font }}</a></h2>
+        {% endfor %}
+
         <div id="container-left">
           <h2>Local</h2>
           {% for path, font, span_name in local_fonts %}
             <div class="box-200px">
-              <div class="box-header">{{ font }}</div>
+              <div class="box-header" id="{{ font }}-vert">{{ font }}</div>
               <div class="box-content">
                 <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text }}</span>
               </div>
@@ -164,9 +172,12 @@
       </div>
 
       <div id="page-glyph-palette" class="pages">
+        {% for path, font, span_name in local_fonts %}
+          <h2><a href="#{{ font }}-palette">{{ font }}</a></h2>
+        {% endfor %}
         {% for font in char_maps %}
           <div class="box-large">
-            <div class="box-header">{{ font }}</div>
+            <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
             <div class="box-content">
               {% for uni, name in char_maps[font] %}
               <div class="box-char">

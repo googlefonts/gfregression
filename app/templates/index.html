@@ -20,7 +20,9 @@
     {% endfor %}
 
     .mdl-layout__content {
-      padding: 20px;
+      padding-left: 40px;
+      padding-right: 40px;
+      padding-top: 20px;
     }
 
 
@@ -44,31 +46,29 @@
       height: 200px;
       overflow: hidden;
       margin-bottom: 20px;
-      padding-right: 10px;
-      border: 1px solid black;
     }
 
-
-    #left {
+    #container-left {
       float: left;
-      width: 50%;
+      width: 48%;
+      margin-right: 2%;
     }
-    #right {
+    #container-right {
       float: right;
-      width: 50%;
+      width: 48%;
+      margin-left: 2%;
     }
     .box-large{
-      border: 1px solid black;
       float: left;
       margin-top: 20px;
     }
     .box-header{
-      border: 1px solid black;
+      border-top: 1px solid #757575;
+      padding-top: 15px;
       font-family: arial;
       font-weight: bold;
     }
     .box-content{
-      border:1px solid black;
       position: relative;
       float: left;
       padding-top: 10px;
@@ -76,14 +76,25 @@
     .box-char{
       position: relative;
       float: left;
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       padding: 10px;
       margin: 10px;
-      background-color: #f2f2f2;
+      background-color: #fcfcfc;
       font-size: 80px;
       text-align: center;
       }
+    h1, h2, h3, h4, .box-header{
+      font-family: arial;
+      color: #757575;
+    }
+    h1 {
+      font-weight: 400;
+      font-size: 22px;
+    }
+    h2, .box-header {
+      font-size: 14px;
+    }
   </style>
 
 <body>
@@ -95,8 +106,8 @@
 
       <div class="page-content">
 
-        <div id="left">
-          <b>Local</b>
+        <div id="container-left">
+          <h2>Local</h2>
           {% for path, font, span_name in local_fonts %}
             <div class="box-200px">
               <div class="box-header">{{ font }}</div>
@@ -107,8 +118,8 @@
           {% endfor %}
         </div>
 
-        <div id="right">
-          <b>fonts.google.com</b>
+        <div id="container-right">
+          <h2>fonts.google.com</h2>
           {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
             <div class="box-200px">
                 <div class="box-header">{{ span_name }}</div>
@@ -136,6 +147,7 @@
 
   </div>
 </body>
+
 <script>
   local = $('#to_local_fonts').data();
   local_fonts = local['str'].split(',') 
@@ -160,7 +172,5 @@
       }
     }
   });
-  var datum = $('#my-data').data();
-  console.log(datum);
 </script>
 </html>

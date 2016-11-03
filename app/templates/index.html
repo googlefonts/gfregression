@@ -74,9 +74,10 @@
         <span class="mdl-layout-title">Google Fonts Regression Tester</span>
       </div>
     </header>
+
     <main class="mdl-layout__content">
       <div class="page-content">
-        <!-- <div id="bar"></div> -->
+
         <div id="left">
           <b>Local</b>
           {% for path, font in fonts %}
@@ -87,6 +88,7 @@
           {% endfor %}
         </div>
         </div>
+
         <div id="right">
           <b>fonts.google.com</b>
           {% for fam_name, css_name, weight, style, url in google_fonts %}
@@ -96,8 +98,10 @@
             </div>
           {% endfor %}
         </div>
+
       </div>
     </main>
+
   </div>
 </body>
 </html>

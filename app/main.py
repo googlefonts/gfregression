@@ -132,8 +132,7 @@ def test_fonts():
     char_maps = font_glyphs(local_fonts)
     to_local_fonts = ','.join([i[2] for i in local_fonts])
     to_google_fonts = ','.join([i[2] for i in google_fonts])
-    print(to_google_fonts)
-    print(to_local_fonts)
+
     return render_template('index.html',
                            dummy_text=dummy_text,
                            local_fonts=local_fonts,

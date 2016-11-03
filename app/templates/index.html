@@ -19,10 +19,10 @@
       }
     {% endfor %}
 
-    .mdl-layout__content {
+    .container {
+      position: relative;
       padding-left: 40px;
       padding-right: 40px;
-      padding-top: 20px;
     }
 
 
@@ -95,17 +95,49 @@
     h2, .box-header {
       font-size: 14px;
     }
+    #container-header{
+      position: relative;
+      float: left;
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid #757575;
+      margin-bottom: 40px;
+    }
+    .container-title{
+      float: left;
+      width: 48%;
+    }
+    .container-nav{
+      width: 48%;
+      float: right;
+      text-transform: uppercase;
+    }
+    .container-button{
+      float: right;
+      padding: 5px;
+      cursor: pointer;
+    }
+    #page-glyph-palette{
+      display: none;
+    }
   </style>
 
 <body>
   <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
   <meta id="to_google_fonts" data-name="google-fonts" data-str="{{ to_google_fonts }}">
-  <div class="mdl-layout__content">
+  <div class="container">
 
-    <h1>Google Fonts Regression Tester</h1>
+    <div id="container-header">
+      <div class="container-title">
+        <h1>Google Fonts Regression Tester</h1>
+      </div>
+      <div class="container-nav">
+        <div class="container-button" data-page="page-glyph-palette"><h2>Glyph Pallette</h2></div>
+        <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
+      </div>
+    </div>
 
-      <div class="page-content">
-
+      <div id="page-vertical-metrics" class="pages">
         <div id="container-left">
           <h2>Local</h2>
           {% for path, font, span_name in local_fonts %}
@@ -129,22 +161,22 @@
             </div>
           {% endfor %}
         </div>
-
       </div>
 
-      {% for font in char_maps %}
-        <div class="box-large">
-          <div class="box-header">{{ font }}</div>
-          <div class="box-content">
-            {% for uni, name in char_maps[font] %}
-            <div class="box-char">
-                <span class="{{ font }}-new">&#{{ uni }};</span>
+      <div id="page-glyph-palette" class="pages">
+        {% for font in char_maps %}
+          <div class="box-large">
+            <div class="box-header">{{ font }}</div>
+            <div class="box-content">
+              {% for uni, name in char_maps[font] %}
+              <div class="box-char">
+                  <span class="{{ font }}-new">&#{{ uni }};</span>
+              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
           </div>
-        </div>
-      {% endfor %}
-
+        {% endfor %}
+      </div>
   </div>
 </body>
 
@@ -172,5 +204,12 @@
       }
     }
   });
+
+  $('.container-button').on('click', function() {
+    $('.pages').hide();
+    var page = '#' + $(this).data('page')
+    $(page).show()
+
+  })
 </script>
 </html>

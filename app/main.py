@@ -41,7 +41,8 @@ FONT_FALLBACK = 'Inconsolata'
 
 app = Flask(__name__)
 
-dummy_text = open('./dummy_text.txt', 'r').read()
+with open('./dummy_text.txt', 'r') as dummy_text_file:
+    dummy_text = dummy_text_file.read()
 
 
 def _font_exists(url):

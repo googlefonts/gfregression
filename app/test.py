@@ -23,11 +23,12 @@ class GoogleFontsApi(unittest.TestCase):
     def test_get_google_fontface_url_from_local_font(self):
         """Test we can convert a local font's path into a compatible url for
         the Google fonts api"""
-        inconsolata_local = [('path/Inconsolata-Regular.ttf', 'Inconsolata-Regular')]
-
+        inconsolata_local = [('path/Inconsolata-Regular.ttf', 'Inconsolata-Regular', 'Inconsolata-Regular-new')]
+        fonts_on_google(inconsolata_local)
         self.assertEqual(fonts_on_google(inconsolata_local),
                          [('Inconsolata',
                            'Inconsolata',
+                           'Inconsolata-400-normal-online',
                            '400',
                            'normal',
                            self.fallback_url)])

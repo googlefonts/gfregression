@@ -59,6 +59,7 @@
       margin-left: 2%;
     }
     .box-large{
+      width: 100%;
       float: left;
       margin-top: 20px;
     }
@@ -70,8 +71,12 @@
     }
     .box-content{
       position: relative;
+      width: 100%;
       float: left;
       padding-top: 10px;
+    }
+    .font-swap{
+      font-size: 80px;
     }
     .box-char{
       position: relative;
@@ -81,9 +86,14 @@
       padding: 10px;
       margin: 10px;
       background-color: #fcfcfc;
-      font-size: 80px;
       text-align: center;
       }
+    .line{
+      float: left;
+      font-size: 20px;
+      width: 20%;
+      line-height: 32px;
+    }
     h1, h2, h3, h4, .box-header, #alert{
       font-family: arial;
       color: #757575;
@@ -117,7 +127,7 @@
       padding: 5px;
       cursor: pointer;
     }
-    #page-glyph-palette{
+    #page-glyph-palette, #page-spacing{
       display: none;
     }
     a {
@@ -144,6 +154,7 @@
       </div>
       <div class="container-nav">
         <div class="container-button" data-page="page-glyph-palette"><h2>Glyph Pallette</h2></div>
+        <div class="container-button" data-page="page-spacing"><h2>Spacing</h2></div>
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
     </div>
@@ -187,9 +198,31 @@
             <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
             <div class="box-content">
               {% for uni, name in char_maps[font] %}
-              <div class="box-char">
-                  <span class="{{ font }}-new">&#{{ uni }};</span>
+              <div class="font-swap">
+                <div class="box-char">
+                    <span class="{{ font }}-new">&#{{ uni }};</span>
+                </div>
               </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div id="page-spacing" class="pages">
+        {% for path, font, span_name in local_fonts %}
+          <h2><a href="#{{ font }}-spacing">{{ font }}</a></h2>
+        {% endfor %}
+        {% for path, font, span_name in local_fonts %}
+          <div class="box-large">
+            <div class="box-header" id="{{ font }}-spacing">{{ font }}</div>
+            <div class="box-content">
+              {% for uni, name in char_maps[font] %}
+                <div class="font-swap">
+                  <div class="line">
+                    <span class="{{ font }}-new">&#{{ uni }};&#{{ uni }};&#{{ uni }};&#{{ uni }};</span>
+                  </div>
+                </div>
               {% endfor %}
             </div>
           </div>
@@ -210,7 +243,7 @@
   $(document).keypress(function(e) {
     if(e.which == 81) {
       for (i in local_fonts) {
-        $('.box-char ' + '.' + local_fonts[i]).attr('class', google_fonts[i])
+        $('.font-swap ' + '.' + local_fonts[i]).attr('class', google_fonts[i])
         $('#alert').show().text('fonts.google.com')
         console.log('changed to google version');
         // $('.box-char').css('font-family', 'times');
@@ -218,7 +251,7 @@
     }
     if(e.which == 68) {
       for (i in google_fonts) {
-        $('.box-char ' + '.' + google_fonts[i]).attr('class', local_fonts[i])
+        $('.font-swap ' + '.' + google_fonts[i]).attr('class', local_fonts[i])
         $('#alert').show().text('Local')
         console.log('changed to local version');
         // $('.box-char').css('font-family', 'times');

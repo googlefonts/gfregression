@@ -14,7 +14,7 @@ Compare local font families against the last release, hosted on fonts.google.com
 - Install dependencies 
     `$ pip install -r requirements.txt`
 - Run the test server
-    `$ python main.py`
+    `$ cd app && python main.py`
 - visit http://127.0.0.1:5000/ in a browser
 
 ## Testing fonts setup

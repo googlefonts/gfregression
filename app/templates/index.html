@@ -43,7 +43,7 @@
     {% endfor %}
 
     .box-200px{
-      height: 200px;
+      height: 240px;
       overflow: hidden;
       margin-bottom: 20px;
     }
@@ -69,6 +69,14 @@
       font-family: arial;
       font-weight: bold;
     }
+    .box-header-cyr{
+      border-top: 0;
+      color: #757575;
+      padding-top: 0px;
+      font-family: arial;
+      font-weight: bold;
+    }
+
     .box-content{
       position: relative;
       width: 100%;
@@ -173,6 +181,21 @@
                 <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text }}</span>
               </div>
             </div>
+
+            <div class="box-200px">
+              <div class="box-header-cyr">Cyrillic</div>
+              <div class="box-content">
+                <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text_ru }}</span>
+              </div>
+            </div>
+
+            <div class="box-200px">
+              <div class="box-header-cyr">Vietnamese</div>
+              <div class="box-content">
+                <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text_vit }}</span>
+              </div>
+            </div>
+
           {% endfor %}
         </div>
 
@@ -185,6 +208,21 @@
                   <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text }}</span>
                 </div>
             </div>
+
+            <div class="box-200px">
+              <div class="box-header-cyr">Cyrillic</div>
+              <div class="box-content">
+                <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text_ru }}</span>
+              </div>
+            </div>
+
+            <div class="box-200px">
+              <div class="box-header-cyr">Vietnamese</div>
+              <div class="box-content">
+                <span class="{{ span_name }}" style="font-size: 20px;">{{ dummy_text_vit }}</span>
+              </div>
+            </div>
+
           {% endfor %}
         </div>
       </div>

@@ -9,6 +9,9 @@ import ntpath
 import requests
 import re
 import os
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 FONT_WEIGHTS = {
     # Roman
@@ -44,18 +47,24 @@ app = Flask(__name__)
 with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
 
+with open('./dummy_text_ru.txt', 'r') as dummy_text_ru_file:
+    dummy_text_ru = dummy_text_ru_file.read()
+
+with open('./dummy_text_vit.txt', 'r') as dummy_text_vit_file:
+    dummy_text_vit = dummy_text_vit_file.read()
+
 
 def _font_exists(url):
-    '''Check if the url mataches the Google fonts api url'''
+    '''Check if the url matches the Google fonts api url'''
     if requests.get(url).status_code == 200:
         return True
     return False
 
 
-def _convert_camelcase(fam_name, seperator=' '):
+def _convert_camelcase(fam_name, separator=' '):
     '''RubikMonoOne > Rubik+Mono+One'''
     if fam_name not in FONT_EXCEPTIONS:
-        return re.sub('(?!^)([A-Z]+)', r'%s\1' % seperator, fam_name)
+        return re.sub('(?!^)([A-Z]+)', r'%s\1' % separator, fam_name)
     else:
         return fam_name
 
@@ -136,6 +145,8 @@ def test_fonts():
 
     return render_template('index.html',
                            dummy_text=dummy_text,
+                           dummy_text_ru=dummy_text_ru,
+                           dummy_text_vit=dummy_text_vit,
                            local_fonts=local_fonts,
                            google_fonts=google_fonts,
                            char_maps=char_maps,

@@ -148,7 +148,7 @@
 
 <body>
   <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
-  <meta id="to_remote_fonts" data-name="google-fonts" data-str="{{ to_remote_fonts }}">
+  <meta id="to_remote_fonts" data-name="remote-fonts" data-str="{{ to_remote_fonts }}">
   <div class="container">
 
     <div id="container-header">
@@ -156,7 +156,7 @@
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
-        <div class="container-button" data-page="page-glyph-palette"><h2>Bad Glyphs</h2></div>
+        <div class="container-button" data-page="page-glyph-palette"><h2>Modified Glyphs</h2></div>
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
     </div>
@@ -199,10 +199,10 @@
           <div class="box-large">
             <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
             <div class="box-content">
-              {% for uni, name in char_maps[font] %}
+              {% for uni, name in char_maps[name] %}
               <div class="font-swap">
                 <div class="box-char">
-                    <span class="{{ font }}-new">&#{{ uni }};</span>
+                    <span class="{{ font }}">&#{{ uni }};</span>
                 </div>
               </div>
               {% endfor %}
@@ -219,8 +219,8 @@
   local = $('#to_local_fonts').data();
   local_fonts = local['str'].split(',') 
 
-  google = $('#to_remote_fonts').data();
-  remote_fonts = google['str'].split(',');
+  remote = $('#to_remote_fonts').data();
+  remote_fonts = remote['str'].split(',');
 
   // Change font with Q or D
   $(document).keypress(function(e) {

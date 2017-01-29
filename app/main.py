@@ -27,7 +27,7 @@ FONT_EXCEPTIONS = [
 LOCAL_FONTS_PATH = './static/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
-GLYPH_THRESHOLD = 10000
+GLYPH_THRESHOLD = 8000
 
 app = Flask(__name__)
 
@@ -125,11 +125,11 @@ def _delete_remote_fonts():
             os.remove(os.path.join(path, file))
 
 
-def inconsistent_glyphs(local_fonts, remote_fonts):
-    """return encoded glyphs for each font"""
+def inconsistent_glyphs(local_fonts, remote_fonts, names):
+    """return glyphs which have changed from local to remote"""
     glyphs = {}
     bad_glyphs = []
-    for l_font, r_font in zip(local_fonts, remote_fonts):
+    for l_font, r_font, name in zip(local_fonts, remote_fonts, names):
         l_glyphs = l_font['glyf'].glyphs.keys()
         r_glyphs = r_font['glyf'].glyphs.keys()
         shared_glyphs = set(l_glyphs) & set(r_glyphs)
@@ -153,10 +153,7 @@ def inconsistent_glyphs(local_fonts, remote_fonts):
                     bad_glyphs.append(glyph)
 
         l_cmap_tbl = l_font['cmap'].getcmap(3, 1).cmap
-        # print(l_cmap_tbl.values())
-        print(bad_glyphs)
-        glyphs[l_font] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs]
-        print(glyphs)
+        glyphs[name] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs]
     return glyphs
 
 
@@ -182,6 +179,7 @@ def test_fonts():
     char_maps = inconsistent_glyphs(
         [TTFont(i[0]) for i in local_fonts if i[0].endswith('.ttf')],
         [TTFont(i[0]) for i in remote_fonts if i[0].endswith('.ttf')],
+        [i[1] for i in local_fonts],
     )
 
     to_local_fonts = ','.join([i[2] for i in local_fonts])
@@ -194,7 +192,7 @@ def test_fonts():
         remote_fonts=remote_fonts,
         char_maps=char_maps,
         to_local_fonts=to_local_fonts,
-        to_google_fonts=to_remote_fonts
+        to_remote_fonts=to_remote_fonts
     )
 
 

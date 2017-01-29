@@ -34,7 +34,9 @@ FONT_WEIGHTS = {
 }
 
 FONT_EXCEPTIONS = [
-    'VT323'
+    'VT323',
+    'Amatic SC',
+    'Amatica SC'
 ]
 
 FONT_FALLBACK = 'Inconsolata'

@@ -6,15 +6,20 @@
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
 
-    {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
-      <link href="{{ url }}" rel="stylesheet">
-    {% endfor %}
   </head>
   <style>
-    /*Load fonts from static folder*/
-    {% for path, font, span_name in local_fonts %}
+    /*Load local fonts*/
+    {% for path, name, font, span_name in local_fonts %}
       @font-face{
-        font-family: {{ font }}-local;
+        font-family: {{ font }};
+        src: url('{{ path }}');
+      }
+    {% endfor %}
+
+    /*Load remote fonts*/
+    {% for path, name, font, span_name in remote_fonts %}
+      @font-face{
+        font-family: {{ font }};
         src: url('{{ path }}');
       }
     {% endfor %}
@@ -26,19 +31,17 @@
     }
 
 
-    /*Create classes from fonts in static folder*/
-    {% for path, font, span_name in local_fonts %}
+    /*Create classes for local fonts*/
+    {% for path, name, font, span_name in local_fonts %}
       .{{ span_name }}{
-        font-family: {{ font }}-local;
+        font-family: {{ font }};
       }
     {% endfor %}
 
-    /*Create classes from fonts on fonts.google.com*/
-    {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
-      .{{ span_name }} {
-        font-family: {{ css_name }};
-        font-style: {{ style }};
-        font-weight: {{ weight }};
+    /*Create classes for remote_fonts*/
+    {% for path, name, font, span_name in remote_fonts %}
+      .{{ span_name }}{
+        font-family: {{ font }};
       }
     {% endfor %}
 
@@ -145,7 +148,7 @@
 
 <body>
   <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
-  <meta id="to_google_fonts" data-name="google-fonts" data-str="{{ to_google_fonts }}">
+  <meta id="to_remote_fonts" data-name="google-fonts" data-str="{{ to_remote_fonts }}">
   <div class="container">
 
     <div id="container-header">
@@ -153,20 +156,19 @@
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
-        <div class="container-button" data-page="page-glyph-palette"><h2>Glyph Pallette</h2></div>
-        <div class="container-button" data-page="page-spacing"><h2>Spacing</h2></div>
+        <div class="container-button" data-page="page-glyph-palette"><h2>Bad Glyphs</h2></div>
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
     </div>
 
       <div id="page-vertical-metrics" class="pages">
-        {% for path, font, span_name in local_fonts %}
+        {% for path, name, font, span_name in local_fonts %}
           <h2><a href="#{{ font }}-vert">{{ font }}</a></h2>
         {% endfor %}
 
         <div id="container-left">
           <h2>Local</h2>
-          {% for path, font, span_name in local_fonts %}
+          {% for path, name, font, span_name in local_fonts %}
             <div class="box-200px">
               <div class="box-header" id="{{ font }}-vert">{{ font }}</div>
               <div class="box-content">
@@ -178,7 +180,7 @@
 
         <div id="container-right">
           <h2>fonts.google.com</h2>
-          {% for fam_name, css_name, span_name, weight, style, url in google_fonts %}
+          {% for path, name, font, span_name in remote_fonts %}
             <div class="box-200px">
                 <div class="box-header">{{ span_name }}</div>
                 <div class="box-content">
@@ -189,45 +191,8 @@
         </div>
       </div>
 
-      <div id="page-glyph-palette" class="pages">
-        {% for path, font, span_name in local_fonts %}
-          <h2><a href="#{{ font }}-palette">{{ font }}</a></h2>
-        {% endfor %}
-        {% for path, font, span_name in local_fonts %}
-          <div class="box-large">
-            <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
-            <div class="box-content">
-              {% for uni, name in char_maps[font] %}
-              <div class="font-swap">
-                <div class="box-char">
-                    <span class="{{ font }}-new">&#{{ uni }};</span>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+<!--  -->
 
-      <div id="page-spacing" class="pages">
-        {% for path, font, span_name in local_fonts %}
-          <h2><a href="#{{ font }}-spacing">{{ font }}</a></h2>
-        {% endfor %}
-        {% for path, font, span_name in local_fonts %}
-          <div class="box-large">
-            <div class="box-header" id="{{ font }}-spacing">{{ font }}</div>
-            <div class="box-content">
-              {% for uni, name in char_maps[font] %}
-                <div class="font-swap">
-                  <div class="line">
-                    <span class="{{ font }}-new">&#{{ uni }};&#{{ uni }};&#{{ uni }};&#{{ uni }};</span>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
       <div id="alert"></div>
   </div>
 </body>
@@ -236,22 +201,22 @@
   local = $('#to_local_fonts').data();
   local_fonts = local['str'].split(',') 
 
-  google = $('#to_google_fonts').data();
-  google_fonts = google['str'].split(',');
+  google = $('#to_remote_fonts').data();
+  remote_fonts = google['str'].split(',');
 
   // Change font with Q or D
   $(document).keypress(function(e) {
     if(e.which == 81) {
       for (i in local_fonts) {
-        $('.font-swap ' + '.' + local_fonts[i]).attr('class', google_fonts[i])
+        $('.font-swap ' + '.' + local_fonts[i]).attr('class', remote_fonts[i])
         $('#alert').show().text('fonts.google.com')
         console.log('changed to google version');
         // $('.box-char').css('font-family', 'times');
       }
     }
     if(e.which == 68) {
-      for (i in google_fonts) {
-        $('.font-swap ' + '.' + google_fonts[i]).attr('class', local_fonts[i])
+      for (i in remote_fonts) {
+        $('.font-swap ' + '.' + remote_fonts[i]).attr('class', local_fonts[i])
         $('#alert').show().text('Local')
         console.log('changed to local version');
         // $('.box-char').css('font-family', 'times');

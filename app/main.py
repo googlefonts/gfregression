@@ -27,6 +27,8 @@ FONT_EXCEPTIONS = [
 LOCAL_FONTS_PATH = './static/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
+GLYPH_THRESHOLD = 10000
+
 app = Flask(__name__)
 
 with open('./dummy_text.txt', 'r') as dummy_text_file:
@@ -48,6 +50,14 @@ def _convert_camelcase(fam_name, seperator=' '):
         return fam_name
 
 
+def gf_download_url(local_fonts):
+    """Assemble download url for families"""
+    remote_families_name = set([_convert_camelcase(f.split('-')[0], '%20')
+                               for f in local_fonts])
+    remote_families_url_suffix = '|'.join(remote_families_name)
+    return URL_PREFIX + remote_families_url_suffix
+
+
 def download_family_from_gf(url):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     request = urlopen(url)
@@ -63,31 +73,20 @@ def fonts_from_zip(zipfile, to):
         if '/' in file_name:
             unnest = True
     if unnest:
-        _unnest_dir(to)
+        _unnest_folder(to)
 
 
-def _unnest_dir(dir):
-    for r, path, files, in os.walk(dir):
+def _unnest_folder(folder):
+    """If multiple fonts have been downloaded, move them from sub dirs to
+    parent dir"""
+    for r, path, files, in os.walk(folder):
         for file in files:
             if file.endswith('.ttf'):
-                shutil.move(os.path.join(r, file), dir)
+                shutil.move(os.path.join(r, file), folder)
 
-    for f in os.listdir(dir):
-        if os.path.isdir(os.path.join(dir, f)):
-            os.rmdir(os.path.join(dir, f))
-
-
-def font_glyphs(local_fonts):
-    """return encoded glyphs for each font"""
-    glyphs = {}
-
-    for path, font, span_name in local_fonts:
-        ttfont = TTFont(path)
-        glyphs[font] = []
-
-        cmap_tbl = ttfont['cmap'].getcmap(3, 1)
-        glyphs[font] = cmap_tbl.cmap.items()
-    return glyphs
+    for f in os.listdir(folder):
+        if os.path.isdir(os.path.join(folder, f)):
+            os.rmdir(os.path.join(folder, f))
 
 
 def css_properties(paths, suffix):
@@ -103,6 +102,8 @@ def css_properties(paths, suffix):
 
 
 def pad(coll1, coll2):
+    """Make coll2 list of tuples match coll1. If coll1
+    is missing a tuple, coll2 will remove 1"""
     coll1_names = [n[1].lower() for n in coll1]
     coll2_names = [n[1].lower() for n in coll2]
 
@@ -124,6 +125,41 @@ def _delete_remote_fonts():
             os.remove(os.path.join(path, file))
 
 
+def inconsistent_glyphs(local_fonts, remote_fonts):
+    """return encoded glyphs for each font"""
+    glyphs = {}
+    bad_glyphs = []
+    for l_font, r_font in zip(local_fonts, remote_fonts):
+        l_glyphs = l_font['glyf'].glyphs.keys()
+        r_glyphs = r_font['glyf'].glyphs.keys()
+        shared_glyphs = set(l_glyphs) & set(r_glyphs)
+
+        l_glyphs = l_font.getGlyphSet()
+        r_glyphs = r_font.getGlyphSet()
+
+        l_pen = AreaPen(l_glyphs)
+        r_pen = AreaPen(r_glyphs)
+
+        for glyph in shared_glyphs:
+            l_glyphs[glyph].draw(l_pen)
+            r_glyphs[glyph].draw(r_pen)
+
+            l_area = l_pen.value
+            l_pen.value = 0
+            r_area = r_pen.value
+            r_pen.value = 0
+            if l_area != r_area:
+                if int(l_area) ^ int(r_area) > GLYPH_THRESHOLD:
+                    bad_glyphs.append(glyph)
+
+        l_cmap_tbl = l_font['cmap'].getcmap(3, 1).cmap
+        # print(l_cmap_tbl.values())
+        print(bad_glyphs)
+        glyphs[l_font] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs]
+        print(glyphs)
+    return glyphs
+
+
 @app.route("/")
 def test_fonts():
     # Clear fonts which may not have been deleted from previous session
@@ -133,14 +169,9 @@ def test_fonts():
     local_fonts = css_properties(local_fonts_paths, 'new')
     local_fonts = sorted(local_fonts, key=lambda x: x[1])
 
-    # Assemble download url for families
-    remote_families_name = set([_convert_camelcase(f[1].split('-')[0], '%20')
-                               for f in local_fonts])
-    remote_families_url_suffix = '|'.join(remote_families_name)
-    remote_families_url = URL_PREFIX + remote_families_url_suffix
-
+    remote_download_url = gf_download_url([i[1] for i in local_fonts])
     # download last fonts from fonts.google.com
-    remote_fonts_zip = download_family_from_gf(remote_families_url)
+    remote_fonts_zip = download_family_from_gf(remote_download_url)
     fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
 
     remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
@@ -148,7 +179,11 @@ def test_fonts():
     pad_remote_fonts = pad(local_fonts, remote_fonts)
     remote_fonts = sorted(pad_remote_fonts, key=lambda x: x[1])
 
-    # char_maps = font_glyphs(local_fonts)
+    char_maps = inconsistent_glyphs(
+        [TTFont(i[0]) for i in local_fonts if i[0].endswith('.ttf')],
+        [TTFont(i[0]) for i in remote_fonts if i[0].endswith('.ttf')],
+    )
+
     to_local_fonts = ','.join([i[2] for i in local_fonts])
     to_remote_fonts = ','.join([i[2] for i in remote_fonts])
 
@@ -157,7 +192,7 @@ def test_fonts():
         dummy_text=dummy_text,
         local_fonts=local_fonts,
         remote_fonts=remote_fonts,
-        # char_maps=char_maps,
+        char_maps=char_maps,
         to_local_fonts=to_local_fonts,
         to_google_fonts=to_remote_fonts
     )

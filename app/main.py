@@ -118,30 +118,6 @@ def css_property(path, fullname, cssname):
     return font
 
 
-def pad(coll1, coll2):
-    """Make coll2 list of tuples match coll1. If coll1
-    is missing a tuple, coll2 will remove 1"""
-    coll1_names = [n[1].lower() for n in coll1]
-    coll2_names = [n[1].lower() for n in coll2]
-
-    pos = 0
-    for path, name, font_name, span_name in coll1:
-        if name.lower() not in coll2_names:
-            print('did not fine %s' % name)
-            placeholder = ('NULL', name, 'NULL', 'NULL')
-            coll2.insert(pos, placeholder)
-        pos += 1
-    # Return only the items available in coll1
-    return [i for i in coll2 if i[1].lower() in coll1_names]
-
-
-def _delete_remote_fonts():
-    path = './static/remotefonts/'
-    for file in os.listdir(path):
-        if file.endswith('.ttf'):
-            os.remove(os.path.join(path, file))
-
-
 def inconsistent_glyphs(local_fonts, remote_fonts, names):
     """return glyphs which have changed from local to remote"""
     glyphs = {}
@@ -184,10 +160,10 @@ def pad(coll1, coll2):
     pos = 0
     for font in coll1:
         if font.fullname.lower() not in coll2_names:
-            print('did not fine %s' % fullname)
+            print('did not fine %s' % font.fullname)
             placeholder = css_property(
                 path='NULL',
-                fullname=fullname,
+                fullname=font.fullname,
                 cssname='NULL',
             )
             coll2.insert(pos, placeholder)

@@ -144,7 +144,7 @@ def _delete_remote_fonts():
 def inconsistent_glyphs(local_fonts, remote_fonts, names):
     """return glyphs which have changed from local to remote"""
     glyphs = {}
-    bad_glyphs = []
+    bad_glyphs = {}
     for l_font, r_font, name in zip(local_fonts, remote_fonts, names):
         l_glyphs = l_font['glyf'].glyphs.keys()
         r_glyphs = r_font['glyf'].glyphs.keys()
@@ -166,10 +166,13 @@ def inconsistent_glyphs(local_fonts, remote_fonts, names):
             r_pen.value = 0
             if l_area != r_area:
                 if int(l_area) ^ int(r_area) > GLYPH_THRESHOLD:
-                    bad_glyphs.append(glyph)
+
+                    if name not in bad_glyphs:
+                        bad_glyphs[name] = []
+                    bad_glyphs[name].append(glyph)
 
         l_cmap_tbl = l_font['cmap'].getcmap(3, 1).cmap
-        glyphs[name] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs]
+        glyphs[name] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs[name]]
     return glyphs
 
 

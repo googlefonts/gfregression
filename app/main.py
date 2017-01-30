@@ -16,6 +16,7 @@ import shutil
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
+from pprint import pprint
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 
@@ -228,6 +229,7 @@ def test_fonts():
         [TTFont(i.path) for i in remote_fonts if i.path.endswith('.ttf')],
         [i.fullname for i in local_fonts],
     )
+    print(pprint(char_maps))
 
     to_local_fonts = ','.join([i.cssname for i in local_fonts])
     to_remote_fonts = ','.join([i.cssname for i in remote_fonts])

@@ -74,18 +74,7 @@ def fonts_from_zip(zipfile, to):
         if '/' in file_name:
             unnest = True
     if unnest:
-        _unnest_dir(to)
-
-
-def _unnest_dir(dir):
-    for r, path, files, in os.walk(dir):
-        for file in files:
-            if file.endswith('.ttf'):
-                shutil.move(os.path.join(r, file), dir)
-
-    for f in os.listdir(dir):
-        if os.path.isdir(os.path.join(dir, f)):
-            os.rmdir(os.path.join(dir, f))
+        _unnest_folder(to)
 
 
 def _unnest_folder(folder):

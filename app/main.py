@@ -38,7 +38,7 @@ with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
 
 
-def _url_200_response(url):
+def url_200_response(url):
     '''Check if the url mataches the Google fonts api url'''
     if requests.get(url).status_code == 200:
         return True
@@ -191,12 +191,15 @@ def test_fonts():
     # Assemble download url for families
     remote_download_url = gf_download_url([i.fullname for i in local_fonts])
     # download last fonts from fonts.google.com
-    remote_fonts_zip = download_family_from_gf(remote_download_url)
+    if url_200_response(remote_download_url):
+        remote_fonts_zip = download_family_from_gf(remote_download_url)
 
-    fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
+        fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
 
-    remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
-    remote_fonts = css_properties(remote_fonts_paths, 'old')
+        remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
+        remote_fonts = css_properties(remote_fonts_paths, 'old')
+    else:
+        remote_fonts = []
     pad_remote_fonts = pad(local_fonts, remote_fonts)
     remote_fonts = sorted(pad_remote_fonts, key=lambda x: x.fullname)
 

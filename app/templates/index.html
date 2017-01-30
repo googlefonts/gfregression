@@ -10,7 +10,6 @@
   <style>
     /*Load local fonts*/
     {% for path, name, font, span_name in local_fonts %}
-<<<<<<< HEAD
       @font-face{
         font-family: {{ font }};
         src: url('{{ path }}');
@@ -21,18 +20,6 @@
     {% for path, name, font, span_name in remote_fonts %}
       @font-face{
         font-family: {{ font }};
-=======
-      @font-face{
-        font-family: {{ font }};
-        src: url('{{ path }}');
-      }
-    {% endfor %}
-
-    /*Load remote fonts*/
-    {% for path, name, font, span_name in remote_fonts %}
-      @font-face{
-        font-family: {{ font }};
->>>>>>> glyph
         src: url('{{ path }}');
       }
     {% endfor %}
@@ -161,11 +148,7 @@
 
 <body>
   <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
-<<<<<<< HEAD
-  <meta id="to_remote_fonts" data-name="google-fonts" data-str="{{ to_remote_fonts }}">
-=======
   <meta id="to_remote_fonts" data-name="remote-fonts" data-str="{{ to_remote_fonts }}">
->>>>>>> glyph
   <div class="container">
 
     <div id="container-header">
@@ -173,11 +156,7 @@
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
-<<<<<<< HEAD
-        <div class="container-button" data-page="page-glyph-palette"><h2>Bad Glyphs</h2></div>
-=======
         <div class="container-button" data-page="page-glyph-palette"><h2>Modified Glyphs</h2></div>
->>>>>>> glyph
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
     </div>
@@ -212,9 +191,6 @@
         </div>
       </div>
 
-<<<<<<< HEAD
-<!--  -->
-=======
       <div id="page-glyph-palette" class="pages">
         {% for path, name, font, span_name in local_fonts %}
           <h2><a href="#{{ font }}-palette">{{ font }}</a></h2>
@@ -234,7 +210,6 @@
           </div>
         {% endfor %}
       </div>
->>>>>>> glyph
 
       <div id="alert"></div>
   </div>
@@ -244,13 +219,8 @@
   local = $('#to_local_fonts').data();
   local_fonts = local['str'].split(',') 
 
-<<<<<<< HEAD
-  google = $('#to_remote_fonts').data();
-  remote_fonts = google['str'].split(',');
-=======
   remote = $('#to_remote_fonts').data();
   remote_fonts = remote['str'].split(',');
->>>>>>> glyph
 
   // Change font with Q or D
   $(document).keypress(function(e) {

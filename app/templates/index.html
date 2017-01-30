@@ -9,18 +9,18 @@
   </head>
   <style>
     /*Load local fonts*/
-    {% for path, name, font, span_name in local_fonts %}
+    {% for font in local_fonts %}
       @font-face{
-        font-family: {{ font }};
-        src: url('{{ path }}');
+        font-family: {{ font.cssname }};
+        src: url('{{ font.path }}');
       }
     {% endfor %}
 
     /*Load remote fonts*/
-    {% for path, name, font, span_name in remote_fonts %}
+    {% for font in remote_fonts %}
       @font-face{
-        font-family: {{ font }};
-        src: url('{{ path }}');
+        font-family: {{ font.cssname }};
+        src: url('{{ font.path }}');
       }
     {% endfor %}
 
@@ -32,16 +32,16 @@
 
 
     /*Create classes for local fonts*/
-    {% for path, name, font, span_name in local_fonts %}
-      .{{ span_name }}{
-        font-family: {{ font }};
+    {% for font in local_fonts %}
+      .{{ font.cssname }}{
+        font-family: {{ font.cssname }};
       }
     {% endfor %}
 
     /*Create classes for remote_fonts*/
-    {% for path, name, font, span_name in remote_fonts %}
-      .{{ span_name }}{
-        font-family: {{ font }};
+    {% for font in remote_fonts %}
+      .{{ font.cssname }}{
+        font-family: {{ font.cssname }};
       }
     {% endfor %}
 
@@ -162,17 +162,17 @@
     </div>
 
       <div id="page-vertical-metrics" class="pages">
-        {% for path, name, font, span_name in local_fonts %}
-          <h2><a href="#{{ font }}-vert">{{ font }}</a></h2>
+        {% for font in local_fonts %}
+          <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
         {% endfor %}
 
         <div id="container-left">
           <h2>Local</h2>
-          {% for path, name, font, span_name in local_fonts %}
+          {% for font in local_fonts %}
             <div class="box-200px">
-              <div class="box-header" id="{{ font }}-vert">{{ font }}</div>
+              <div class="box-header" id="{{ font.fullname }}-vert">{{ font.fullname }}</div>
               <div class="box-content">
-                <span class="{{ span_name }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
+                <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
               </div>
             </div>
           {% endfor %}
@@ -180,11 +180,11 @@
 
         <div id="container-right">
           <h2>fonts.google.com</h2>
-          {% for path, name, font, span_name in remote_fonts %}
+          {% for font in remote_fonts %}
             <div class="box-200px">
-                <div class="box-header">{{ span_name }}</div>
+                <div class="box-header">{{ font.cssname }}</div>
                 <div class="box-content">
-                  <span class="{{ span_name }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
+                  <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
                 </div>
             </div>
           {% endfor %}
@@ -192,17 +192,17 @@
       </div>
 
       <div id="page-glyph-palette" class="pages">
-        {% for path, name, font, span_name in local_fonts %}
-          <h2><a href="#{{ font }}-palette">{{ font }}</a></h2>
+        {% for font in local_fonts %}
+          <h2><a href="#{{ font.fullname }}-palette">{{ font.fullname }}</a></h2>
         {% endfor %}
-        {% for path, name, font, span_name in local_fonts %}
+        {% for font in local_fonts %}
           <div class="box-large">
-            <div class="box-header" id="{{ font }}-palette">{{ font }}</div>
+            <div class="box-header" id="{{ font.fullname }}-palette">{{ font.fullname }}</div>
             <div class="box-content">
-              {% for uni, name in char_maps[name] %}
+              {% for uni, name in char_maps[font.fullname] %}
               <div class="font-swap">
                 <div class="box-char">
-                    <span class="{{ font }}">&#{{ uni }};</span>
+                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
                 </div>
               </div>
               {% endfor %}

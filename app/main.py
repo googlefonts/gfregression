@@ -6,6 +6,7 @@ from flask import Flask, render_template
 from fontTools.ttLib import TTFont
 from fontTools.pens.areaPen import AreaPen
 from glob import glob
+from collections import namedtuple
 import ntpath
 import requests
 import re
@@ -91,15 +92,29 @@ def _unnest_folder(folder):
 
 
 def css_properties(paths, suffix):
-    """Create the properties needed to load @fontface fonts"""
+    """Create a collection of css_property objects"""
     fonts = []
     for path in paths:
-        path = path.replace('\\', '/')
         name = ntpath.basename(path)[:-4]
-        font_name = '%s-%s' % (name, suffix)
-        span_name = '%s-%s' % (ntpath.basename(path)[:-4], suffix)
-        fonts.append((path, name, font_name, span_name))
+        font = css_property(
+            path=path.replace('\\', '/'),
+            fullname=name,
+            cssname='%s-%s' % (name, suffix),
+        )
+        fonts.append(font)
     return fonts
+
+
+def css_property(path, fullname, cssname):
+    """Create the properties needed to load @fontface fonts"""
+    Font = namedtuple('Font', ['path', 'fullname', 'cssname'])
+    name = ntpath.basename(path)[:-4]
+    font = Font(
+        path=path,
+        fullname=fullname,
+        cssname=cssname,
+    )
+    return font
 
 
 def pad(coll1, coll2):
@@ -158,31 +173,23 @@ def inconsistent_glyphs(local_fonts, remote_fonts, names):
     return glyphs
 
 
-def css_properties(paths, suffix):
-    """Create the properties needed to load @fontface fonts"""
-    fonts = []
-    for path in paths:
-        path = path.replace('\\', '/')
-        name = ntpath.basename(path)[:-4]
-        font_name = '%s-%s' % (name, suffix)
-        span_name = '%s-%s' % (ntpath.basename(path)[:-4], suffix)
-        fonts.append((path, name, font_name, span_name))
-    return fonts
-
-
 def pad(coll1, coll2):
-    coll1_names = [n[1].lower() for n in coll1]
-    coll2_names = [n[1].lower() for n in coll2]
+    coll1_names = [n.fullname.lower() for n in coll1]
+    coll2_names = [n.fullname.lower() for n in coll2]
 
     pos = 0
-    for path, name, font_name, span_name in coll1:
-        if name.lower() not in coll2_names:
-            print('did not fine %s' % name)
-            placeholder = ('NULL', name, 'NULL', 'NULL')
+    for font in coll1:
+        if font.fullname.lower() not in coll2_names:
+            print('did not fine %s' % fullname)
+            placeholder = css_property(
+                path='NULL',
+                fullname=fullname,
+                cssname='NULL',
+            )
             coll2.insert(pos, placeholder)
         pos += 1
     # Return only the items available in coll1
-    return [i for i in coll2 if i[1].lower() in coll1_names]
+    return [f for f in coll2 if f.fullname.lower() in coll1_names]
 
 
 def _delete_remote_fonts():
@@ -199,10 +206,10 @@ def test_fonts():
 
     local_fonts_paths = glob(LOCAL_FONTS_PATH + '*.ttf')
     local_fonts = css_properties(local_fonts_paths, 'new')
-    local_fonts = sorted(local_fonts, key=lambda x: x[1])
+    local_fonts = sorted(local_fonts, key=lambda x: x.fullname)
 
     # Assemble download url for families
-    remote_download_url = gf_download_url([i[1] for i in local_fonts])
+    remote_download_url = gf_download_url([i.fullname for i in local_fonts])
     # download last fonts from fonts.google.com
     remote_fonts_zip = download_family_from_gf(remote_download_url)
 
@@ -211,16 +218,16 @@ def test_fonts():
     remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
     remote_fonts = css_properties(remote_fonts_paths, 'old')
     pad_remote_fonts = pad(local_fonts, remote_fonts)
-    remote_fonts = sorted(pad_remote_fonts, key=lambda x: x[1])
+    remote_fonts = sorted(pad_remote_fonts, key=lambda x: x.fullname)
 
     char_maps = inconsistent_glyphs(
-        [TTFont(i[0]) for i in local_fonts if i[0].endswith('.ttf')],
-        [TTFont(i[0]) for i in remote_fonts if i[0].endswith('.ttf')],
-        [i[1] for i in local_fonts],
+        [TTFont(i.path) for i in local_fonts if i.path.endswith('.ttf')],
+        [TTFont(i.path) for i in remote_fonts if i.path.endswith('.ttf')],
+        [i.fullname for i in local_fonts],
     )
 
-    to_local_fonts = ','.join([i[2] for i in local_fonts])
-    to_remote_fonts = ','.join([i[2] for i in remote_fonts])
+    to_local_fonts = ','.join([i.cssname for i in local_fonts])
+    to_remote_fonts = ','.join([i.cssname for i in remote_fonts])
 
     return render_template(
         'index.html',

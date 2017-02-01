@@ -29,7 +29,6 @@ FONT_EXCEPTIONS = [
 LOCAL_FONTS_PATH = './static/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
-
 GLYPH_THRESHOLD = 8000
 
 app = Flask(__name__)
@@ -92,7 +91,7 @@ def _unnest_folder(folder):
             os.rmdir(os.path.join(folder, f))
 
 
-def css_properties(paths, suffix):
+def fonts(paths, suffix):
     """Create a collection of css_property objects"""
     fonts = []
     for path in paths:
@@ -101,28 +100,31 @@ def css_properties(paths, suffix):
             path=path.replace('\\', '/'),
             fullname=name,
             cssname='%s-%s' % (name, suffix),
+            font=TTFont(path)
         )
         fonts.append(font)
     return fonts
 
 
-def css_property(path, fullname, cssname):
+def css_property(path, fullname, cssname, font):
     """Create the properties needed to load @fontface fonts"""
-    Font = namedtuple('Font', ['path', 'fullname', 'cssname'])
+    Font = namedtuple('Font', ['path', 'fullname', 'cssname', 'font'])
     name = ntpath.basename(path)[:-4]
     font = Font(
         path=path,
         fullname=fullname,
         cssname=cssname,
+        font=font
     )
     return font
 
 
-def inconsistent_glyphs(local_fonts, remote_fonts, names):
+def inconsistent_fonts_glyphs(local_fonts, remote_fonts, names):
     """return glyphs which have changed from local to remote"""
     glyphs = {}
     bad_glyphs = {}
-    for l_font, r_font, name in zip(local_fonts, remote_fonts, names):
+
+    for l_font, r_font, font_name in zip(local_fonts, remote_fonts, names):
         l_glyphs = l_font['glyf'].glyphs.keys()
         r_glyphs = r_font['glyf'].glyphs.keys()
         shared_glyphs = set(l_glyphs) & set(r_glyphs)
@@ -141,35 +143,20 @@ def inconsistent_glyphs(local_fonts, remote_fonts, names):
             l_pen.value = 0
             r_area = r_pen.value
             r_pen.value = 0
+
             if l_area != r_area:
                 if int(l_area) ^ int(r_area) > GLYPH_THRESHOLD:
 
-                    if name not in bad_glyphs:
-                        bad_glyphs[name] = []
-                    bad_glyphs[name].append(glyph)
+                    if font_name not in bad_glyphs:
+                        bad_glyphs[font_name] = []
+                    bad_glyphs[font_name].append(glyph)
 
         l_cmap_tbl = l_font['cmap'].getcmap(3, 1).cmap
-        glyphs[name] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs[name]]
+        try:
+            glyphs[font_name] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs[font_name]]
+        except:
+            print('%s has consistent glyphs' % font_name)
     return glyphs
-
-
-def pad(coll1, coll2):
-    coll1_names = [n.fullname.lower() for n in coll1]
-    coll2_names = [n.fullname.lower() for n in coll2]
-
-    pos = 0
-    for font in coll1:
-        if font.fullname.lower() not in coll2_names:
-            print('did not fine %s' % font.fullname)
-            placeholder = css_property(
-                path='NULL',
-                fullname=font.fullname,
-                cssname='NULL',
-            )
-            coll2.insert(pos, placeholder)
-        pos += 1
-    # Return only the items available in coll1
-    return [f for f in coll2 if f.fullname.lower() in coll1_names]
 
 
 def _delete_remote_fonts():
@@ -185,7 +172,7 @@ def test_fonts():
     _delete_remote_fonts()
 
     local_fonts_paths = glob(LOCAL_FONTS_PATH + '*.ttf')
-    local_fonts = css_properties(local_fonts_paths, 'new')
+    local_fonts = fonts(local_fonts_paths, 'new')
     local_fonts = sorted(local_fonts, key=lambda x: x.fullname)
 
     # Assemble download url for families
@@ -197,22 +184,23 @@ def test_fonts():
         fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
 
         remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
-        remote_fonts = css_properties(remote_fonts_paths, 'old')
+        remote_fonts = fonts(remote_fonts_paths, 'old')
+        remote_fonts = sorted(remote_fonts, key=lambda x: x.fullname)
     else:
         remote_fonts = []
-    pad_remote_fonts = pad(local_fonts, remote_fonts)
-    remote_fonts = sorted(pad_remote_fonts, key=lambda x: x.fullname)
 
-    char_maps = inconsistent_glyphs(
-        [TTFont(i.path) for i in local_fonts if i.path.endswith('.ttf')],
-        [TTFont(i.path) for i in remote_fonts if i.path.endswith('.ttf')],
-        [i.fullname for i in local_fonts],
+    remote_fonts_names = [f.fullname for f in remote_fonts]
+    local_fonts = [f for f in local_fonts if f.fullname in remote_fonts_names]
+
+    char_maps = inconsistent_fonts_glyphs(
+        [f.font for f in local_fonts],
+        [f.font for f in remote_fonts],
+        [f.fullname for f in local_fonts],
     )
-    print(pprint(char_maps))
+    # print(pprint(char_maps))
 
     to_local_fonts = ','.join([i.cssname for i in local_fonts])
     to_remote_fonts = ','.join([i.cssname for i in remote_fonts])
-
     return render_template(
         'index.html',
         dummy_text=dummy_text,

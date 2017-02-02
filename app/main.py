@@ -29,7 +29,7 @@ FONT_EXCEPTIONS = [
 LOCAL_FONTS_PATH = './static/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
-GLYPH_THRESHOLD = 8000
+GLYPH_THRESHOLD = 0
 
 app = Flask(__name__)
 
@@ -150,6 +150,7 @@ def inconsistent_fonts_glyphs(local_fonts, remote_fonts, names):
                     if font_name not in bad_glyphs:
                         bad_glyphs[font_name] = []
                     bad_glyphs[font_name].append(glyph)
+                    print('Different %s' % glyph)
 
         l_cmap_tbl = l_font['cmap'].getcmap(3, 1).cmap
         try:
@@ -190,8 +191,13 @@ def test_fonts():
         remote_fonts = []
 
     remote_fonts_names = [f.fullname for f in remote_fonts]
-    local_fonts = [f for f in local_fonts if f.fullname in remote_fonts_names]
+    local_fonts_names = [f.fullname for f in local_fonts]
 
+    local_fonts = [f for f in local_fonts if f.fullname in remote_fonts_names]
+    remote_fonts = [f for f in remote_fonts if f.fullname in local_fonts_names]
+    local_fonts = sorted(local_fonts, key=lambda x: x.fullname)
+    remote_fonts = sorted(remote_fonts, key=lambda x: x.fullname)
+    print(zip([f.path for f in local_fonts], [f.path for f in remote_fonts]))
     char_maps = inconsistent_fonts_glyphs(
         [f.font for f in local_fonts],
         [f.font for f in remote_fonts],

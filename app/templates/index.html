@@ -199,7 +199,7 @@
           <div class="box-large">
             <div class="box-header" id="{{ font.fullname }}-palette">{{ font.fullname }}</div>
             <div class="box-content">
-              {% for uni, name in char_maps[font.fullname] %}
+              {% for uni, name in changed_glyphs[font.fullname] %}
               <div class="font-swap">
                 <div class="box-char">
                     <span class="{{ font.cssname }}">&#{{ uni }};</span>

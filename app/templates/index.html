@@ -215,12 +215,12 @@
 
       <div id="page-waterfall" class="pages">
         {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-palette">{{ font.fullname }}</a></h2>
+          <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
         {% endfor %}
 
         {% for font in local_fonts %}
         <div class="box-large">
-          <div class="box-header">{{ font.fullname }}</div>
+          <div class="box-header" id="{{ font.fullname }}-waterfall">{{ font.fullname }}</div>
           <div class="box-content">
             <div class='font-swap'>
               {% for n in range(7, 22) %}

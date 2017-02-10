@@ -130,7 +130,7 @@
       padding: 5px;
       cursor: pointer;
     }
-    #page-glyph-palette, #page-spacing{
+    #page-glyph-palette, #page-spacing, #page-waterfall{
       display: none;
     }
     a {
@@ -157,6 +157,7 @@
       </div>
       <div class="container-nav">
         <div class="container-button" data-page="page-glyph-palette"><h2>Modified Glyphs</h2></div>
+        <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
     </div>
@@ -195,6 +196,7 @@
         {% for font in local_fonts %}
           <h2><a href="#{{ font.fullname }}-palette">{{ font.fullname }}</a></h2>
         {% endfor %}
+
         {% for font in remote_fonts %}
           <div class="box-large">
             <div class="box-header" id="{{ font.fullname }}-palette">{{ font.fullname }}</div>
@@ -208,6 +210,31 @@
               {% endfor %}
             </div>
           </div>
+        {% endfor %}
+      </div>
+
+      <div id="page-waterfall" class="pages">
+        {% for font in local_fonts %}
+          <h2><a href="#{{ font.fullname }}-palette">{{ font.fullname }}</a></h2>
+        {% endfor %}
+
+        {% for font in local_fonts %}
+        <div class="box-large">
+          <div class="box-header">{{ font.fullname }}</div>
+          <div class="box-content">
+            <div class='font-swap'>
+              {% for n in range(7, 22) %}
+              <div class="box-header">{{ n }}pt</div>
+              <span class="{{ font.cssname }}" style="font-size: {{ n }}pt">
+                QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
+                quick wafting zephyrs vex bold jim.<br>
+                $14.95<br>
+                <br>
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
         {% endfor %}
       </div>
 

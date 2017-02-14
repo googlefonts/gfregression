@@ -138,7 +138,7 @@
       padding: 5px;
       cursor: pointer;
     }
-    #page-glyph-modified, #page-glyph-new, #page-spacing, #page-waterfall{
+    #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall{
       display: none;
     }
     a {
@@ -164,6 +164,7 @@
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
+        <div class="container-button" data-page="page-glyph-missing"><h2>Missing Glyphs</h2></div>
         <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
         <div class="container-button" data-page="page-glyph-modified"><h2>Modified Glyphs</h2></div>
         <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
@@ -233,6 +234,28 @@
             <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
             <div class="box-content">
               {% for uni, name in new_glyphs[font.fullname] %}
+              <div class="font-swap">
+                <div class="box-char">
+                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
+                    <div class="caption">{{ name }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div id="page-glyph-missing" class="pages">
+        {% for font in local_fonts %}
+          <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
+        {% endfor %}
+
+        {% for font in remote_fonts %}
+          <div class="box-large">
+            <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+            <div class="box-content">
+              {% for uni, name in missing_glyphs[font.fullname] %}
               <div class="font-swap">
                 <div class="box-char">
                     <span class="{{ font.cssname }}">&#{{ uni }};</span>

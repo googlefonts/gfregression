@@ -17,7 +17,7 @@ from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 
-__version__ = 0.100
+__version__ = 0.200
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 

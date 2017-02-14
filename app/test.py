@@ -1,17 +1,19 @@
 import unittest
 from main import (
-    fonts_on_google,
-    _font_exists,
-    _convert_camelcase
+    _convert_camelcase,
+    URL_PREFIX,
+    url_200_response,
     )
 
 
 class GoogleFontsApi(unittest.TestCase):
-    def setUp(self):
-        self.fallback_url = 'https://fonts.googleapis.com/css?family=Inconsolata:400'
 
-    def test_font_exists(self):
-        self.assertEqual(_font_exists(self.fallback_url), True)
+    def test_api_url_still_works(self):
+        """Check the download api url is still operational"""
+        real_family_dl_url = url_200_response('%sInconsolata' % URL_PREFIX)
+        fake_family_dl_url = url_200_response('%sThisIsAFauxFont' % URL_PREFIX)
+        self.assertEqual(real_family_dl_url, True)
+        self.assertEqual(fake_family_dl_url, False)
 
     def test_convert_camelcase(self):
         sngl_name = 'Anaheim'
@@ -20,18 +22,11 @@ class GoogleFontsApi(unittest.TestCase):
         self.assertEqual(_convert_camelcase(dbl_name, '+'), 'Bad+Script')
         self.assertEqual(_convert_camelcase(dbl_name), 'Bad Script')
 
-    def test_get_google_fontface_url_from_local_font(self):
-        """Test we can convert a local font's path into a compatible url for
-        the Google fonts api"""
-        inconsolata_local = [('path/Inconsolata-Regular.ttf', 'Inconsolata-Regular', 'Inconsolata-Regular-new')]
-        fonts_on_google(inconsolata_local)
-        self.assertEqual(fonts_on_google(inconsolata_local),
-                         [('Inconsolata',
-                           'Inconsolata',
-                           'Inconsolata-400-normal-online',
-                           '400',
-                           'normal',
-                           self.fallback_url)])
+
+class GlyphTablComparisons(unittest.TestCase):
+
+    def test_new_font_glyphs(self):
+        pass
 
 
 if __name__ == '__main__':

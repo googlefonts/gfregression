@@ -2,10 +2,11 @@
 Compare local fonts against fonts available on fonts.google.com
 '''
 from __future__ import print_function
-from flask import Flask, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from fontTools.ttLib import TTFont
 from fontTools.pens.areaPen import AreaPen
 from glob import glob
+from uuid import uuid4
 from collections import namedtuple
 import ntpath
 import requests
@@ -13,6 +14,7 @@ import re
 import os
 import atexit
 import shutil
+import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
@@ -32,7 +34,7 @@ REMOTE_FONTS_PATH = './static/remotefonts/'
 
 GLYPH_THRESHOLD = 0
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
@@ -97,6 +99,7 @@ def fonts(paths, suffix):
     fonts = []
     for path in paths:
         name = ntpath.basename(path)[:-4]
+        print(name, 'FOOS')
         font = css_property(
             path=path.replace('\\', '/'),
             fullname=name,
@@ -204,12 +207,13 @@ def _delete_remote_fonts():
             os.remove(os.path.join(path, file))
 
 
-@app.route("/")
-def test_fonts():
+@app.route("/<uuid>")
+def test_fonts(uuid):
     # Clear fonts which may not have been deleted from previous session
     _delete_remote_fonts()
 
-    local_fonts_paths = glob(LOCAL_FONTS_PATH + '*.ttf')
+    session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
+    local_fonts_paths = glob(session_fonts + '/*.ttf')
     local_fonts = fonts(local_fonts_paths, 'new')
 
     # Assemble download url for families
@@ -249,6 +253,54 @@ def test_fonts():
         to_local_fonts=to_local_fonts,
         to_remote_fonts=to_remote_fonts
     )
+
+
+@app.route('/p')
+def index():
+    # drag n drop fonts to test
+    return render_template('upload.html')
+
+
+@app.route('/upload-fonts', methods=["POST"])
+def upload_fonts():
+    """Handle the upload of a file."""
+    form = request.form
+
+    # Create a unique "session ID" for this particular batch of uploads.
+    upload_key = str(uuid4())
+
+    # Is the upload using Ajax, or a direct POST by the form?
+    is_ajax = False
+    if form.get("__ajax", None) == "true":
+        is_ajax = True
+
+    # Target folder for these uploads.
+    target = "./static/%s" % upload_key
+    try:
+        os.mkdir(target)
+    except:
+        if is_ajax:
+            return ajax_response(False, "Couldn't create upload directory: {}".format(target))
+        else:
+            return "Couldn't create upload directory: {}".format(target)
+
+    for upload in request.files.getlist("file"):
+        filename = upload.filename.rsplit("/")[0]
+        destination = "/".join([target, filename])
+        upload.save(destination)
+
+    if is_ajax:
+        return ajax_response(True, upload_key)
+    else:
+        return redirect(url_for("test_fonts", uuid=upload_key))
+
+
+def ajax_response(status, msg):
+    status_code = "ok" if status else "error"
+    return json.dumps(dict(
+        status=status_code,
+        msg=msg,
+    ))
 
 
 if __name__ == "__main__":

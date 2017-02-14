@@ -161,6 +161,20 @@ def inconsistent_fonts_glyphs(local_fonts, remote_fonts):
     return glyphs
 
 
+def new_fonts_glyphs(local_fonts, remote_fonts):
+    """Return glyphs which are new in local fonts"""
+    glyphs = {}
+
+    for font in local_fonts:
+        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+        glyphs[font] = set(l_glyphs) - set(r_glyphs)
+
+        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in glyphs[font]]
+    return glyphs
+
+
 def _delete_remote_fonts():
     path = './static/remotefonts/'
     for file in os.listdir(path):
@@ -197,6 +211,7 @@ def test_fonts():
                     if f.fullname in shared_fonts}
 
     changed_glyphs = inconsistent_fonts_glyphs(local_fonts, remote_fonts)
+    new_glyphs = new_fonts_glyphs(local_fonts, remote_fonts)
 
     to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
@@ -206,6 +221,7 @@ def test_fonts():
         local_fonts=local_fonts.values(),
         remote_fonts=remote_fonts.values(),
         changed_glyphs=changed_glyphs,
+        new_glyphs=new_glyphs,
         to_local_fonts=to_local_fonts,
         to_remote_fonts=to_remote_fonts
     )

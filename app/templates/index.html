@@ -138,7 +138,7 @@
       padding: 5px;
       cursor: pointer;
     }
-    #page-glyph-palette, #page-spacing, #page-waterfall{
+    #page-glyph-modified, #page-glyph-new, #page-spacing, #page-waterfall{
       display: none;
     }
     a {
@@ -164,7 +164,8 @@
         <h1>Google Fonts Regression Tester</h1>
       </div>
       <div class="container-nav">
-        <div class="container-button" data-page="page-glyph-palette"><h2>Modified Glyphs</h2></div>
+        <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
+        <div class="container-button" data-page="page-glyph-modified"><h2>Modified Glyphs</h2></div>
         <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
         <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
       </div>
@@ -200,16 +201,38 @@
         </div>
       </div>
 
-      <div id="page-glyph-palette" class="pages">
+      <div id="page-glyph-modified" class="pages">
         {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-palette">{{ font.fullname }}</a></h2>
+          <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
         {% endfor %}
 
         {% for font in remote_fonts %}
           <div class="box-large">
-            <div class="box-header" id="{{ font.fullname }}-palette">{{ font.fullname }}</div>
+            <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
             <div class="box-content">
               {% for uni, name in changed_glyphs[font.fullname] %}
+              <div class="font-swap">
+                <div class="box-char">
+                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
+                    <div class="caption">{{ name }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div id="page-glyph-new" class="pages">
+        {% for font in local_fonts %}
+          <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
+        {% endfor %}
+
+        {% for font in remote_fonts %}
+          <div class="box-large">
+            <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+            <div class="box-content">
+              {% for uni, name in new_glyphs[font.fullname] %}
               <div class="font-swap">
                 <div class="box-char">
                     <span class="{{ font.cssname }}">&#{{ uni }};</span>

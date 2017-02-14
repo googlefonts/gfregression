@@ -17,7 +17,7 @@ from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 
-__version__ = 0.100
+__version__ = 0.200
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 
@@ -171,7 +171,30 @@ def new_fonts_glyphs(local_fonts, remote_fonts):
         glyphs[font] = set(l_glyphs) - set(r_glyphs)
 
         l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
-        glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in glyphs[font]]
+
+        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        r_encoded_glyphs = [i[0] for i in r_cmap_tbl.items()]
+
+        glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in glyphs[font] and
+                        i[0] not in r_encoded_glyphs]
+    return glyphs
+
+
+def missing_fonts_glyphs(local_fonts, remote_fonts):
+    """Return glyphs which are missing in local fonts"""
+    glyphs = {}
+
+    for font in local_fonts:
+        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+        glyphs[font] = set(r_glyphs) - set(l_glyphs)
+
+        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        l_encoded_glyphs = [i[0] for i in l_cmap_tbl.items()]
+        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
+
+        glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
+                        i[0] not in l_encoded_glyphs]
     return glyphs
 
 
@@ -212,6 +235,7 @@ def test_fonts():
 
     changed_glyphs = inconsistent_fonts_glyphs(local_fonts, remote_fonts)
     new_glyphs = new_fonts_glyphs(local_fonts, remote_fonts)
+    missing_glyphs = missing_fonts_glyphs(local_fonts, remote_fonts)
 
     to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
@@ -222,6 +246,7 @@ def test_fonts():
         remote_fonts=remote_fonts.values(),
         changed_glyphs=changed_glyphs,
         new_glyphs=new_glyphs,
+        missing_glyphs=missing_glyphs,
         to_local_fonts=to_local_fonts,
         to_remote_fonts=to_remote_fonts
     )

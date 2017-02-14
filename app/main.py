@@ -16,7 +16,6 @@ import shutil
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
-from pprint import pprint
 
 __version__ = 0.100
 

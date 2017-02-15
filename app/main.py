@@ -2,22 +2,25 @@
 Compare local fonts against fonts available on fonts.google.com
 '''
 from __future__ import print_function
-from flask import Flask, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from fontTools.ttLib import TTFont
 from fontTools.pens.areaPen import AreaPen
 from glob import glob
+from uuid import uuid4
 from collections import namedtuple
 import ntpath
 import requests
 import re
 import os
-import atexit
 import shutil
+import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 
-__version__ = 0.200
+
+__version__ = 1.000
+
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 
@@ -27,12 +30,12 @@ FONT_EXCEPTIONS = [
     'Amatica SC',
 ]
 
-LOCAL_FONTS_PATH = './static/'
+LOCAL_FONTS_PATH = './static/localfonts/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
 GLYPH_THRESHOLD = 0
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
@@ -97,6 +100,7 @@ def fonts(paths, suffix):
     fonts = []
     for path in paths:
         name = ntpath.basename(path)[:-4]
+        print(name, 'FOOS')
         font = css_property(
             path=path.replace('\\', '/'),
             fullname=name,
@@ -198,19 +202,39 @@ def missing_fonts_glyphs(local_fonts, remote_fonts):
     return glyphs
 
 
-def _delete_remote_fonts():
-    path = './static/remotefonts/'
-    for file in os.listdir(path):
-        if file.endswith('.ttf'):
-            os.remove(os.path.join(path, file))
+def missing_fonts_glyphs(local_fonts, remote_fonts):
+    """Return glyphs which are missing in local fonts"""
+    glyphs = {}
+
+    for font in local_fonts:
+        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+        glyphs[font] = set(r_glyphs) - set(l_glyphs)
+
+        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        l_encoded_glyphs = [i[0] for i in l_cmap_tbl.items()]
+        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
+
+        glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
+                        i[0] not in l_encoded_glyphs]
+    return glyphs
 
 
-@app.route("/")
-def test_fonts():
-    # Clear fonts which may not have been deleted from previous session
-    _delete_remote_fonts()
+def _delete_fonts(path):
+    """Delete any ttfs in a specific folder"""
+    for item in os.listdir(path):
+        if os.path.isdir(os.path.join(path, item)):
+            shutil.rmtree(os.path.join(path, item))
+        else:
+            if item.endswith('.ttf'):
+                os.remove(os.path.join(path, item))
 
-    local_fonts_paths = glob(LOCAL_FONTS_PATH + '*.ttf')
+
+@app.route("/<uuid>")
+def test_fonts(uuid):
+
+    session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
+    local_fonts_paths = glob(session_fonts + '/*.ttf')
     local_fonts = fonts(local_fonts_paths, 'new')
 
     # Assemble download url for families
@@ -252,7 +276,60 @@ def test_fonts():
     )
 
 
+@app.route('/')
+def index():
+    """Drag n drop font families to be tested.
+
+    Each user who runs this view will clear the font cache. This will not
+    affect other users, as long as they don't refresh their browsers"""
+    # Clear fonts which may not have been deleted from previous session
+    _delete_fonts(LOCAL_FONTS_PATH)
+    _delete_fonts(REMOTE_FONTS_PATH)
+    return render_template('upload.html')
+
+
+@app.route('/upload-fonts', methods=["POST"])
+def upload_fonts():
+    """Handle the upload of a file."""
+    form = request.form
+
+    # Create a unique "session ID" for this particular batch of uploads.
+    upload_key = str(uuid4())
+
+    # Is the upload using Ajax, or a direct POST by the form?
+    is_ajax = False
+    if form.get("__ajax", None) == "true":
+        is_ajax = True
+
+    # Target folder for these uploads.
+    target = "./static/localfonts/%s" % upload_key
+    try:
+        os.mkdir(target)
+    except:
+        if is_ajax:
+            return ajax_response(False, "Couldn't create upload directory: {}".format(target))
+        else:
+            return "Couldn't create upload directory: {}".format(target)
+
+    for upload in request.files.getlist("file"):
+        filename = upload.filename.rsplit("/")[0]
+        destination = "/".join([target, filename])
+        upload.save(destination)
+
+    if is_ajax:
+        return ajax_response(True, upload_key)
+    else:
+        return redirect(url_for("test_fonts", uuid=upload_key))
+
+
+def ajax_response(status, msg):
+    status_code = "ok" if status else "error"
+    return json.dumps(dict(
+        status=status_code,
+        msg=msg,
+    ))
+
+
 if __name__ == "__main__":
     app.config['STATIC_FOLDER'] = 'static'
     app.run(debug=True)
-    atexit.register(_delete_remote_fonts)

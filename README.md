@@ -1,27 +1,13 @@
 # Google Fonts Regression Tester
 
-Compare local font families against the last release, hosted on fonts.google.com.
+Compare local font families against the lastest release hosted on fonts.google.com.
 
 # ![Font Bakery](screenshot.png)
 
-## Installation
-- Clone repository
-    `$ git clone https://github.com/m4rc1e/gfregression.git`
-- Create a new virtualenv
-    `$ virtualenv env`
-- Activate virtualenv
-    `$ source env/bin/activate`
-- Install dependencies 
-    `$ pip install -r requirements.txt`
-- Run the test server
-    `$ cd app && python main.py`
-- visit http://127.0.0.1:5000/ in a browser
+Keys Q,D will change between local and remote fonts.
 
-## Testing fonts setup
-- Drop desired fonts into static folder
-- Refresh web browser
+**Warning: Error handling and better tests are needed. This webapp should not be treated as a God. It should be used in conjunction with good judgement.**
 
-Note: Adding a font which does not exist in fonts.google.com will return Inconsolata as a fallback.
+*"Measure twice, cut once" - English Proverb*
 
-## Todo:
-- Add OT feature test
+*"Measure seven times, cut once" - Russian Proverb*

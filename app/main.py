@@ -202,24 +202,6 @@ def missing_fonts_glyphs(local_fonts, remote_fonts):
     return glyphs
 
 
-def missing_fonts_glyphs(local_fonts, remote_fonts):
-    """Return glyphs which are missing in local fonts"""
-    glyphs = {}
-
-    for font in local_fonts:
-        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
-        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
-        glyphs[font] = set(r_glyphs) - set(l_glyphs)
-
-        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
-        l_encoded_glyphs = [i[0] for i in l_cmap_tbl.items()]
-        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
-
-        glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
-                        i[0] not in l_encoded_glyphs]
-    return glyphs
-
-
 def _delete_fonts(path):
     """Delete any ttfs in a specific folder"""
     for item in os.listdir(path):
@@ -282,7 +264,6 @@ def index():
 
     Each user who runs this view will clear the font cache. This will not
     affect other users, as long as they don't refresh their browsers"""
-    # Clear fonts which may not have been deleted from previous session
     _delete_fonts(LOCAL_FONTS_PATH)
     _delete_fonts(REMOTE_FONTS_PATH)
     return render_template('upload.html')
@@ -302,14 +283,8 @@ def upload_fonts():
         is_ajax = True
 
     # Target folder for these uploads.
-    target = "./static/localfonts/%s" % upload_key
-    try:
-        os.mkdir(target)
-    except:
-        if is_ajax:
-            return ajax_response(False, "Couldn't create upload directory: {}".format(target))
-        else:
-            return "Couldn't create upload directory: {}".format(target)
+    target = LOCAL_FONTS_PATH + upload_key
+    os.mkdir(target)
 
     for upload in request.files.getlist("file"):
         filename = upload.filename.rsplit("/")[0]

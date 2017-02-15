@@ -255,7 +255,7 @@ def test_fonts(uuid):
     )
 
 
-@app.route('/p')
+@app.route('/')
 def index():
     # drag n drop fonts to test
     return render_template('upload.html')

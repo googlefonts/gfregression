@@ -12,14 +12,13 @@ import ntpath
 import requests
 import re
 import os
-import atexit
 import shutil
 import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 
-__version__ = 0.200
+__version__ = 1.000
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 
@@ -29,7 +28,7 @@ FONT_EXCEPTIONS = [
     'Amatica SC',
 ]
 
-LOCAL_FONTS_PATH = './static/'
+LOCAL_FONTS_PATH = './static/localfonts/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
 
 GLYPH_THRESHOLD = 0
@@ -200,17 +199,18 @@ def missing_fonts_glyphs(local_fonts, remote_fonts):
     return glyphs
 
 
-def _delete_remote_fonts():
-    path = './static/remotefonts/'
-    for file in os.listdir(path):
-        if file.endswith('.ttf'):
-            os.remove(os.path.join(path, file))
+def _delete_fonts(path):
+    """Delete any ttfs in a specific folder"""
+    for item in os.listdir(path):
+        if os.path.isdir(os.path.join(path, item)):
+            shutil.rmtree(os.path.join(path, item))
+        else:
+            if item.endswith('.ttf'):
+                os.remove(os.path.join(path, item))
 
 
 @app.route("/<uuid>")
 def test_fonts(uuid):
-    # Clear fonts which may not have been deleted from previous session
-    _delete_remote_fonts()
 
     session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
     local_fonts_paths = glob(session_fonts + '/*.ttf')
@@ -257,7 +257,13 @@ def test_fonts(uuid):
 
 @app.route('/')
 def index():
-    # drag n drop fonts to test
+    """Drag n drop font families to be tested.
+
+    Each user who runs this view will clear the font cache. This will not
+    affect other users, as long as they don't refresh their browsers"""
+    # Clear fonts which may not have been deleted from previous session
+    _delete_fonts(LOCAL_FONTS_PATH)
+    _delete_fonts(REMOTE_FONTS_PATH)
     return render_template('upload.html')
 
 
@@ -275,7 +281,7 @@ def upload_fonts():
         is_ajax = True
 
     # Target folder for these uploads.
-    target = "./static/%s" % upload_key
+    target = "./static/localfonts/%s" % upload_key
     try:
         os.mkdir(target)
     except:
@@ -306,4 +312,3 @@ def ajax_response(status, msg):
 if __name__ == "__main__":
     app.config['STATIC_FOLDER'] = 'static'
     app.run(debug=True)
-    atexit.register(_delete_remote_fonts)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="./static/style.css" />
+    <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+    <title>Google Fonts Regression</title>
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+
+      <div id="container-header">
+        <div class="container-title" id="home">
+          <h1><a href="/">Google Fonts Regression</a></h1>
+        </div>
+        <div class="container-nav">
+          <div class="container-button" data-page="page-glyph-missing"><h2>Missing Glyphs</h2></div>
+          <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
+          <div class="container-button" data-page="page-glyph-modified"><h2>Modified Glyphs</h2></div>
+          <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
+          <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
+        </div>
+      </div>
+      {% block content %}{% endblock %}
+
+    </div>
+</body>
+</html>

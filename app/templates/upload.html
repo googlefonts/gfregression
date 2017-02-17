@@ -1,25 +1,20 @@
-<html>
-  <head>
-    <style>
-      #dropbox {
-        border: 2px dashed #000000;
-        padding: 20px;
-      }
-      #dropbox.active {
-        border: 4px dashed #FF0000;
-      }
-    </style>
-  </head>
-  <body>
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
 
+{% block content %}
+<div id="page-family-upload" class="pages">
+  <div class="box-large">
     <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
       <div id="dropbox">
-        Drag and Drop Files Here
+        Drag and drop ttfs
       </div>
       <input type="submit" value="Upload!" id="upload-button">
     </form>
+  </div>
+</div>
 
-  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
-  </body>
-</html>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
+{% endblock %}

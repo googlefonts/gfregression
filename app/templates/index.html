@@ -1,17 +1,7 @@
-<html>
-  <title>Google Fonts Regression Tester</title>
-  <head>
-    <script
-    src="https://code.jquery.com/jquery-3.1.1.min.js"
-    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-    crossorigin="anonymous"></script>
-
-  </head>
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
   <style>
-
-    p, b, h1, h2, h3, h4{
-      font-family: sans-serif;
-    }
     /*Load local fonts*/
     {% for font in local_fonts %}
       @font-face{
@@ -28,13 +18,6 @@
       }
     {% endfor %}
 
-    .container {
-      position: relative;
-      padding-left: 40px;
-      padding-right: 40px;
-    }
-
-
     /*Create classes for local fonts*/
     {% for font in local_fonts %}
       .{{ font.cssname }}{
@@ -48,255 +31,135 @@
         font-family: {{ font.cssname }};
       }
     {% endfor %}
-
-    .box-200px{
-      height: 200px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    #container-left {
-      float: left;
-      width: 48%;
-      margin-right: 2%;
-    }
-    #container-right {
-      float: right;
-      width: 48%;
-      margin-left: 2%;
-    }
-    .box-large{
-      width: 100%;
-      float: left;
-      margin-top: 20px;
-    }
-    .box-header{
-      border-top: 1px solid #757575;
-      padding-top: 15px;
-      font-family: arial;
-      font-weight: bold;
-    }
-    .box-content{
-      position: relative;
-      width: 100%;
-      float: left;
-      padding-top: 10px;
-    }
-    .font-swap{
-      font-size: 80px;
-    }
-    .box-char{
-      position: relative;
-      float: left;
-      width: 100px;
-      height: 100px;
-      padding: 10px;
-      margin: 10px;
-      background-color: #fcfcfc;
-      text-align: center;
-      }
-    .caption{
-      font-family: sans-serif;
-      font-size: 8pt;
-    }
-    .line{
-      float: left;
-      font-size: 20px;
-      width: 20%;
-      line-height: 32px;
-    }
-    h1, h2, h3, h4, .box-header, #alert{
-      font-family: arial;
-      color: #757575;
-    }
-    h1 {
-      font-weight: 400;
-      font-size: 22px;
-    }
-    h2, .box-header {
-      font-size: 14px;
-    }
-    #container-header{
-      position: relative;
-      float: left;
-      width: 100%;
-      display: block;
-      border-bottom: 1px solid #757575;
-      margin-bottom: 40px;
-    }
-    .container-title{
-      float: left;
-      width: 48%;
-    }
-    .container-nav{
-      width: 48%;
-      float: right;
-      text-transform: uppercase;
-    }
-    .container-button{
-      float: right;
-      padding: 5px;
-      cursor: pointer;
-    }
-
-    #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall{
-      display: none;
-    }
-    a {
-      text-decoration: none;
-      color: #757575;
-    }
-    #alert{
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      padding: 5px;
-      background-color: white;
-    }
   </style>
+{% endblock %}
 
-<body>
+{% block content %}
   <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
   <meta id="to_remote_fonts" data-name="remote-fonts" data-str="{{ to_remote_fonts }}">
-  <div class="container">
 
-    <div id="container-header">
-      <div class="container-title" id="home">
-        <h1>Google Fonts Regression Tester</h1>
-      </div>
-      <div class="container-nav">
-        <div class="container-button" data-page="page-glyph-missing"><h2>Missing Glyphs</h2></div>
-        <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
-        <div class="container-button" data-page="page-glyph-modified"><h2>Modified Glyphs</h2></div>
-        <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
-        <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
-      </div>
+  <div id="page-vertical-metrics" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    <div id="container-left">
+      <h2>Local</h2>
+      {% for font in local_fonts %}
+        <div class="box-200px">
+          <div class="box-header" id="{{ font.fullname }}-vert">{{ font.fullname }}</div>
+          <div class="box-content">
+            <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
+          </div>
+        </div>
+      {% endfor %}
     </div>
 
-      <div id="page-vertical-metrics" class="pages">
-        {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
-        {% endfor %}
-
-        <div id="container-left">
-          <h2>Local</h2>
-          {% for font in local_fonts %}
-            <div class="box-200px">
-              <div class="box-header" id="{{ font.fullname }}-vert">{{ font.fullname }}</div>
-              <div class="box-content">
-                <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-
-        <div id="container-right">
-          <h2>fonts.google.com</h2>
-          {% for font in remote_fonts %}
-            <div class="box-200px">
-                <div class="box-header">{{ font.cssname }}</div>
-                <div class="box-content">
-                  <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
-                </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div id="page-glyph-modified" class="pages">
-        {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
-        {% endfor %}
-
-        {% for font in remote_fonts %}
-          <div class="box-large">
-            <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
-            <div class="box-content">
-              {% for uni, name in changed_glyphs[font.fullname] %}
-              <div class="font-swap">
-                <div class="box-char">
-                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
-                    <div class="caption">{{ name }}</div>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-
-      <div id="page-glyph-new" class="pages">
-        {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
-        {% endfor %}
-
-        {% for font in remote_fonts %}
-          <div class="box-large">
-            <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
-            <div class="box-content">
-              {% for uni, name in new_glyphs[font.fullname] %}
-              <div class="font-swap">
-                <div class="box-char">
-                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
-                    <div class="caption">{{ name }}</div>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-
-      <div id="page-glyph-missing" class="pages">
-        {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
-        {% endfor %}
-
-        {% for font in remote_fonts %}
-          <div class="box-large">
-            <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
-            <div class="box-content">
-              {% for uni, name in missing_glyphs[font.fullname] %}
-              <div class="font-swap">
-                <div class="box-char">
-                    <span class="{{ font.cssname }}">&#{{ uni }};</span>
-                    <div class="caption">{{ name }}</div>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-
-      <div id="page-waterfall" class="pages">
-        {% for font in local_fonts %}
-          <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
-        {% endfor %}
-
-        {% for font in local_fonts %}
-        <div class="box-large">
-          <div class="box-header" id="{{ font.fullname }}-waterfall">{{ font.fullname }}</div>
+    <div id="container-right">
+      <h2>fonts.google.com</h2>
+      {% for font in remote_fonts %}
+        <div class="box-200px">
+          <div class="box-header">{{ font.cssname }}</div>
           <div class="box-content">
-            <div class='font-swap'>
-              {% for n in range(7, 22) %}
-              <div class="box-header">{{ n }}pt</div>
-              <span class="{{ font.cssname }}" style="font-size: {{ n }}pt">
-                QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
-                quick wafting zephyrs vex bold jim.<br>
-                $14.95<br>
-                <br>
-              </span>
-              {% endfor %}
-            </div>
+            <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
           </div>
         </div>
-        {% endfor %}
-      </div>
-
-      <div id="alert"></div>
+      {% endfor %}
+    </div>
   </div>
-</body>
+
+  <div id="page-glyph-modified" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    {% for font in remote_fonts %}
+      <div class="box-large">
+        <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
+        <div class="box-content">
+          {% for uni, name in changed_glyphs[font.fullname] %}
+          <div class="font-swap">
+            <div class="box-char">
+              <span class="{{ font.cssname }}" style="font-size: 80px">&#{{ uni }};</span>
+              <div class="caption">{{ name }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div id="page-glyph-new" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    {% for font in remote_fonts %}
+      <div class="box-large">
+        <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+        <div class="box-content">
+          {% for uni, name in new_glyphs[font.fullname] %}
+          <div class="font-swap">
+            <div class="box-char">
+              <span class="{{ font.cssname }}" style="font-size: 80px">&#{{ uni }};</span>
+              <div class="caption">{{ name }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div id="page-glyph-missing" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    {% for font in remote_fonts %}
+      <div class="box-large">
+        <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+        <div class="box-content">
+          {% for uni, name in missing_glyphs[font.fullname] %}
+          <div class="font-swap">
+            <div class="box-char">
+              <span class="{{ font.cssname }}" style="font-size: 80px">&#{{ uni }};</span>
+              <div class="caption">{{ name }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div id="page-waterfall" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    {% for font in local_fonts %}
+    <div class="box-large">
+      <div class="box-header" id="{{ font.fullname }}-waterfall">{{ font.fullname }}</div>
+      <div class="box-content">
+        <div class='font-swap'>
+          {% for n in range(7, 22) %}
+          <div class="box-header">{{ n }}pt</div>
+          <span class="{{ font.cssname }}" style="font-size: {{ n }}pt">
+            QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
+            quick wafting zephyrs vex bold jim.<br>
+            $14.95<br>
+            <br>
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  </div>
+  <div id="alert"></div>
 
 <script>
   local = $('#to_local_fonts').data();
@@ -333,4 +196,4 @@
 
   })
 </script>
-</html>
+{% endblock %}

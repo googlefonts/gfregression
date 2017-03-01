@@ -13,11 +13,13 @@ fonttools==3.2.0
 functools32==3.2.3.post2
 html2text==2016.9.19
 ipaddress==1.0.17
+iso-639==0.4.5
 itsdangerous==0.24
 Jinja2==2.8
 jsonschema==2.5.1
 lxml==3.7.3
 MarkupSafe==0.23
+peewee==2.8.8
 pycurl==7.43.0
 PyYAML==3.12
 requests==2.7.0

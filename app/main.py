@@ -17,7 +17,8 @@ import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
-
+from models import db, Languages
+from otlang2iso import otname
 
 __version__ = 1.000
 
@@ -29,6 +30,16 @@ FONT_EXCEPTIONS = [
     'Amatic SC',
     'Amatica SC',
 ]
+
+DFLT_SCRIPT_2_LANG = {
+    # gconvert gsub dflt lang scripts to ISO 639-2 codes
+    'DFLT': 'ENG ',
+    'dflt': 'ENG ',
+    'arab': 'ARA ',
+    'latn': 'ENG ',
+    'deva': 'HIN ',
+    'dev2': 'HIN ',
+}
 
 LOCAL_FONTS_PATH = './static/localfonts/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
@@ -212,6 +223,27 @@ def _delete_fonts(path):
                 os.remove(os.path.join(path, item))
 
 
+def gsub_languages(fonts):
+    """for each defined gsub language, download and return some
+    sample text"""
+    font_languages = {}
+    for font in fonts:
+        script_records = fonts[font].font['GSUB'].table.ScriptList.ScriptRecord
+
+        font_languages[font] = {}
+        for script in script_records:
+            font_languages[font][DFLT_SCRIPT_2_LANG[script.ScriptTag]] = ''
+            languages = list(script.Script.LangSysRecord)
+            for language in languages:
+                lang_tag = language.LangSysTag
+                font_languages[font][lang_tag] = ''
+
+        for lang_tag in font_languages[font]:
+            db_language = Languages.get(Languages.part3 == otname[lang_tag])
+            font_languages[font][lang_tag] = db_language
+    return font_languages
+
+
 @app.route("/<uuid>")
 def test_fonts(uuid):
 
@@ -243,6 +275,8 @@ def test_fonts(uuid):
     new_glyphs = new_fonts_glyphs(local_fonts, remote_fonts)
     missing_glyphs = missing_fonts_glyphs(local_fonts, remote_fonts)
 
+    languages = gsub_languages(local_fonts)
+
     to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
     return render_template(
@@ -253,6 +287,7 @@ def test_fonts(uuid):
         changed_glyphs=changed_glyphs,
         new_glyphs=new_glyphs,
         missing_glyphs=missing_glyphs,
+        languages=languages,
         to_local_fonts=to_local_fonts,
         to_remote_fonts=to_remote_fonts
     )

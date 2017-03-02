@@ -158,6 +158,29 @@
     </div>
     {% endfor %}
   </div>
+
+  <div id="page-languages" class="pages">
+    {% for font in local_fonts %}
+      <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    {% for font in local_fonts %}
+    <div class="box-large">
+      <div class="box-header" id="{{ font.fullname }}-langages">{{ font.fullname }}</div>
+      <div class="box-content">
+        <div class='font-swap'>
+          <span class="{{ font.cssname }}">
+            {% for lang in languages[font.fullname] %}
+              <div class="box-header" lang="{{ languages[font.fullname][lang].part1 }}">{{ languages[font.fullname][lang].name }}</div>
+              {{ languages[font.fullname][lang].text }}<br><br>
+            {% endfor %}
+          </span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
   </div>
   <div id="alert"></div>
 

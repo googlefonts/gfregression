@@ -20,7 +20,7 @@ from StringIO import StringIO
 from models import db, Languages
 from otlang2iso import otname
 
-__version__ = 1.000
+__version__ = 1.100
 
 
 URL_PREFIX = 'https://fonts.google.com/download?family='

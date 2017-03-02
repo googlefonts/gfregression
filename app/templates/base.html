@@ -17,6 +17,7 @@
         <div class="container-title" id="home">
           <h1><a href="/">Google Fonts Regression</a></h1>
         </div>
+        {% if request.path != '/' %}
         <div class="container-nav">
           <div class="container-button" data-page="page-glyph-missing"><h2>Missing Glyphs</h2></div>
           <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
@@ -25,6 +26,7 @@
           <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
           <div class="container-button" data-page="page-languages"><h2>Languages</h2></div>
         </div>
+        {% endif %}
       </div>
       {% block content %}{% endblock %}
 

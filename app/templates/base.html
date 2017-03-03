@@ -11,33 +11,32 @@
     {% endblock %}
 </head>
 <body>
-    <div class="container">
-
-      <div id="container-header">
-        <div class="container-title" id="home">
-          <h1><a href="/">Google Fonts Regression</a></h1>
-        </div>
-        {% if request.path != '/' %}
-        <div class="container-nav">
-          <div class="dropdown-button">Tests</div>
-          <div class="dropdown">
-            <li span class="container-button" data-page="page-vertical-metrics">Vertical Metrics</li>
-            <li span class="container-button" data-page="page-glyph-new">New Glyphs</li>
-            <li span class="container-button" data-page="page-glyph-modified">Modified Glyphs</li>
-            <li span class="container-button" data-page="page-glyph-missing">Missing Glyphs</li>
-            <li span class="container-button" data-page="page-waterfall">Waterfall</li>
-            <li span class="container-button" data-page="page-languages">Languages</li>
-          </div>
-        </div>
-        {% endif %}
-      </div>
-      {% block content %}{% endblock %}
-
+  <div id="header">
+    <div class="header-title" id="home">
+      <h1><a href="/">Google Fonts Regression</a></h1>
     </div>
-    <script>
-    $('.dropdown-button').on('click', function(){
-      $('.dropdown').toggle();
-    })
-    </script>
+    {% if request.path != '/' %}
+    <div class="header-nav">
+      <div class="dropdown-button">Tests  <span class="caret">&#x25BC;</span></div>
+      <div class="dropdown">
+        <li span class="container-button" data-page="page-vertical-metrics">Vertical Metrics</li>
+        <li span class="container-button" data-page="page-glyph-new">New Glyphs</li>
+        <li span class="container-button" data-page="page-glyph-modified">Modified Glyphs</li>
+        <li span class="container-button" data-page="page-glyph-missing">Missing Glyphs</li>
+        <li span class="container-button" data-page="page-waterfall">Waterfall</li>
+        <li span class="container-button" data-page="page-languages">Languages</li>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+  <script>
+  $('.dropdown-button').on('click', function(){
+    $('.dropdown').toggle();
+  })
+  </script>
 </body>
 </html>

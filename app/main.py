@@ -39,6 +39,9 @@ DFLT_SCRIPT_2_LANG = {
     'latn': 'ENG ',
     'deva': 'HIN ',
     'dev2': 'HIN ',
+    'cyrl': 'RUS ',
+    'grek': 'ELL ',
+    'hebr': 'IWR ',
 }
 
 LOCAL_FONTS_PATH = './static/localfonts/'
@@ -111,7 +114,6 @@ def fonts(paths, suffix):
     fonts = []
     for path in paths:
         name = ntpath.basename(path)[:-4]
-        print(name, 'FOOS')
         font = css_property(
             path=path.replace('\\', '/'),
             fullname=name,
@@ -166,7 +168,6 @@ def inconsistent_fonts_glyphs(local_fonts, remote_fonts):
                     if font not in bad_glyphs:
                         bad_glyphs[font] = []
                     bad_glyphs[font].append(glyph)
-                    print('Different %s' % glyph)
 
         l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
         try:
@@ -277,6 +278,7 @@ def test_fonts(uuid):
 
     languages = gsub_languages(local_fonts)
 
+    # css hook to swap remote fonts to local fonts and vice versa
     to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
     return render_template(

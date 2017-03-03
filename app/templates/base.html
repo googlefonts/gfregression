@@ -19,17 +19,25 @@
         </div>
         {% if request.path != '/' %}
         <div class="container-nav">
-          <div class="container-button" data-page="page-glyph-missing"><h2>Missing Glyphs</h2></div>
-          <div class="container-button" data-page="page-glyph-new"><h2>New Glyphs</h2></div>
-          <div class="container-button" data-page="page-glyph-modified"><h2>Modified Glyphs</h2></div>
-          <div class="container-button" data-page="page-waterfall"><h2>Waterfall</h2></div>
-          <div class="container-button" data-page="page-vertical-metrics"><h2>Vertical Metrics</h2></div>
-          <div class="container-button" data-page="page-languages"><h2>Languages</h2></div>
+          <div class="dropdown-button">Tests</div>
+          <div class="dropdown">
+            <li span class="container-button" data-page="page-vertical-metrics">Vertical Metrics</li>
+            <li span class="container-button" data-page="page-glyph-new">New Glyphs</li>
+            <li span class="container-button" data-page="page-glyph-modified">Modified Glyphs</li>
+            <li span class="container-button" data-page="page-glyph-missing">Missing Glyphs</li>
+            <li span class="container-button" data-page="page-waterfall">Waterfall</li>
+            <li span class="container-button" data-page="page-languages">Languages</li>
+          </div>
         </div>
         {% endif %}
       </div>
       {% block content %}{% endblock %}
 
     </div>
+    <script>
+    $('.dropdown-button').on('click', function(){
+      $('.dropdown').toggle();
+    })
+    </script>
 </body>
 </html>

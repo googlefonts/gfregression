@@ -17,7 +17,7 @@
     </div>
     {% if request.path != '/' %}
     <div class="header-nav">
-      <div class="dropdown-button">Tests  <span class="caret">&#x25BC;</span></div>
+      <div class="dropdown-button">Vertical Metrics  <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
         <li span class="container-button" data-page="page-vertical-metrics">Vertical Metrics</li>
         <li span class="container-button" data-page="page-glyph-new">New Glyphs</li>
@@ -34,9 +34,21 @@
     {% block content %}{% endblock %}
   </div>
   <script>
-  $('.dropdown-button').on('click', function(){
-    $('.dropdown').toggle();
-  })
+  $(function() {
+
+    $('.dropdown-button').on('click', function(){
+      $('.dropdown').toggle();
+    })
+    $('.container').on('click', function(){
+      $('.dropdown').hide();
+    })
+
+    $('li').on('click', function(){
+      var selectedText = $(this).text()
+      $('.dropdown-button').html(selectedText + ' <span class="caret">&#x25BC;</span>')
+    })
+
+  });
   </script>
 </body>
 </html>

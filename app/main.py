@@ -29,6 +29,7 @@ FONT_EXCEPTIONS = [
     'VT323',
     'Amatic SC',
     'Amatica SC',
+    'Old Standard TT',
 ]
 
 DFLT_SCRIPT_2_LANG = {

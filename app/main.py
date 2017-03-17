@@ -241,8 +241,11 @@ def gsub_languages(fonts):
                 font_languages[font][lang_tag] = ''
 
         for lang_tag in font_languages[font]:
-            db_language = Languages.get(Languages.part3 == otname[lang_tag])
-            font_languages[font][lang_tag] = db_language
+            try:
+                db_language = Languages.get(Languages.part3 == otname[lang_tag])
+                font_languages[font][lang_tag] = db_language
+            except:
+                all # Need to add other OpenType scripts to DFLT_SCRIPT_2_LANG
     return font_languages
 
 

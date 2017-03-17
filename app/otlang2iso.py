@@ -539,6 +539,7 @@ otname = {
     'TUA ': 'tru',
     'TUM ': 'tum',
     'TUL ': 'tcy',
+    'TUR ': 'eng',  # Research this!
     'TUV ': 'tyv',
     'TVL ': 'tvl',
     'TWI ': 'aka',

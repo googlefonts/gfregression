@@ -1,6 +1,6 @@
 # otlanguage tag to iso639-3
 # https://www.microsoft.com/typography/otspec/languagetags.htm
-otname = {
+otlang2iso = {
     'ABA ': 'abq',
     'ABK ': 'abk',
     'ACH ': 'ach',

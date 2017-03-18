@@ -18,8 +18,8 @@ from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 from models import db, Languages
-from otlang2iso import otname
-
+from otlang2iso import otlang2iso
+from script2iso import script2iso
 __version__ = 1.100
 
 
@@ -32,18 +32,7 @@ FONT_EXCEPTIONS = [
     'Old Standard TT',
 ]
 
-DFLT_SCRIPT_2_LANG = {
-    # gconvert gsub dflt lang scripts to ISO 639-2 codes
-    'DFLT': 'ENG ',
-    'dflt': 'ENG ',
-    'arab': 'ARA ',
-    'latn': 'ENG ',
-    'deva': 'HIN ',
-    'dev2': 'HIN ',
-    'cyrl': 'RUS ',
-    'grek': 'ELL ',
-    'hebr': 'IWR ',
-}
+
 
 LOCAL_FONTS_PATH = './static/localfonts/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
@@ -234,7 +223,7 @@ def gsub_languages(fonts):
 
         font_languages[font] = {}
         for script in script_records:
-            font_languages[font][DFLT_SCRIPT_2_LANG[script.ScriptTag]] = ''
+            font_languages[font][script2iso[script.ScriptTag]] = ''
             languages = list(script.Script.LangSysRecord)
             for language in languages:
                 lang_tag = language.LangSysTag
@@ -242,10 +231,10 @@ def gsub_languages(fonts):
 
         for lang_tag in font_languages[font]:
             try:
-                db_language = Languages.get(Languages.part3 == otname[lang_tag])
+                db_language = Languages.get(Languages.part3 == otlang2iso[lang_tag])
                 font_languages[font][lang_tag] = db_language
             except:
-                all # Need to add other OpenType scripts to DFLT_SCRIPT_2_LANG
+                all # Need to add other OpenType scripts to script2iso
     return font_languages
 
 

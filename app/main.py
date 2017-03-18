@@ -16,7 +16,6 @@ import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
-from models import db, Languages
 from fontchecks import (
     inconsistent_fonts_glyphs,
     new_fonts_glyphs,

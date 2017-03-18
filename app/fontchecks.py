@@ -1,6 +1,7 @@
 from fontTools.pens.areaPen import AreaPen
 from otlang2iso import otlang2iso
 from script2iso import script2iso
+from models import db, Languages
 
 GLYPH_THRESHOLD = 0
 
@@ -95,8 +96,10 @@ def gsub_languages(fonts):
 
         for lang_tag in font_languages[font]:
             try:
+                db.connect()
                 db_language = Languages.get(Languages.part3 == otlang2iso[lang_tag])
                 font_languages[font][lang_tag] = db_language
+                db.close()
             except:
                 all # Need to add other OpenType scripts to script2iso
     return font_languages

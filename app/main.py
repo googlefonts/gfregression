@@ -29,12 +29,12 @@ __version__ = 1.100
 
 URL_PREFIX = 'https://fonts.google.com/download?family='
 
-FONT_EXCEPTIONS = [
-    'VT323',
-    'Amatic SC',
-    'Amatica SC',
-    'Old Standard TT',
-]
+FONT_EXCEPTIONS = {
+    'VT323': 'VT323',
+    'AmaticSC': 'Amatic SC',
+    'AmaticaSC': 'Amatica SC',
+    'OldStandardTT': 'Old Standard TT',
+}
 
 LOCAL_FONTS_PATH = './static/localfonts/'
 REMOTE_FONTS_PATH = './static/remotefonts/'
@@ -57,6 +57,7 @@ def _convert_camelcase(fam_name, seperator=' '):
     if fam_name not in FONT_EXCEPTIONS:
         return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, fam_name)
     else:
+        fam_name = FONT_EXCEPTIONS[fam_name].replace(' ', seperator)
         return fam_name
 
 
@@ -140,13 +141,14 @@ def _delete_fonts(path):
 @app.route("/<uuid>")
 def test_fonts(uuid):
 
-    session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
-    local_fonts_paths = glob(session_fonts + '/*.ttf')
+    user_session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
+    local_fonts_paths = glob(user_session_fonts + '/*.ttf')
     local_fonts = fonts(local_fonts_paths, 'new')
 
     # Assemble download url for families
     remote_download_url = gf_download_url([i.fullname for i in local_fonts])
     # download last fonts from fonts.google.com
+    print('foo', remote_download_url)
     if url_200_response(remote_download_url):
         remote_fonts_zip = download_family_from_gf(remote_download_url)
         fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)

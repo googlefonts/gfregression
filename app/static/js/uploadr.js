@@ -4,8 +4,8 @@
 
 // Constants
 var MAX_UPLOAD_FILE_SIZE = 1024*1024; // 1 MB
-var UPLOAD_URL = "/upload";
-var NEXT_URL   = "/files/";
+var UPLOAD_URL = "/upload-fonts";
+var NEXT_URL   = "/";
 
 // List of pending files to handle when the Upload button is finally clicked.
 var PENDING_FILES  = [];

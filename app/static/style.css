@@ -1,0 +1,145 @@
+body{
+  margin: 0;
+}
+p, b, h1, h2, h3, h4{
+  font-family: sans-serif;
+}
+h1, h2, h3, h4, .box-header, #alert, .dropdown-button, li{
+  font-family: arial;
+  color: #757575;
+}
+h1 {
+  font-weight: 400;
+  font-size: 22px;
+}
+h2, .box-header {
+  font-size: 12px;
+}
+a, ul, li {
+  text-decoration: none;
+  color: #757575;
+  list-style: none;
+}
+.container {
+  position: relative;
+  top: 100px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.box-200px{
+  height: 200px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+#container-left {
+  float: left;
+  width: 48%;
+  margin-right: 2%;
+}
+#container-right {
+  float: right;
+  width: 48%;
+  margin-left: 2%;
+}
+.box-large{
+  width: 100%;
+  float: left;
+  margin-top: 20px;
+}
+.box-header{
+  border-top: 1px solid #757575;
+  padding-top: 15px;
+  font-family: arial;
+  font-weight: bold;
+}
+.box-content{
+  position: relative;
+  width: 100%;
+  float: left;
+  padding-top: 10px;
+}
+.font-swap{
+}
+.box-char{
+  position: relative;
+  float: left;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #fcfcfc;
+  text-align: center;
+  }
+.caption{
+  font-family: sans-serif;
+  font-size: 8pt;
+  z-index: 1;
+}
+.line{
+  float: left;
+  font-size: 20px;
+  width: 20%;
+  line-height: 32px;
+}
+#header{
+  top: 0;
+  z-index: 1;
+  position: fixed;
+  float: left;
+  width: 100%;
+  display: block;
+  background-color: white;
+  box-shadow: 0px 5px 5px #CCCCCC;
+  line-height: 18px;
+}
+.header-title{
+  float: left;
+  padding-left: 40px;
+}
+.header-nav{
+  float: right;
+}
+.dropdown{
+    background-color: white;
+    z-index: 1;
+    box-shadow: 0px 5px 5px #CCCCCC;
+    position: fixed;
+    right: 0;
+    padding: 18px;
+    top: 60px;
+    display: none;
+}
+.caret{
+  font-size: 13px;
+}
+.dropdown-button{
+  display: block;
+  padding-top: 17px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+.container-button{
+  font-family: arial;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+#page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages{
+  display: none;
+}
+#alert{
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 5px;
+  background-color: white;
+}
+ #dropbox, #dropbox.active {
+    background-color: #fcfcfc;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 5px;
+    font-family: sans-serif;
+  }

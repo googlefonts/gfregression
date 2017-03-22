@@ -9,4 +9,6 @@ script2iso = {
     'cyrl': 'RUS ',
     'grek': 'ELL ',
     'hebr': 'IWR ',
+    'taml': 'TAM',
+    'tml2': 'TAM',
 }

@@ -512,6 +512,7 @@ otlang2iso = {
     'TAB ': 'tab',
     'TAJ ': 'tgk',
     'TAM ': 'tam',
+    'TAM': 'tam',
     'TAT ': 'tat',
     'TCR ': 'cwd',
     'TDD ': 'tdd',

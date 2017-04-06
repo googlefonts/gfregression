@@ -1,3 +1,6 @@
+"""Models for Corpora db
+
+Used for gsub_languages fontcheck"""
 from peewee import (
     SqliteDatabase,
     Model,

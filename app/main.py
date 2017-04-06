@@ -17,9 +17,9 @@ from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
 from fontchecks import (
-    inconsistent_fonts_glyphs,
-    new_fonts_glyphs,
-    missing_fonts_glyphs,
+    modified_family_glyphs,
+    new_family_glyphs,
+    missing_family_glyphs,
     gsub_languages,
 )
 
@@ -40,8 +40,9 @@ REMOTE_FONTS_PATH = './static/remotefonts/'
 
 app = Flask(__name__, static_url_path='/static')
 
-with open('./dummy_text.txt', 'r') as dummy_text_file:
-    dummy_text = dummy_text_file.read()
+def dummy_text():
+    with open('./dummy_text.txt', 'r') as txt_doc:
+        return txt_doc.read()
 
 
 def url_200_response(url):
@@ -147,7 +148,6 @@ def test_fonts(uuid):
     # Assemble download url for families
     remote_download_url = gf_download_url([i.fullname for i in local_fonts])
     # download last fonts from fonts.google.com
-    print('foo', remote_download_url)
     if url_200_response(remote_download_url):
         remote_fonts_zip = download_family_from_gf(remote_download_url)
         fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
@@ -165,9 +165,10 @@ def test_fonts(uuid):
     remote_fonts = {f.fullname: f for f in remote_fonts
                     if f.fullname in shared_fonts}
 
-    changed_glyphs = inconsistent_fonts_glyphs(local_fonts, remote_fonts)
-    new_glyphs = new_fonts_glyphs(local_fonts, remote_fonts)
-    missing_glyphs = missing_fonts_glyphs(local_fonts, remote_fonts)
+    # Add font checks
+    changed_glyphs = modified_family_glyphs(local_fonts, remote_fonts)
+    new_glyphs = new_family_glyphs(local_fonts, remote_fonts)
+    missing_glyphs = missing_family_glyphs(local_fonts, remote_fonts)
 
     languages = gsub_languages(local_fonts)
 
@@ -176,7 +177,7 @@ def test_fonts(uuid):
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
     return render_template(
         'index.html',
-        dummy_text=dummy_text,
+        dummy_text=dummy_text(),
         local_fonts=local_fonts.values(),
         remote_fonts=remote_fonts.values(),
         changed_glyphs=changed_glyphs,

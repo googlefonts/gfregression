@@ -1,9 +1,9 @@
 import unittest
-from main import (
+from app.main import (
     _convert_camelcase,
     URL_PREFIX,
     url_200_response,
-    )
+)
 
 
 class GoogleFontsApi(unittest.TestCase):
@@ -21,12 +21,6 @@ class GoogleFontsApi(unittest.TestCase):
         self.assertEqual(_convert_camelcase(sngl_name, '+'), 'Anaheim')
         self.assertEqual(_convert_camelcase(dbl_name, '+'), 'Bad+Script')
         self.assertEqual(_convert_camelcase(dbl_name), 'Bad Script')
-
-
-class GlyphTablComparisons(unittest.TestCase):
-
-    def test_new_font_glyphs(self):
-        pass
 
 
 if __name__ == '__main__':

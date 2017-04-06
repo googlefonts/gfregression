@@ -1,0 +1,1445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ttFont sfntVersion="\x00\x01\x00\x00" ttLibVersion="3.4">
+
+  <GlyphOrder>
+    <!-- The 'id' attribute is only for humans; it is ignored when parsed. -->
+    <GlyphID id="0" name=".notdef"/>
+    <GlyphID id="1" name="NULL"/>
+    <GlyphID id="2" name="nonmarkingreturn"/>
+    <GlyphID id="3" name="space"/>
+    <GlyphID id="4" name="C"/>
+    <GlyphID id="5" name="A"/>
+    <GlyphID id="6" name="B"/>
+  </GlyphOrder>
+
+  <head>
+    <!-- Most of this table will be recalculated by the compiler -->
+    <tableVersion value="1.0"/>
+    <fontRevision value="1.0"/>
+    <checkSumAdjustment value="0xb38847a3"/>
+    <magicNumber value="0x5f0f3cf5"/>
+    <flags value="00000000 00011001"/>
+    <unitsPerEm value="1000"/>
+    <created value="Wed Apr  5 12:56:24 2017"/>
+    <modified value="Wed Apr  5 16:11:05 2017"/>
+    <xMin value="0"/>
+    <yMin value="0"/>
+    <xMax value="478"/>
+    <yMax value="471"/>
+    <macStyle value="00000000 00000000"/>
+    <lowestRecPPEM value="9"/>
+    <fontDirectionHint value="2"/>
+    <indexToLocFormat value="0"/>
+    <glyphDataFormat value="0"/>
+  </head>
+
+  <hhea>
+    <tableVersion value="0x00010000"/>
+    <ascent value="750"/>
+    <descent value="-250"/>
+    <lineGap value="9"/>
+    <advanceWidthMax value="500"/>
+    <minLeftSideBearing value="0"/>
+    <minRightSideBearing value="-66"/>
+    <xMaxExtent value="478"/>
+    <caretSlopeRise value="1"/>
+    <caretSlopeRun value="0"/>
+    <caretOffset value="0"/>
+    <reserved0 value="0"/>
+    <reserved1 value="0"/>
+    <reserved2 value="0"/>
+    <reserved3 value="0"/>
+    <metricDataFormat value="0"/>
+    <numberOfHMetrics value="7"/>
+  </hhea>
+
+  <maxp>
+    <!-- Most of this table will be recalculated by the compiler -->
+    <tableVersion value="0x10000"/>
+    <numGlyphs value="7"/>
+    <maxPoints value="30"/>
+    <maxContours value="1"/>
+    <maxCompositePoints value="0"/>
+    <maxCompositeContours value="0"/>
+    <maxZones value="1"/>
+    <maxTwilightPoints value="0"/>
+    <maxStorage value="0"/>
+    <maxFunctionDefs value="20"/>
+    <maxInstructionDefs value="0"/>
+    <maxStackElements value="512"/>
+    <maxSizeOfInstructions value="742"/>
+    <maxComponentElements value="0"/>
+    <maxComponentDepth value="0"/>
+  </maxp>
+
+  <OS_2>
+    <!-- The fields 'usFirstCharIndex' and 'usLastCharIndex'
+         will be recalculated by the compiler -->
+    <version value="3"/>
+    <xAvgCharWidth value="456"/>
+    <usWeightClass value="400"/>
+    <usWidthClass value="5"/>
+    <fsType value="00000000 00000100"/>
+    <ySubscriptXSize value="700"/>
+    <ySubscriptYSize value="650"/>
+    <ySubscriptXOffset value="0"/>
+    <ySubscriptYOffset value="140"/>
+    <ySuperscriptXSize value="700"/>
+    <ySuperscriptYSize value="650"/>
+    <ySuperscriptXOffset value="0"/>
+    <ySuperscriptYOffset value="477"/>
+    <yStrikeoutSize value="50"/>
+    <yStrikeoutPosition value="250"/>
+    <sFamilyClass value="0"/>
+    <panose>
+      <bFamilyType value="0"/>
+      <bSerifStyle value="0"/>
+      <bWeight value="0"/>
+      <bProportion value="0"/>
+      <bContrast value="0"/>
+      <bStrokeVariation value="0"/>
+      <bArmStyle value="0"/>
+      <bLetterForm value="0"/>
+      <bMidline value="0"/>
+      <bXHeight value="0"/>
+    </panose>
+    <ulUnicodeRange1 value="00000000 00000000 00000000 00000001"/>
+    <ulUnicodeRange2 value="00000000 00000000 00000000 00000000"/>
+    <ulUnicodeRange3 value="00000000 00000000 00000000 00000000"/>
+    <ulUnicodeRange4 value="00000000 00000000 00000000 00000000"/>
+    <achVendID value="pyrs"/>
+    <fsSelection value="00000000 01000000"/>
+    <usFirstCharIndex value="0"/>
+    <usLastCharIndex value="67"/>
+    <sTypoAscender value="750"/>
+    <sTypoDescender value="-250"/>
+    <sTypoLineGap value="0"/>
+    <usWinAscent value="412"/>
+    <usWinDescent value="0"/>
+    <ulCodePageRange1 value="00000000 00000000 00000000 00000001"/>
+    <ulCodePageRange2 value="00000000 00000000 00000000 00000000"/>
+    <sxHeight value="500"/>
+    <sCapHeight value="700"/>
+    <usDefaultChar value="0"/>
+    <usBreakChar value="32"/>
+    <usMaxContext value="0"/>
+  </OS_2>
+
+  <hmtx>
+    <mtx name=".notdef" width="500" lsb="0"/>
+    <mtx name="A" width="412" lsb="0"/>
+    <mtx name="B" width="412" lsb="0"/>
+    <mtx name="C" width="412" lsb="0"/>
+    <mtx name="NULL" width="0" lsb="0"/>
+    <mtx name="nonmarkingreturn" width="500" lsb="0"/>
+    <mtx name="space" width="500" lsb="0"/>
+  </hmtx>
+
+  <LTSH>
+    <yPel name=".notdef" value="1"/>
+    <yPel name="A" value="1"/>
+    <yPel name="B" value="75"/>
+    <yPel name="C" value="75"/>
+    <yPel name="NULL" value="1"/>
+    <yPel name="nonmarkingreturn" value="1"/>
+    <yPel name="space" value="1"/>
+  </LTSH>
+
+  <VDMX>
+    <version value="0"/>
+    <ratRanges>
+      <ratRange bCharSet="1" groupIndex="0" xRatio="1" yEndRatio="1" yStartRatio="1"/>
+    </ratRanges>
+    <groups>
+      <group index="0">
+        <!-- recs=248, startsz=8, endsz=255 -->
+        <record yPelHeight="8" yMax="4" yMin="0"/>
+        <record yPelHeight="9" yMax="4" yMin="0"/>
+        <record yPelHeight="10" yMax="5" yMin="0"/>
+        <record yPelHeight="11" yMax="5" yMin="0"/>
+        <record yPelHeight="12" yMax="5" yMin="0"/>
+        <record yPelHeight="13" yMax="6" yMin="0"/>
+        <record yPelHeight="14" yMax="6" yMin="0"/>
+        <record yPelHeight="15" yMax="7" yMin="0"/>
+        <record yPelHeight="16" yMax="7" yMin="0"/>
+        <record yPelHeight="17" yMax="8" yMin="0"/>
+        <record yPelHeight="18" yMax="8" yMin="0"/>
+        <record yPelHeight="19" yMax="8" yMin="0"/>
+        <record yPelHeight="20" yMax="9" yMin="0"/>
+        <record yPelHeight="21" yMax="9" yMin="0"/>
+        <record yPelHeight="22" yMax="10" yMin="0"/>
+        <record yPelHeight="23" yMax="10" yMin="0"/>
+        <record yPelHeight="24" yMax="10" yMin="0"/>
+        <record yPelHeight="25" yMax="11" yMin="0"/>
+        <record yPelHeight="26" yMax="11" yMin="0"/>
+        <record yPelHeight="27" yMax="12" yMin="0"/>
+        <record yPelHeight="28" yMax="12" yMin="0"/>
+        <record yPelHeight="29" yMax="12" yMin="0"/>
+        <record yPelHeight="30" yMax="13" yMin="0"/>
+        <record yPelHeight="31" yMax="13" yMin="0"/>
+        <record yPelHeight="32" yMax="14" yMin="0"/>
+        <record yPelHeight="33" yMax="14" yMin="0"/>
+        <record yPelHeight="34" yMax="15" yMin="0"/>
+        <record yPelHeight="35" yMax="15" yMin="0"/>
+        <record yPelHeight="36" yMax="15" yMin="0"/>
+        <record yPelHeight="37" yMax="16" yMin="0"/>
+        <record yPelHeight="38" yMax="16" yMin="0"/>
+        <record yPelHeight="39" yMax="17" yMin="0"/>
+        <record yPelHeight="40" yMax="17" yMin="0"/>
+        <record yPelHeight="41" yMax="17" yMin="0"/>
+        <record yPelHeight="42" yMax="18" yMin="0"/>
+        <record yPelHeight="43" yMax="18" yMin="0"/>
+        <record yPelHeight="44" yMax="19" yMin="0"/>
+        <record yPelHeight="45" yMax="19" yMin="0"/>
+        <record yPelHeight="46" yMax="19" yMin="0"/>
+        <record yPelHeight="47" yMax="20" yMin="0"/>
+        <record yPelHeight="48" yMax="20" yMin="0"/>
+        <record yPelHeight="49" yMax="21" yMin="0"/>
+        <record yPelHeight="50" yMax="21" yMin="0"/>
+        <record yPelHeight="51" yMax="22" yMin="0"/>
+        <record yPelHeight="52" yMax="22" yMin="0"/>
+        <record yPelHeight="53" yMax="22" yMin="0"/>
+        <record yPelHeight="54" yMax="23" yMin="0"/>
+        <record yPelHeight="55" yMax="23" yMin="0"/>
+        <record yPelHeight="56" yMax="24" yMin="0"/>
+        <record yPelHeight="57" yMax="24" yMin="0"/>
+        <record yPelHeight="58" yMax="24" yMin="0"/>
+        <record yPelHeight="59" yMax="25" yMin="0"/>
+        <record yPelHeight="60" yMax="25" yMin="0"/>
+        <record yPelHeight="61" yMax="26" yMin="0"/>
+        <record yPelHeight="62" yMax="26" yMin="0"/>
+        <record yPelHeight="63" yMax="26" yMin="0"/>
+        <record yPelHeight="64" yMax="27" yMin="0"/>
+        <record yPelHeight="65" yMax="27" yMin="0"/>
+        <record yPelHeight="66" yMax="28" yMin="0"/>
+        <record yPelHeight="67" yMax="28" yMin="0"/>
+        <record yPelHeight="68" yMax="29" yMin="0"/>
+        <record yPelHeight="69" yMax="29" yMin="0"/>
+        <record yPelHeight="70" yMax="29" yMin="0"/>
+        <record yPelHeight="71" yMax="30" yMin="0"/>
+        <record yPelHeight="72" yMax="30" yMin="0"/>
+        <record yPelHeight="73" yMax="31" yMin="0"/>
+        <record yPelHeight="74" yMax="31" yMin="0"/>
+        <record yPelHeight="75" yMax="31" yMin="0"/>
+        <record yPelHeight="76" yMax="32" yMin="0"/>
+        <record yPelHeight="77" yMax="32" yMin="0"/>
+        <record yPelHeight="78" yMax="33" yMin="0"/>
+        <record yPelHeight="79" yMax="33" yMin="0"/>
+        <record yPelHeight="80" yMax="33" yMin="0"/>
+        <record yPelHeight="81" yMax="34" yMin="0"/>
+        <record yPelHeight="82" yMax="34" yMin="0"/>
+        <record yPelHeight="83" yMax="35" yMin="0"/>
+        <record yPelHeight="84" yMax="35" yMin="0"/>
+        <record yPelHeight="85" yMax="36" yMin="0"/>
+        <record yPelHeight="86" yMax="36" yMin="0"/>
+        <record yPelHeight="87" yMax="36" yMin="0"/>
+        <record yPelHeight="88" yMax="37" yMin="0"/>
+        <record yPelHeight="89" yMax="37" yMin="0"/>
+        <record yPelHeight="90" yMax="38" yMin="0"/>
+        <record yPelHeight="91" yMax="38" yMin="0"/>
+        <record yPelHeight="92" yMax="38" yMin="0"/>
+        <record yPelHeight="93" yMax="39" yMin="0"/>
+        <record yPelHeight="94" yMax="39" yMin="0"/>
+        <record yPelHeight="95" yMax="40" yMin="0"/>
+        <record yPelHeight="96" yMax="40" yMin="0"/>
+        <record yPelHeight="97" yMax="40" yMin="0"/>
+        <record yPelHeight="98" yMax="41" yMin="0"/>
+        <record yPelHeight="99" yMax="41" yMin="0"/>
+        <record yPelHeight="100" yMax="42" yMin="0"/>
+        <record yPelHeight="101" yMax="42" yMin="0"/>
+        <record yPelHeight="102" yMax="43" yMin="0"/>
+        <record yPelHeight="103" yMax="43" yMin="0"/>
+        <record yPelHeight="104" yMax="43" yMin="0"/>
+        <record yPelHeight="105" yMax="44" yMin="0"/>
+        <record yPelHeight="106" yMax="44" yMin="0"/>
+        <record yPelHeight="107" yMax="45" yMin="0"/>
+        <record yPelHeight="108" yMax="45" yMin="0"/>
+        <record yPelHeight="109" yMax="45" yMin="0"/>
+        <record yPelHeight="110" yMax="46" yMin="0"/>
+        <record yPelHeight="111" yMax="46" yMin="0"/>
+        <record yPelHeight="112" yMax="47" yMin="0"/>
+        <record yPelHeight="113" yMax="47" yMin="0"/>
+        <record yPelHeight="114" yMax="47" yMin="0"/>
+        <record yPelHeight="115" yMax="48" yMin="0"/>
+        <record yPelHeight="116" yMax="48" yMin="0"/>
+        <record yPelHeight="117" yMax="49" yMin="0"/>
+        <record yPelHeight="118" yMax="49" yMin="0"/>
+        <record yPelHeight="119" yMax="50" yMin="0"/>
+        <record yPelHeight="120" yMax="50" yMin="0"/>
+        <record yPelHeight="121" yMax="50" yMin="0"/>
+        <record yPelHeight="122" yMax="51" yMin="0"/>
+        <record yPelHeight="123" yMax="51" yMin="0"/>
+        <record yPelHeight="124" yMax="52" yMin="0"/>
+        <record yPelHeight="125" yMax="52" yMin="0"/>
+        <record yPelHeight="126" yMax="52" yMin="0"/>
+        <record yPelHeight="127" yMax="53" yMin="0"/>
+        <record yPelHeight="128" yMax="53" yMin="0"/>
+        <record yPelHeight="129" yMax="54" yMin="0"/>
+        <record yPelHeight="130" yMax="54" yMin="0"/>
+        <record yPelHeight="131" yMax="54" yMin="0"/>
+        <record yPelHeight="132" yMax="55" yMin="0"/>
+        <record yPelHeight="133" yMax="55" yMin="0"/>
+        <record yPelHeight="134" yMax="56" yMin="0"/>
+        <record yPelHeight="135" yMax="56" yMin="0"/>
+        <record yPelHeight="136" yMax="57" yMin="0"/>
+        <record yPelHeight="137" yMax="57" yMin="0"/>
+        <record yPelHeight="138" yMax="57" yMin="0"/>
+        <record yPelHeight="139" yMax="58" yMin="0"/>
+        <record yPelHeight="140" yMax="58" yMin="0"/>
+        <record yPelHeight="141" yMax="59" yMin="0"/>
+        <record yPelHeight="142" yMax="59" yMin="0"/>
+        <record yPelHeight="143" yMax="59" yMin="0"/>
+        <record yPelHeight="144" yMax="60" yMin="0"/>
+        <record yPelHeight="145" yMax="60" yMin="0"/>
+        <record yPelHeight="146" yMax="61" yMin="0"/>
+        <record yPelHeight="147" yMax="61" yMin="0"/>
+        <record yPelHeight="148" yMax="61" yMin="0"/>
+        <record yPelHeight="149" yMax="62" yMin="0"/>
+        <record yPelHeight="150" yMax="62" yMin="0"/>
+        <record yPelHeight="151" yMax="63" yMin="0"/>
+        <record yPelHeight="152" yMax="63" yMin="0"/>
+        <record yPelHeight="153" yMax="64" yMin="0"/>
+        <record yPelHeight="154" yMax="64" yMin="0"/>
+        <record yPelHeight="155" yMax="64" yMin="0"/>
+        <record yPelHeight="156" yMax="65" yMin="0"/>
+        <record yPelHeight="157" yMax="65" yMin="0"/>
+        <record yPelHeight="158" yMax="66" yMin="0"/>
+        <record yPelHeight="159" yMax="66" yMin="0"/>
+        <record yPelHeight="160" yMax="66" yMin="0"/>
+        <record yPelHeight="161" yMax="67" yMin="0"/>
+        <record yPelHeight="162" yMax="67" yMin="0"/>
+        <record yPelHeight="163" yMax="68" yMin="0"/>
+        <record yPelHeight="164" yMax="68" yMin="0"/>
+        <record yPelHeight="165" yMax="68" yMin="0"/>
+        <record yPelHeight="166" yMax="69" yMin="0"/>
+        <record yPelHeight="167" yMax="69" yMin="0"/>
+        <record yPelHeight="168" yMax="70" yMin="0"/>
+        <record yPelHeight="169" yMax="70" yMin="0"/>
+        <record yPelHeight="170" yMax="71" yMin="0"/>
+        <record yPelHeight="171" yMax="71" yMin="0"/>
+        <record yPelHeight="172" yMax="71" yMin="0"/>
+        <record yPelHeight="173" yMax="72" yMin="0"/>
+        <record yPelHeight="174" yMax="72" yMin="0"/>
+        <record yPelHeight="175" yMax="73" yMin="0"/>
+        <record yPelHeight="176" yMax="73" yMin="0"/>
+        <record yPelHeight="177" yMax="73" yMin="0"/>
+        <record yPelHeight="178" yMax="74" yMin="0"/>
+        <record yPelHeight="179" yMax="74" yMin="0"/>
+        <record yPelHeight="180" yMax="75" yMin="0"/>
+        <record yPelHeight="181" yMax="75" yMin="0"/>
+        <record yPelHeight="182" yMax="75" yMin="0"/>
+        <record yPelHeight="183" yMax="76" yMin="0"/>
+        <record yPelHeight="184" yMax="76" yMin="0"/>
+        <record yPelHeight="185" yMax="77" yMin="0"/>
+        <record yPelHeight="186" yMax="77" yMin="0"/>
+        <record yPelHeight="187" yMax="78" yMin="0"/>
+        <record yPelHeight="188" yMax="78" yMin="0"/>
+        <record yPelHeight="189" yMax="78" yMin="0"/>
+        <record yPelHeight="190" yMax="79" yMin="0"/>
+        <record yPelHeight="191" yMax="79" yMin="0"/>
+        <record yPelHeight="192" yMax="80" yMin="0"/>
+        <record yPelHeight="193" yMax="80" yMin="0"/>
+        <record yPelHeight="194" yMax="80" yMin="0"/>
+        <record yPelHeight="195" yMax="81" yMin="0"/>
+        <record yPelHeight="196" yMax="81" yMin="0"/>
+        <record yPelHeight="197" yMax="82" yMin="0"/>
+        <record yPelHeight="198" yMax="82" yMin="0"/>
+        <record yPelHeight="199" yMax="82" yMin="0"/>
+        <record yPelHeight="200" yMax="83" yMin="0"/>
+        <record yPelHeight="201" yMax="83" yMin="0"/>
+        <record yPelHeight="202" yMax="84" yMin="0"/>
+        <record yPelHeight="203" yMax="84" yMin="0"/>
+        <record yPelHeight="204" yMax="85" yMin="0"/>
+        <record yPelHeight="205" yMax="85" yMin="0"/>
+        <record yPelHeight="206" yMax="85" yMin="0"/>
+        <record yPelHeight="207" yMax="86" yMin="0"/>
+        <record yPelHeight="208" yMax="86" yMin="0"/>
+        <record yPelHeight="209" yMax="87" yMin="0"/>
+        <record yPelHeight="210" yMax="87" yMin="0"/>
+        <record yPelHeight="211" yMax="87" yMin="0"/>
+        <record yPelHeight="212" yMax="88" yMin="0"/>
+        <record yPelHeight="213" yMax="88" yMin="0"/>
+        <record yPelHeight="214" yMax="89" yMin="0"/>
+        <record yPelHeight="215" yMax="89" yMin="0"/>
+        <record yPelHeight="216" yMax="89" yMin="0"/>
+        <record yPelHeight="217" yMax="90" yMin="0"/>
+        <record yPelHeight="218" yMax="90" yMin="0"/>
+        <record yPelHeight="219" yMax="91" yMin="0"/>
+        <record yPelHeight="220" yMax="91" yMin="0"/>
+        <record yPelHeight="221" yMax="92" yMin="0"/>
+        <record yPelHeight="222" yMax="92" yMin="0"/>
+        <record yPelHeight="223" yMax="92" yMin="0"/>
+        <record yPelHeight="224" yMax="93" yMin="0"/>
+        <record yPelHeight="225" yMax="93" yMin="0"/>
+        <record yPelHeight="226" yMax="94" yMin="0"/>
+        <record yPelHeight="227" yMax="94" yMin="0"/>
+        <record yPelHeight="228" yMax="94" yMin="0"/>
+        <record yPelHeight="229" yMax="95" yMin="0"/>
+        <record yPelHeight="230" yMax="95" yMin="0"/>
+        <record yPelHeight="231" yMax="96" yMin="0"/>
+        <record yPelHeight="232" yMax="96" yMin="0"/>
+        <record yPelHeight="233" yMax="96" yMin="0"/>
+        <record yPelHeight="234" yMax="97" yMin="0"/>
+        <record yPelHeight="235" yMax="97" yMin="0"/>
+        <record yPelHeight="236" yMax="98" yMin="0"/>
+        <record yPelHeight="237" yMax="98" yMin="0"/>
+        <record yPelHeight="238" yMax="99" yMin="0"/>
+        <record yPelHeight="239" yMax="99" yMin="0"/>
+        <record yPelHeight="240" yMax="99" yMin="0"/>
+        <record yPelHeight="241" yMax="100" yMin="0"/>
+        <record yPelHeight="242" yMax="100" yMin="0"/>
+        <record yPelHeight="243" yMax="101" yMin="0"/>
+        <record yPelHeight="244" yMax="101" yMin="0"/>
+        <record yPelHeight="245" yMax="101" yMin="0"/>
+        <record yPelHeight="246" yMax="102" yMin="0"/>
+        <record yPelHeight="247" yMax="102" yMin="0"/>
+        <record yPelHeight="248" yMax="103" yMin="0"/>
+        <record yPelHeight="249" yMax="103" yMin="0"/>
+        <record yPelHeight="250" yMax="103" yMin="0"/>
+        <record yPelHeight="251" yMax="104" yMin="0"/>
+        <record yPelHeight="252" yMax="104" yMin="0"/>
+        <record yPelHeight="253" yMax="105" yMin="0"/>
+        <record yPelHeight="254" yMax="105" yMin="0"/>
+        <record yPelHeight="255" yMax="106" yMin="0"/>
+      </group>
+    </groups>
+  </VDMX>
+
+  <hdmx>
+    <hdmxData>
+                  ppem:   9  10  11  12  13  15  16  17  19  21  24  27  29  32  33  37  42  46  50  54  58  67  75 ;
+
+               .notdef:   5   5   6   6   7   8   8   9  10  11  12  14  15  16  17  19  21  23  25  27  29  34  38 ;
+                     A:   4   4   5   5   5   6   7   7   8   9  10  11  12  13  14  15  17  19  21  22  24  28  31 ;
+                     B:   4   4   5   5   5   6   7   7   8   9  10  11  12  13  14  15  17  19  21  22  24  28  31 ;
+                     C:   4   4   5   5   5   6   7   7   8   9  10  11  12  13  14  15  17  19  21  22  24  28  31 ;
+                  NULL:   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0 ;
+      nonmarkingreturn:   5   5   6   6   7   8   8   9  10  11  12  14  15  16  17  19  21  23  25  27  29  34  38 ;
+                 space:   5   5   6   6   7   8   8   9  10  11  12  14  15  16  17  19  21  23  25  27  29  34  38 ;
+    </hdmxData>
+  </hdmx>
+
+  <cmap>
+    <tableVersion version="0"/>
+    <cmap_format_4 platformID="0" platEncID="3" language="0">
+      <map code="0x0" name="NULL"/><!-- ???? -->
+      <map code="0xd" name="nonmarkingreturn"/><!-- ???? -->
+      <map code="0x20" name="space"/><!-- SPACE -->
+      <map code="0x41" name="A"/><!-- LATIN CAPITAL LETTER A -->
+      <map code="0x42" name="B"/><!-- LATIN CAPITAL LETTER B -->
+      <map code="0x43" name="C"/><!-- LATIN CAPITAL LETTER C -->
+    </cmap_format_4>
+    <cmap_format_6 platformID="1" platEncID="0" language="0">
+      <map code="0x0" name="NULL"/>
+      <map code="0x1" name=".notdef"/>
+      <map code="0x2" name=".notdef"/>
+      <map code="0x3" name=".notdef"/>
+      <map code="0x4" name=".notdef"/>
+      <map code="0x5" name=".notdef"/>
+      <map code="0x6" name=".notdef"/>
+      <map code="0x7" name=".notdef"/>
+      <map code="0x8" name=".notdef"/>
+      <map code="0x9" name=".notdef"/>
+      <map code="0xa" name=".notdef"/>
+      <map code="0xb" name=".notdef"/>
+      <map code="0xc" name=".notdef"/>
+      <map code="0xd" name="nonmarkingreturn"/>
+      <map code="0xe" name=".notdef"/>
+      <map code="0xf" name=".notdef"/>
+      <map code="0x10" name=".notdef"/>
+      <map code="0x11" name=".notdef"/>
+      <map code="0x12" name=".notdef"/>
+      <map code="0x13" name=".notdef"/>
+      <map code="0x14" name=".notdef"/>
+      <map code="0x15" name=".notdef"/>
+      <map code="0x16" name=".notdef"/>
+      <map code="0x17" name=".notdef"/>
+      <map code="0x18" name=".notdef"/>
+      <map code="0x19" name=".notdef"/>
+      <map code="0x1a" name=".notdef"/>
+      <map code="0x1b" name=".notdef"/>
+      <map code="0x1c" name=".notdef"/>
+      <map code="0x1d" name=".notdef"/>
+      <map code="0x1e" name=".notdef"/>
+      <map code="0x1f" name=".notdef"/>
+      <map code="0x20" name="space"/>
+      <map code="0x21" name=".notdef"/>
+      <map code="0x22" name=".notdef"/>
+      <map code="0x23" name=".notdef"/>
+      <map code="0x24" name=".notdef"/>
+      <map code="0x25" name=".notdef"/>
+      <map code="0x26" name=".notdef"/>
+      <map code="0x27" name=".notdef"/>
+      <map code="0x28" name=".notdef"/>
+      <map code="0x29" name=".notdef"/>
+      <map code="0x2a" name=".notdef"/>
+      <map code="0x2b" name=".notdef"/>
+      <map code="0x2c" name=".notdef"/>
+      <map code="0x2d" name=".notdef"/>
+      <map code="0x2e" name=".notdef"/>
+      <map code="0x2f" name=".notdef"/>
+      <map code="0x30" name=".notdef"/>
+      <map code="0x31" name=".notdef"/>
+      <map code="0x32" name=".notdef"/>
+      <map code="0x33" name=".notdef"/>
+      <map code="0x34" name=".notdef"/>
+      <map code="0x35" name=".notdef"/>
+      <map code="0x36" name=".notdef"/>
+      <map code="0x37" name=".notdef"/>
+      <map code="0x38" name=".notdef"/>
+      <map code="0x39" name=".notdef"/>
+      <map code="0x3a" name=".notdef"/>
+      <map code="0x3b" name=".notdef"/>
+      <map code="0x3c" name=".notdef"/>
+      <map code="0x3d" name=".notdef"/>
+      <map code="0x3e" name=".notdef"/>
+      <map code="0x3f" name=".notdef"/>
+      <map code="0x40" name=".notdef"/>
+      <map code="0x41" name="A"/>
+      <map code="0x42" name="B"/>
+      <map code="0x43" name="C"/>
+    </cmap_format_6>
+    <cmap_format_4 platformID="3" platEncID="1" language="0">
+      <map code="0x0" name="NULL"/><!-- ???? -->
+      <map code="0xd" name="nonmarkingreturn"/><!-- ???? -->
+      <map code="0x20" name="space"/><!-- SPACE -->
+      <map code="0x41" name="A"/><!-- LATIN CAPITAL LETTER A -->
+      <map code="0x42" name="B"/><!-- LATIN CAPITAL LETTER B -->
+      <map code="0x43" name="C"/><!-- LATIN CAPITAL LETTER C -->
+    </cmap_format_4>
+  </cmap>
+
+  <fpgm>
+    <assembly>
+      PUSHW[ ]	/* 1 value pushed */
+      0
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      PUSHW[ ]	/* 1 value pushed */
+      9
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 2 values pushed */
+      1 1
+      INSTCTRL[ ]	/* SetInstrExecControl */
+      EIF[ ]	/* EndIf */
+      PUSHW[ ]	/* 1 value pushed */
+      511
+      SCANCTRL[ ]	/* ScanConversionControl */
+      PUSHW[ ]	/* 1 value pushed */
+      68
+      SCVTCI[ ]	/* SetCVTCutIn */
+      PUSHW[ ]	/* 2 values pushed */
+      9 3
+      SDS[ ]	/* SetDeltaShiftInGState */
+      SDB[ ]	/* SetDeltaBaseInGState */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      1
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      ROUND[01]	/* Round */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      2
+      FDEF[ ]	/* FunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      1
+      LOOPCALL[ ]	/* LoopAndCallFunction */
+      POP[ ]	/* PopTopStack */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      3
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      MD[0]	/* MeasureDistance */
+      ABS[ ]	/* Absolute */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[00]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[00]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      NEG[ ]	/* Negate */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      MDAP[1]	/* MoveDirectAbsPt */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      ROUND[01]	/* Round */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EQ[ ]	/* Equal */
+      IF[ ]	/* If */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      ROUND[01]	/* Round */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EQ[ ]	/* Equal */
+      IF[ ]	/* If */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      NEG[ ]	/* Negate */
+      EIF[ ]	/* EndIf */
+      EIF[ ]	/* EndIf */
+      MSIRP[0]	/* MoveStackIndirRelPt */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      4
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[10]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[10]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      MDAP[1]	/* MoveDirectAbsPt */
+      MIRP[11101]	/* MoveIndirectRelPt */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      5
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      LTEQ[ ]	/* LessThenOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      128
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      WCVTP[ ]	/* WriteCVTInPixels */
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      POP[ ]	/* PopTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      PUSHB[ ]	/* 1 value pushed */
+      192
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      192
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      EIF[ ]	/* EndIf */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      6
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      ROUND[01]	/* Round */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      RDTG[ ]	/* RoundDownToGrid */
+      ROUND[01]	/* Round */
+      RTG[ ]	/* RoundToGrid */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      7
+      FDEF[ ]	/* FunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      6
+      LOOPCALL[ ]	/* LoopAndCallFunction */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      8
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EIF[ ]	/* EndIf */
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      128
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      192
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      256
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      320
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      RCVT[ ]	/* ReadCVT */
+      PUSHW[ ]	/* 1 value pushed */
+      384
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      384
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      RCVT[ ]	/* ReadCVT */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      9
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      RCVT[ ]	/* ReadCVT */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      10
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      PUSHW[ ]	/* 1 value pushed */
+      9
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 2 values pushed */
+      1 1
+      INSTCTRL[ ]	/* SetInstrExecControl */
+      EIF[ ]	/* EndIf */
+      PUSHW[ ]	/* 1 value pushed */
+      511
+      SCANCTRL[ ]	/* ScanConversionControl */
+      PUSHW[ ]	/* 1 value pushed */
+      68
+      SCVTCI[ ]	/* SetCVTCutIn */
+      PUSHW[ ]	/* 2 values pushed */
+      9 3
+      SDS[ ]	/* SetDeltaShiftInGState */
+      SDB[ ]	/* SetDeltaBaseInGState */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      11
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      ROUND[01]	/* Round */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      12
+      FDEF[ ]	/* FunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      11
+      LOOPCALL[ ]	/* LoopAndCallFunction */
+      POP[ ]	/* PopTopStack */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      13
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      MD[0]	/* MeasureDistance */
+      ABS[ ]	/* Absolute */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[00]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[00]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      NEG[ ]	/* Negate */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      MDAP[1]	/* MoveDirectAbsPt */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      ROUND[01]	/* Round */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EQ[ ]	/* Equal */
+      IF[ ]	/* If */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      ROUND[01]	/* Round */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EQ[ ]	/* Equal */
+      IF[ ]	/* If */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      NEG[ ]	/* Negate */
+      EIF[ ]	/* EndIf */
+      EIF[ ]	/* EndIf */
+      MSIRP[0]	/* MoveStackIndirRelPt */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      14
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[10]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      PUSHB[ ]	/* 1 value pushed */
+      4
+      CINDEX[ ]	/* CopyXToTopStack */
+      GC[0]	/* GetCoordOnPVector */
+      DUP[ ]	/* DuplicateTopStack */
+      ROUND[10]	/* Round */
+      SUB[ ]	/* Subtract */
+      ABS[ ]	/* Absolute */
+      GT[ ]	/* GreaterThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      EIF[ ]	/* EndIf */
+      MDAP[1]	/* MoveDirectAbsPt */
+      MIRP[11101]	/* MoveIndirectRelPt */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      15
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      LTEQ[ ]	/* LessThenOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      128
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      WCVTP[ ]	/* WriteCVTInPixels */
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      POP[ ]	/* PopTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      PUSHB[ ]	/* 1 value pushed */
+      192
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      192
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      EIF[ ]	/* EndIf */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      16
+      FDEF[ ]	/* FunctionDefinition */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      ROUND[01]	/* Round */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      DUP[ ]	/* DuplicateTopStack */
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      RDTG[ ]	/* RoundDownToGrid */
+      ROUND[01]	/* Round */
+      RTG[ ]	/* RoundToGrid */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHB[ ]	/* 1 value pushed */
+      1
+      ADD[ ]	/* Add */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      17
+      FDEF[ ]	/* FunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      16
+      LOOPCALL[ ]	/* LoopAndCallFunction */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      18
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      64
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      0
+      EIF[ ]	/* EndIf */
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      128
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      192
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      256
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      320
+      ROLL[ ]	/* RollTopThreeStack */
+      ROLL[ ]	/* RollTopThreeStack */
+      ELSE[ ]	/* Else */
+      ROLL[ ]	/* RollTopThreeStack */
+      SWAP[ ]	/* SwapTopStack */
+      EIF[ ]	/* EndIf */
+      DUP[ ]	/* DuplicateTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      3
+      MINDEX[ ]	/* MoveXToTopStack */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      RCVT[ ]	/* ReadCVT */
+      PUSHW[ ]	/* 1 value pushed */
+      384
+      LT[ ]	/* LessThan */
+      IF[ ]	/* If */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      PUSHW[ ]	/* 1 value pushed */
+      384
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      ELSE[ ]	/* Else */
+      PUSHB[ ]	/* 1 value pushed */
+      3
+      CINDEX[ ]	/* CopyXToTopStack */
+      RCVT[ ]	/* ReadCVT */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      SWAP[ ]	/* SwapTopStack */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ENDF[ ]	/* EndFunctionDefinition */
+      PUSHW[ ]	/* 1 value pushed */
+      19
+      FDEF[ ]	/* FunctionDefinition */
+      MPPEM[ ]	/* MeasurePixelPerEm */
+      GTEQ[ ]	/* GreaterThanOrEqual */
+      IF[ ]	/* If */
+      RCVT[ ]	/* ReadCVT */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      ELSE[ ]	/* Else */
+      POP[ ]	/* PopTopStack */
+      POP[ ]	/* PopTopStack */
+      EIF[ ]	/* EndIf */
+      ENDF[ ]	/* EndFunctionDefinition */
+    </assembly>
+  </fpgm>
+
+  <prep>
+    <assembly>
+      PUSHW[ ]	/* 1 value pushed */
+      10
+      CALL[ ]	/* CallFunction */
+      SVTCA[0]	/* SetFPVectorToAxis */
+      PUSHW[ ]	/* 3 values pushed */
+      4 1 17
+      CALL[ ]	/* CallFunction */
+      PUSHW[ ]	/* 1 value pushed */
+      3
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      RDTG[ ]	/* RoundDownToGrid */
+      ROUND[01]	/* Round */
+      RTG[ ]	/* RoundToGrid */
+      WCVTP[ ]	/* WriteCVTInPixels */
+      PUSHW[ ]	/* 1 value pushed */
+      0
+      CALL[ ]	/* CallFunction */
+      SVTCA[0]	/* SetFPVectorToAxis */
+      PUSHW[ ]	/* 3 values pushed */
+      1 1 7
+      CALL[ ]	/* CallFunction */
+      PUSHW[ ]	/* 1 value pushed */
+      0
+      DUP[ ]	/* DuplicateTopStack */
+      RCVT[ ]	/* ReadCVT */
+      RDTG[ ]	/* RoundDownToGrid */
+      ROUND[01]	/* Round */
+      RTG[ ]	/* RoundToGrid */
+      WCVTP[ ]	/* WriteCVTInPixels */
+    </assembly>
+  </prep>
+
+  <cvt>
+    <cv index="0" value="20"/>
+    <cv index="1" value="0"/>
+    <cv index="2" value="0"/>
+    <cv index="3" value="20"/>
+    <cv index="4" value="0"/>
+    <cv index="5" value="0"/>
+  </cvt>
+
+  <loca>
+    <!-- The 'loca' table will be calculated by the compiler -->
+  </loca>
+
+  <glyf>
+
+    <!-- The xMin, yMin, xMax and yMax values
+         will be recalculated by the compiler. -->
+
+    <TTGlyph name=".notdef"/><!-- contains no outline data -->
+
+    <TTGlyph name="A" xMin="0" yMin="0" xMax="478" yMax="471">
+      <contour>
+        <pt x="0" y="206" on="1"/>
+        <pt x="0" y="249" on="0"/>
+        <pt x="32" y="324" on="0"/>
+        <pt x="88" y="380" on="0"/>
+        <pt x="163" y="412" on="0"/>
+        <pt x="206" y="412" on="1"/>
+        <pt x="234" y="412" on="0"/>
+        <pt x="259" y="405" on="1"/>
+        <pt x="273" y="434" on="0"/>
+        <pt x="328" y="471" on="0"/>
+        <pt x="363" y="471" on="1"/>
+        <pt x="387" y="471" on="0"/>
+        <pt x="428" y="453" on="0"/>
+        <pt x="460" y="421" on="0"/>
+        <pt x="478" y="380" on="0"/>
+        <pt x="478" y="356" on="1"/>
+        <pt x="478" y="320" on="0"/>
+        <pt x="438" y="263" on="0"/>
+        <pt x="407" y="250" on="1"/>
+        <pt x="412" y="229" on="0"/>
+        <pt x="412" y="206" on="1"/>
+        <pt x="412" y="163" on="0"/>
+        <pt x="380" y="88" on="0"/>
+        <pt x="324" y="32" on="0"/>
+        <pt x="249" y="0" on="0"/>
+        <pt x="206" y="0" on="1"/>
+        <pt x="163" y="0" on="0"/>
+        <pt x="88" y="32" on="0"/>
+        <pt x="32" y="88" on="0"/>
+        <pt x="0" y="163" on="0"/>
+      </contour>
+      <instructions><assembly>
+          PUSHW[ ]	/* 1 value pushed */
+          10
+          CALL[ ]	/* CallFunction */
+          SVTCA[0]	/* SetFPVectorToAxis */
+          PUSHW[ ]	/* 1 value pushed */
+          10
+          MDAP[1]	/* MoveDirectAbsPt */
+          PUSHW[ ]	/* 1 value pushed */
+          3
+          RCVT[ ]	/* ReadCVT */
+          IF[ ]	/* If */
+          PUSHW[ ]	/* 1 value pushed */
+          25
+          MDAP[1]	/* MoveDirectAbsPt */
+          ELSE[ ]	/* Else */
+          PUSHW[ ]	/* 2 values pushed */
+          25 4
+          MIAP[0]	/* MoveIndirectAbsPt */
+          EIF[ ]	/* EndIf */
+          IUP[0]	/* InterpolateUntPts */
+          IUP[1]	/* InterpolateUntPts */
+        </assembly></instructions>
+    </TTGlyph>
+
+    <TTGlyph name="B" xMin="0" yMin="0" xMax="412" yMax="412">
+      <contour>
+        <pt x="0" y="412" on="1"/>
+        <pt x="412" y="412" on="1"/>
+        <pt x="412" y="0" on="1"/>
+        <pt x="0" y="0" on="1"/>
+      </contour>
+      <instructions><assembly>
+          SVTCA[0]	/* SetFPVectorToAxis */
+          PUSHW[ ]	/* 1 value pushed */
+          0
+          MDAP[1]	/* MoveDirectAbsPt */
+          PUSHW[ ]	/* 1 value pushed */
+          0
+          RCVT[ ]	/* ReadCVT */
+          IF[ ]	/* If */
+          PUSHW[ ]	/* 1 value pushed */
+          2
+          MDAP[1]	/* MoveDirectAbsPt */
+          ELSE[ ]	/* Else */
+          PUSHW[ ]	/* 2 values pushed */
+          2 1
+          MIAP[0]	/* MoveIndirectAbsPt */
+          EIF[ ]	/* EndIf */
+          IUP[0]	/* InterpolateUntPts */
+          IUP[1]	/* InterpolateUntPts */
+        </assembly></instructions>
+    </TTGlyph>
+
+    <TTGlyph name="C" xMin="0" yMin="0" xMax="412" yMax="412">
+      <contour>
+        <pt x="206" y="412" on="1"/>
+        <pt x="412" y="0" on="1"/>
+        <pt x="0" y="0" on="1"/>
+      </contour>
+      <instructions><assembly>
+          SVTCA[0]	/* SetFPVectorToAxis */
+          PUSHW[ ]	/* 1 value pushed */
+          0
+          MDAP[1]	/* MoveDirectAbsPt */
+          PUSHW[ ]	/* 1 value pushed */
+          0
+          RCVT[ ]	/* ReadCVT */
+          IF[ ]	/* If */
+          PUSHW[ ]	/* 1 value pushed */
+          1
+          MDAP[1]	/* MoveDirectAbsPt */
+          ELSE[ ]	/* Else */
+          PUSHW[ ]	/* 2 values pushed */
+          1 1
+          MIAP[0]	/* MoveIndirectAbsPt */
+          EIF[ ]	/* EndIf */
+          IUP[0]	/* InterpolateUntPts */
+          IUP[1]	/* InterpolateUntPts */
+        </assembly></instructions>
+    </TTGlyph>
+
+    <TTGlyph name="NULL"/><!-- contains no outline data -->
+
+    <TTGlyph name="nonmarkingreturn"/><!-- contains no outline data -->
+
+    <TTGlyph name="space"/><!-- contains no outline data -->
+
+  </glyf>
+
+  <name>
+    <namerecord nameID="1" platformID="1" platEncID="0" langID="0x0" unicode="True">
+      Untitled
+    </namerecord>
+    <namerecord nameID="2" platformID="1" platEncID="0" langID="0x0" unicode="True">
+      Regular
+    </namerecord>
+    <namerecord nameID="3" platformID="1" platEncID="0" langID="0x0" unicode="True">
+      pyrs: 
+    </namerecord>
+    <namerecord nameID="4" platformID="1" platEncID="0" langID="0x0" unicode="True">
+      Untitled Regular
+    </namerecord>
+    <namerecord nameID="6" platformID="1" platEncID="0" langID="0x0" unicode="True">
+      Untitled
+    </namerecord>
+    <namerecord nameID="1" platformID="3" platEncID="1" langID="0x409">
+      Untitled
+    </namerecord>
+    <namerecord nameID="2" platformID="3" platEncID="1" langID="0x409">
+      Regular
+    </namerecord>
+    <namerecord nameID="3" platformID="3" platEncID="1" langID="0x409">
+      pyrs: 
+    </namerecord>
+    <namerecord nameID="4" platformID="3" platEncID="1" langID="0x409">
+      Untitled Regular
+    </namerecord>
+    <namerecord nameID="6" platformID="3" platEncID="1" langID="0x409">
+      Untitled
+    </namerecord>
+  </name>
+
+  <post>
+    <formatType value="2.0"/>
+    <italicAngle value="0.0"/>
+    <underlinePosition value="-75"/>
+    <underlineThickness value="50"/>
+    <isFixedPitch value="0"/>
+    <minMemType42 value="0"/>
+    <maxMemType42 value="0"/>
+    <minMemType1 value="0"/>
+    <maxMemType1 value="0"/>
+    <psNames>
+      <!-- This file uses unique glyph names based on the information
+           found in the 'post' table. Since these names might not be unique,
+           we have to invent artificial names in case of clashes. In order to
+           be able to retain the original information, we need a name to
+           ps name mapping for those cases where they differ. That's what
+           you see below.
+            -->
+    </psNames>
+    <extraNames>
+      <!-- following are the name that are not taken from the standard Mac glyph order -->
+      <psName name="NULL"/>
+    </extraNames>
+  </post>
+
+</ttFont>

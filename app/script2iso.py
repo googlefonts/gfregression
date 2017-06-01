@@ -6,6 +6,8 @@ script2iso = {
     'latn': 'ENG ',
     'deva': 'HIN ',
     'dev2': 'HIN ',
+    'gujr': 'GUJ ',
+    'gjr2': 'GUJ ',
     'cyrl': 'RUS ',
     'grek': 'ELL ',
     'hebr': 'IWR ',

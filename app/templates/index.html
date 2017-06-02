@@ -224,10 +224,12 @@
 
   $('.container-button').on('click', function() {
     $('.pages').hide();
+    $('.info').hide();
     $('#alert').hide();
     var page = '#' + $(this).data('page')
+    var infopanel = '#' + $(this).data('info')
     $(page).show()
-
+    $(infopanel).show()
   })
 </script>
 {% endblock %}

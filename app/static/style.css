@@ -164,3 +164,7 @@ table{
 th, td{
   text-align: left;
 }
+
+#info-glyphs{
+  display: none;
+}

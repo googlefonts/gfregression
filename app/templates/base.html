@@ -19,12 +19,12 @@
     <div class="header-nav">
       <div class="dropdown-button">Vertical Metrics  <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
-        <li span class="container-button" data-page="page-vertical-metrics">Vertical Metrics</li>
-        <li span class="container-button" data-page="page-glyph-new">New Glyphs</li>
-        <li span class="container-button" data-page="page-glyph-modified">Modified Glyphs</li>
-        <li span class="container-button" data-page="page-glyph-missing">Missing Glyphs</li>
+        <li span class="container-button" data-page="page-vertical-metrics" data-info="info-vertical-metrics">Vertical Metrics</li>
+        <li span class="container-button" data-page="page-glyph-new" data-info="info-glyphs">New Glyphs</li>
+        <li span class="container-button" data-page="page-glyph-modified" data-info="info-glyphs">Modified Glyphs</li>
+        <li span class="container-button" data-page="page-glyph-missing" data-info="info-glyphs">Missing Glyphs</li>
         <li span class="container-button" data-page="page-waterfall">Waterfall</li>
-        <li span class="container-button" data-page="page-languages">Languages</li>
+        <li span class="container-button" data-page="page-languages" data-info="">Languages</li>
       </div>
     </div>
     {% endif %}
@@ -52,7 +52,8 @@
   </script>
   {% if request.path != '/' %}
   <div id="info">
-    <table id="info-vertical-metrics">
+
+    <table id="info-vertical-metrics" class="info">
       <thead>
         <tr>
           <th></th>
@@ -115,6 +116,41 @@
       {% endfor %}
       </tbody>
     </table>
+
+    <table id="info-glyphs" class="info">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Local</th>
+          <th>fonts.google.com</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for l_font, r_font in zip(local_fonts, remote_fonts) %}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><b>{{ l_font.cssname }}</b></td>
+        <td><b>{{ r_font.fullname }}</b></td>
+      </tr>
+      <tr>
+        <td>Glyph count</td>
+        <td>{{ l_font.glyph_count }}</td>
+        <td>{{ r_font.glyph_count }}</td>
+      </tr>
+      <tr>
+        <td>Encoded count</td>
+        <td>{{ l_font.glyph_encoded_count }}</td>
+        <td>{{ r_font.glyph_encoded_count }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
   </div>
   {% endif %}
 </body>

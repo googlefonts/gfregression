@@ -124,6 +124,8 @@ def css_property(path, fullname, cssname, font):
         'usWinAscent', 'usWinDescent',
         # hhea attributes
         'hheaAscender', 'hheaDescender', 'hheaLineGap',
+        # glyph counts
+        'glyph_count', 'glyph_encoded_count',
     ])
     name = ntpath.basename(path)[:-4]
     font = Font(
@@ -138,7 +140,10 @@ def css_property(path, fullname, cssname, font):
         usWinDescent=font['OS/2'].usWinDescent,
         hheaAscender=font['hhea'].ascent,
         hheaDescender=font['hhea'].descent,
-        hheaLineGap=font['hhea'].lineGap
+        hheaLineGap=font['hhea'].lineGap,
+        glyph_count=len(font.getGlyphSet().keys()),
+        glyph_encoded_count=len(font['cmap'].getcmap(3, 1).cmap.keys()),
+
     )
     return font
 

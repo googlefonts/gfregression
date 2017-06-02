@@ -199,6 +199,7 @@ def test_fonts(uuid):
         dummy_text=dummy_text,
         local_fonts=local_fonts.values(),
         remote_fonts=remote_fonts.values(),
+        grouped_fonts=[(l,r) for l,r in zip(local_fonts.values(), remote_fonts.values())],
         changed_glyphs=changed_glyphs,
         new_glyphs=new_glyphs,
         missing_glyphs=missing_glyphs,

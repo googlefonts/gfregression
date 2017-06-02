@@ -144,11 +144,11 @@ a, ul, li {
   font-family: sans-serif;
 }
 #info{
+  display: none;
   background-color: red;
   color: white;
   font-family: arial;
   position: fixed;
-  display: block;
   bottom: 0px;
   width: 100%;
   padding-left: 40px;

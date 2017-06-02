@@ -23,7 +23,7 @@ from fontchecks import (
     gsub_languages,
 )
 
-__version__ = 1.100
+__version__ = 1.200
 
 
 URL_PREFIX = 'https://fonts.google.com/download?family='

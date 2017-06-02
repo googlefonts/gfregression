@@ -116,13 +116,29 @@ def fonts(paths, suffix):
 
 def css_property(path, fullname, cssname, font):
     """Create the properties needed to load @fontface fonts"""
-    Font = namedtuple('Font', ['path', 'fullname', 'cssname', 'font'])
+    Font = namedtuple('Font', [
+        'path', 'fullname', 'cssname', 'font',
+        # OS/2 typo attributes
+        'sTypoAscender', 'sTypoDescender', 'sTypoLineGap',
+        # OS/2 win attributes
+        'usWinAscent', 'usWinDescent',
+        # hhea attributes
+        'hheaAscender', 'hheaDescender', 'hheaLineGap',
+    ])
     name = ntpath.basename(path)[:-4]
     font = Font(
         path=path,
         fullname=fullname,
         cssname=cssname,
-        font=font
+        font=font,
+        sTypoAscender=font['OS/2'].sTypoAscender,
+        sTypoDescender=font['OS/2'].sTypoDescender,
+        sTypoLineGap=font['OS/2'].sTypoLineGap,
+        usWinAscent=font['OS/2'].usWinAscent,
+        usWinDescent=font['OS/2'].usWinDescent,
+        hheaAscender=font['hhea'].ascent,
+        hheaDescender=font['hhea'].descent,
+        hheaLineGap=font['hhea'].lineGap
     )
     return font
 
@@ -136,7 +152,6 @@ def _delete_fonts(path):
             if item.endswith('.ttf'):
                 os.remove(os.path.join(path, item))
 
-
 @app.route("/<uuid>")
 def test_fonts(uuid):
 
@@ -147,7 +162,6 @@ def test_fonts(uuid):
     # Assemble download url for families
     remote_download_url = gf_download_url([i.fullname for i in local_fonts])
     # download last fonts from fonts.google.com
-    print('foo', remote_download_url)
     if url_200_response(remote_download_url):
         remote_fonts_zip = download_family_from_gf(remote_download_url)
         fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
@@ -174,6 +188,7 @@ def test_fonts(uuid):
     # css hook to swap remote fonts to local fonts and vice versa
     to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
     to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
+
     return render_template(
         'index.html',
         dummy_text=dummy_text,
@@ -234,6 +249,9 @@ def ajax_response(status, msg):
         msg=msg,
     ))
 
+@app.template_global(name='zip')
+def _zip(*args, **kwargs): #to not overwrite builtin zip in globals
+    return __builtins__.zip(*args, **kwargs)
 
 if __name__ == "__main__":
     app.config['STATIC_FOLDER'] = 'static'

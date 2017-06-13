@@ -4,7 +4,7 @@ body{
 p, b, h1, h2, h3, h4{
   font-family: sans-serif;
 }
-h1, h2, h3, h4, .box-header, #alert, .dropdown-button, li{
+h1, h2, h3, h4, .box-header, #alert, .button, li{
   font-family: arial;
   color: #757575;
 }
@@ -112,11 +112,18 @@ a, ul, li {
 .caret{
   font-size: 13px;
 }
-.dropdown-button{
+.button{
   display: block;
+  float: left;
   padding-top: 17px;
   padding-right: 40px;
   cursor: pointer;
+
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
 }
 .container-button{
   font-family: arial;
@@ -167,4 +174,7 @@ th, td{
 
 #info-glyphs{
   display: none;
+}
+.material-icons{
+    line-height: 18px;
 }

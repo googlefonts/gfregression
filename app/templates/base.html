@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     {% block head %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <link rel="stylesheet" href="./static/style.css" />
     <script
     src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -17,14 +19,22 @@
     </div>
     {% if request.path != '/' %}
     <div class="header-nav">
-      <div class="dropdown-button">Vertical Metrics  <span class="caret">&#x25BC;</span></div>
+      <!-- Toggle between local and remote fonts -->
+      <div class="button" id="font-toggle-button">
+        <i class="material-icons">sync</i>
+      </div>
+      <!-- Info button -->
+      <div class="button">
+        <i class="material-icons" id="info-button">info</i>
+      </div>
+      <div class="button" id="dropdown-button">Vertical Metrics  <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
         <li span class="container-button" data-page="page-vertical-metrics" data-info="info-vertical-metrics">Vertical Metrics</li>
         <li span class="container-button" data-page="page-glyph-new" data-info="info-glyphs">New Glyphs</li>
         <li span class="container-button" data-page="page-glyph-modified" data-info="info-glyphs">Modified Glyphs</li>
         <li span class="container-button" data-page="page-glyph-missing" data-info="info-glyphs">Missing Glyphs</li>
         <li span class="container-button" data-page="page-waterfall">Waterfall</li>
-        <li span class="container-button" data-page="page-languages" data-info="">Languages</li>
+        <li span class="container-button" data-page="page-languages" data-info="info-glyphs">Languages</li>
       </div>
     </div>
     {% endif %}
@@ -36,7 +46,7 @@
   <script>
   $(function() {
 
-    $('.dropdown-button').on('click', function(){
+    $('#dropdown-button').on('click', function(){
       $('.dropdown').toggle();
     })
     $('.container').on('click', function(){
@@ -45,7 +55,8 @@
 
     $('li').on('click', function(){
       var selectedText = $(this).text()
-      $('.dropdown-button').html(selectedText + ' <span class="caret">&#x25BC;</span>')
+      $('#dropdown-button').html(selectedText + ' <span class="caret">&#x25BC;</span>')
+      $('.dropdown').hide();
     })
 
   });

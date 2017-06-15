@@ -225,27 +225,6 @@
   remote = $('#to_remote_fonts').data();
   remote_fonts = remote['str'].split(',');
 
-  // Change font with Q or D
-  $(document).keypress(function(e) {
-    if(e.which == 81) {
-      for (i in local_fonts) {
-        $('.font-swap ' + '.' + local_fonts[i]).attr('class', remote_fonts[i])
-        $('#alert').show().text('fonts.google.com')
-        console.log('changed to google version');
-      }
-    }
-    if(e.which == 68) {
-      for (i in remote_fonts) {
-        $('.font-swap ' + '.' + remote_fonts[i]).attr('class', local_fonts[i])
-        $('#alert').show().text('Local')
-        console.log('changed to local version');
-      }
-    }
-    if(e.which == 73) {
-        $('#info').toggle();
-    }
-  });
-
   $('#info-button').on('click', function(){
     $('#info').toggle();
     $('.dropdown').hide();

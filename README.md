@@ -4,8 +4,6 @@ Compare local font families against the lastest release hosted on fonts.google.c
 
 # ![Font Bakery](screenshot.png)
 
-Keys Q,D will change between local and remote fonts. Key I will show metainfo.
-
 **Warning: Error handling and better tests are needed. This webapp should not be treated as a God. It should be used in conjunction with good judgement.**
 
 *"Measure twice, cut once" - English Proverb*

@@ -182,8 +182,16 @@ th, td{
   -khtml-user-select: none;
   -webkit-user-select: none;
   -o-user-select: none;
-line-height: 18px;
+    line-height: 15px;
+    vertical-align: middle;
 }
 [contenteditable]:focus {
     outline: 0px solid transparent;
+}
+.mdl-slider{
+    vertical-align: middle;
+}
+.width-33{
+    width:30%;
+    float: left;
 }

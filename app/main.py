@@ -50,7 +50,7 @@ def test_fonts(uuid):
         dummy_text=dummy_text,
         target_fonts=target_fonts,
         base_fonts=base_fonts,
-        grouped_fonts=[(l,r) for l,r in zip(target_fonts, base_fonts)],
+        grouped_fonts=zip(target_fonts, base_fonts),
         changed_glyphs=compare_fonts.inconsistent_glyphs(),
         new_glyphs=compare_fonts.new_glyphs(),
         missing_glyphs=compare_fonts.missing_glyphs(),

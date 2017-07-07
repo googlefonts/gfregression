@@ -164,17 +164,22 @@ def test_fonts(uuid):
     local_fonts_paths = glob(user_session_fonts + '/*.ttf')
     local_fonts = fonts(local_fonts_paths, 'new')
 
-    # Assemble download url for families
-    remote_download_url = gf_download_url([i.fullname for i in local_fonts])
-    # download last fonts from fonts.google.com
-    if url_200_response(remote_download_url):
-        remote_fonts_zip = download_family_from_gf(remote_download_url)
-        fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
+    if not os.listdir(REMOTE_FONTS_PATH):
+        # Assemble download url for families
+        remote_download_url = gf_download_url([i.fullname for i in local_fonts])
+        # download last fonts from fonts.google.com
+        if url_200_response(remote_download_url):
+            remote_fonts_zip = download_family_from_gf(remote_download_url)
+            fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
 
+            remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
+            remote_fonts = fonts(remote_fonts_paths, 'old')
+        else:
+            return 'Font is not hosted on fonts.google.com'
+    else:
+        print('DOING IT LOCALLY')
         remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
         remote_fonts = fonts(remote_fonts_paths, 'old')
-    else:
-        return 'Font is not hosted on fonts.google.com'
 
     shared_fonts = set([i.fullname for i in local_fonts]) & \
                    set([i.fullname for i in remote_fonts])
@@ -241,6 +246,12 @@ def upload_fonts():
         filename = upload.filename.rsplit("/")[0]
         destination = "/".join([target, filename])
         upload.save(destination)
+
+    if request.files.getlist("file2"):
+        for upload in request.files.getlist("file2"):
+            filename = upload.filename.rsplit("/")[0]
+            destination = "/".join([REMOTE_FONTS_PATH, filename])
+            upload.save(destination)
 
     if is_ajax:
         return ajax_response(True, upload_key)

@@ -9,11 +9,13 @@ var NEXT_URL   = "/";
 
 // List of pending files to handle when the Upload button is finally clicked.
 var PENDING_FILES  = [];
+var PENDING_FILES2 = [];
 
 
 $(document).ready(function() {
     // Set up the drag/drop zone.
-    initDropbox();
+    initDropbox("#dropbox", PENDING_FILES);
+    initDropbox("#dropbox2", PENDING_FILES2);
 
     // Set up the handler for the file input box.
     $("#file-picker").on("change", function() {
@@ -49,6 +51,11 @@ function doUpload() {
     for (var i = 0, ie = PENDING_FILES.length; i < ie; i++) {
         // Collect the other form data.
         fd.append("file", PENDING_FILES[i]);
+    }
+
+    for (var i = 0, ie = PENDING_FILES2.length; i < ie; i++) {
+        // Collect the other form data.
+        fd.append("file2", PENDING_FILES2[i]);
     }
 
     // Inform the back-end that we're doing this over ajax.
@@ -134,16 +141,16 @@ function collectFormData() {
 }
 
 
-function handleFiles(files) {
+function handleFiles(files, bin) {
     // Add them to the pending files list.
     for (var i = 0, ie = files.length; i < ie; i++) {
-        PENDING_FILES.push(files[i]);
+        bin.push(files[i]);
     }
 }
 
 
-function initDropbox() {
-    var $dropbox = $("#dropbox");
+function initDropbox(div, bin) {
+    var $dropbox = $(div);
 
     // On drag enter...
     $dropbox.on("dragenter", function(e) {
@@ -165,10 +172,10 @@ function initDropbox() {
 
         // Get the files.
         var files = e.originalEvent.dataTransfer.files;
-        handleFiles(files);
+        handleFiles(files, bin);
 
         // Update the display to acknowledge the number of pending files.
-        $dropbox.text(PENDING_FILES.length + " files ready for upload!");
+        $dropbox.text(bin.length + " files ready for upload!");
     });
 
     // If the files are dropped outside of the drop zone, the browser will

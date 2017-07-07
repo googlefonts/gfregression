@@ -136,6 +136,9 @@ a, ul, li {
 #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages, #page-editor{
   display: none;
 }
+#family-upload2{
+    display: none;
+}
 #alert{
   position: fixed;
   z-index: 2;
@@ -143,12 +146,17 @@ a, ul, li {
   right: 30px;
   padding: 5px;
 }
-#dropbox, #dropbox.active {
+#dropbox, #dropbox2, #dropbox.active {
   background-color: #fcfcfc;
+  width: 20em;
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 5px;
+  margin-bottom: 20px;
   font-family: sans-serif;
+}
+#dropbox2{
+    display: none;
 }
 #info{
   display: none;

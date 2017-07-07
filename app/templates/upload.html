@@ -4,17 +4,45 @@
 {% endblock %}
 
 {% block content %}
+
 <div id="page-family-upload" class="pages">
-  <div class="box-large">
-    <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
-      <div id="dropbox">
-        Drag and drop ttfs
-      </div>
-      <input type="submit" value="Upload!" id="upload-button">
-    </form>
+
+  <form action="">
+      <input type="radio" name="fonts" value="remote" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
+      <input type="radio" name="fonts" value="local2" class="comparison-toggle"><p>Compare two sets of local fonts</p>
+  </form>
+
+  <div id="family-upload">
+    <div class="box-large">
+      <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
+
+        <div id="dropbox">
+          Drag and drop ttfs
+        </div>
+
+        <div id="dropbox2">
+          Drag and drop ttfs
+        </div>
+
+        <input type="submit" value="Upload!" id="upload-button">
+      </form>
+    </div>
   </div>
+
+  <b>Usage:</b>
+  <ul>
+      <li>Font filenames must follow this structure familyname-style.ttf</li>
+      <li>If comparings against hosted family, the family must exist</li>
+  </ul>
+
 </div>
+
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
+<script>
+    $('.comparison-toggle').on('click', function() {
+      $('#dropbox2').toggle();
+    })
+</script>
 {% endblock %}

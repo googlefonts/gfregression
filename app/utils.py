@@ -19,6 +19,8 @@ FONT_EXCEPTIONS = {
 
 
 def unify_font_sets(fonts1, fonts2):
+    """Make sure each set has the same quantity and they are rearranged
+    in alphabetical order by the fullname attribute"""
     shared_fonts = set([f.fullname for f in fonts1]) & \
                    set([f.fullname for f in fonts2])
     _keep_listed_fonts(shared_fonts, fonts1)

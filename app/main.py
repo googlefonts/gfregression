@@ -29,37 +29,6 @@ with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
 
 
-@app.route("/compare/<uuid>")
-def test_fonts(uuid):
-
-    base_fonts_path = os.path.join(BASE_FONTS_PATH, uuid)
-    base_fonts = get_fonts(base_fonts_path, 'base')
-
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
-    target_fonts = get_fonts(target_fonts_path, 'target')
-
-    consolidate_fonts(base_fonts, target_fonts)
-    compare_fonts = CompareFonts(base_fonts, target_fonts)
-
-    # css hook to swap remote fonts to local fonts and vice versa
-    to_target_fonts = ','.join([i.cssname for i in target_fonts])
-    to_base_fonts = ','.join([i.cssname for i in base_fonts])
-
-    return render_template(
-        'index.html',
-        dummy_text=dummy_text,
-        target_fonts=target_fonts,
-        base_fonts=base_fonts,
-        grouped_fonts=zip(target_fonts, base_fonts),
-        changed_glyphs=compare_fonts.inconsistent_glyphs(),
-        new_glyphs=compare_fonts.new_glyphs(),
-        missing_glyphs=compare_fonts.missing_glyphs(),
-        languages=compare_fonts.languages(),
-        to_target_fonts=to_target_fonts,
-        to_base_fonts=to_base_fonts
-    )
-
-
 @app.route('/')
 def index():
     """Drag n drop font families to be tested.
@@ -111,6 +80,37 @@ def ajax_response(status, msg):
         status=status_code,
         msg=msg,
     ))
+
+
+@app.route("/compare/<uuid>")
+def test_fonts(uuid):
+
+    base_fonts_path = os.path.join(BASE_FONTS_PATH, uuid)
+    base_fonts = get_fonts(base_fonts_path, 'base')
+
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
+    target_fonts = get_fonts(target_fonts_path, 'target')
+
+    unify_font_sets(base_fonts, target_fonts)
+    compare_fonts = CompareFonts(base_fonts, target_fonts)
+
+    # css hook to swap remote fonts to local fonts and vice versa
+    to_target_fonts = ','.join([i.cssname for i in target_fonts])
+    to_base_fonts = ','.join([i.cssname for i in base_fonts])
+
+    return render_template(
+        'index.html',
+        dummy_text=dummy_text,
+        target_fonts=target_fonts,
+        base_fonts=base_fonts,
+        grouped_fonts=zip(target_fonts, base_fonts),
+        changed_glyphs=compare_fonts.inconsistent_glyphs(),
+        new_glyphs=compare_fonts.new_glyphs(),
+        missing_glyphs=compare_fonts.missing_glyphs(),
+        languages=compare_fonts.languages(),
+        to_target_fonts=to_target_fonts,
+        to_base_fonts=to_base_fonts
+    )
 
 
 if __name__ == "__main__":

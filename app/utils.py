@@ -18,7 +18,7 @@ FONT_EXCEPTIONS = {
 }
 
 
-def consolidate_fonts(fonts1, fonts2):
+def unify_font_sets(fonts1, fonts2):
     shared_fonts = set([f.fullname for f in fonts1]) & \
                    set([f.fullname for f in fonts2])
     _keep_listed_fonts(shared_fonts, fonts1)

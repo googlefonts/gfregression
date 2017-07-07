@@ -48,9 +48,7 @@ def retrieve_fonts():
     base_fonts_path = os.path.join(BASE_FONTS_PATH, upload_key)
 
     # # Is the upload using Ajax, or a direct POST by the form?
-    is_ajax = False
-    if form.get("__ajax", None) == "true":
-        is_ajax = True
+    is_ajax = True if form.get("__ajax", None) == "true" else False
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
@@ -67,8 +65,7 @@ def retrieve_fonts():
 
     if is_ajax:
         return ajax_response(True, upload_key)
-    else:
-        return redirect(url_for("test_fonts", uuid=upload_key))
+    return redirect(url_for("test_fonts", uuid=upload_key))
 
 
 def ajax_response(status, msg):

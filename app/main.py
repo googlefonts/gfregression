@@ -113,10 +113,5 @@ def ajax_response(status, msg):
     ))
 
 
-@app.template_global(name='zip')
-def _zip(*args, **kwargs): #to not overwrite builtin zip in globals
-    return __builtins__.zip(*args, **kwargs)
-
-
 if __name__ == "__main__":
     app.run(debug=True)

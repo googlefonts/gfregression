@@ -13,15 +13,12 @@ from utils import (
     get_fonts,
     delete_fonts,
     gf_download_url,
-    consolidate_fonts
+    unify_font_sets
 )
 from comparefonts import CompareFonts
-
+from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
 
 __version__ = 1.200
-
-BASE_FONTS_PATH = './static/basefonts/'
-TARGET_FONTS_PATH = './static/targetfonts/'
 
 app = Flask(__name__, static_url_path='/static')
 

@@ -4,18 +4,18 @@
 
 // Constants
 var MAX_UPLOAD_FILE_SIZE = 1024*1024; // 1 MB
-var UPLOAD_URL = "/upload-fonts";
-var NEXT_URL   = "/";
+var UPLOAD_URL = "/retrieve-fonts";
+var NEXT_URL   = "/compare/";
 
 // List of pending files to handle when the Upload button is finally clicked.
-var PENDING_FILES  = [];
-var PENDING_FILES2 = [];
+var TARGET_FONTS  = [];
+var BASE_FONTS = [];
 
 
 $(document).ready(function() {
     // Set up the drag/drop zone.
-    initDropbox("#dropbox", PENDING_FILES);
-    initDropbox("#dropbox2", PENDING_FILES2);
+    initDropbox("#target_dropbox", TARGET_FONTS);
+    initDropbox("#base_dropbox", BASE_FONTS);
 
     // Set up the handler for the file input box.
     $("#file-picker").on("change", function() {
@@ -46,17 +46,18 @@ function doUpload() {
 
     // Collect the form data.
     fd = collectFormData();
-
+    
     // Attach the files.
-    for (var i = 0, ie = PENDING_FILES.length; i < ie; i++) {
+    for (var i = 0, ie = TARGET_FONTS.length; i < ie; i++) {
         // Collect the other form data.
-        fd.append("file", PENDING_FILES[i]);
+        fd.append("target_fonts", TARGET_FONTS[i]);
     }
 
-    for (var i = 0, ie = PENDING_FILES2.length; i < ie; i++) {
+    for (var i = 0, ie = BASE_FONTS.length; i < ie; i++) {
         // Collect the other form data.
-        fd.append("file2", PENDING_FILES2[i]);
+        fd.append("base_fonts", BASE_FONTS[i]);
     }
+
 
     // Inform the back-end that we're doing this over ajax.
     fd.append("__ajax", "true");

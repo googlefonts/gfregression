@@ -136,9 +136,6 @@ a, ul, li {
 #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages, #page-editor{
   display: none;
 }
-#family-upload2{
-    display: none;
-}
 #alert{
   position: fixed;
   z-index: 2;
@@ -146,7 +143,7 @@ a, ul, li {
   right: 30px;
   padding: 5px;
 }
-#dropbox, #dropbox2, #dropbox.active {
+#target_dropbox, #base_dropbox, #target_dropbox.active, #base_dropbox.active {
   background-color: #fcfcfc;
   width: 20em;
   padding-top: 20px;
@@ -155,7 +152,7 @@ a, ul, li {
   margin-bottom: 20px;
   font-family: sans-serif;
 }
-#dropbox2{
+#base_dropbox{
     display: none;
 }
 #info{

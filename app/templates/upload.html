@@ -7,20 +7,18 @@
 
 <div id="page-family-upload" class="pages">
 
-  <form action="">
-      <input type="radio" name="fonts" value="remote" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
-      <input type="radio" name="fonts" value="local2" class="comparison-toggle"><p>Compare two sets of local fonts</p>
-  </form>
-
   <div id="family-upload">
     <div class="box-large">
-      <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
+      <form id="upload-form" action="{{ url_for('retrieve_fonts') }}" method="POST" enctype="multipart/form-data">
 
-        <div id="dropbox">
+      <input type="radio" name="fonts" value="from_gf" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
+      <input type="radio" name="fonts" value="from_local" class="comparison-toggle"><p>Compare two sets of local fonts</p>
+
+        <div id="target_dropbox">
           Drag and drop ttfs
         </div>
 
-        <div id="dropbox2">
+        <div id="base_dropbox">
           Drag and drop ttfs
         </div>
 
@@ -42,7 +40,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
 <script>
     $('.comparison-toggle').on('click', function() {
-      $('#dropbox2').toggle();
+      $('#base_dropbox').toggle();
     })
 </script>
 {% endblock %}

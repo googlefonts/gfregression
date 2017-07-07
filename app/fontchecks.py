@@ -5,18 +5,18 @@ from models import db, Languages
 
 GLYPH_THRESHOLD = 0
 
-def inconsistent_fonts_glyphs(local_fonts, remote_fonts):
+def inconsistent_fonts_glyphs(target_fonts, base_fonts):
     """return glyphs which have changed from local to remote"""
     glyphs = {}
     bad_glyphs = {}
 
-    for font in local_fonts:
-        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
-        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+    for font in target_fonts:
+        l_glyphs = target_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = base_fonts[font].font['glyf'].glyphs.keys()
         shared_glyphs = set(l_glyphs) & set(r_glyphs)
 
-        l_glyphs = local_fonts[font].font.getGlyphSet()
-        r_glyphs = remote_fonts[font].font.getGlyphSet()
+        l_glyphs = target_fonts[font].font.getGlyphSet()
+        r_glyphs = base_fonts[font].font.getGlyphSet()
 
         l_pen = AreaPen(l_glyphs)
         r_pen = AreaPen(r_glyphs)
@@ -37,43 +37,43 @@ def inconsistent_fonts_glyphs(local_fonts, remote_fonts):
                         bad_glyphs[font] = []
                     bad_glyphs[font].append(glyph)
 
-        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        l_cmap_tbl = target_fonts[font].font['cmap'].getcmap(3, 1).cmap
         try:
             glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs[font]]
         except:
             print('%s has consistent glyphs' % font)
     return glyphs
 
-def new_fonts_glyphs(local_fonts, remote_fonts):
+def new_fonts_glyphs(target_fonts, base_fonts):
     """Return glyphs which are new in local fonts"""
     glyphs = {}
 
-    for font in local_fonts:
-        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
-        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+    for font in target_fonts:
+        l_glyphs = target_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = base_fonts[font].font['glyf'].glyphs.keys()
         glyphs[font] = set(l_glyphs) - set(r_glyphs)
 
-        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        l_cmap_tbl = target_fonts[font].font['cmap'].getcmap(3, 1).cmap
 
-        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        r_cmap_tbl = base_fonts[font].font['cmap'].getcmap(3, 1).cmap
         r_encoded_glyphs = [i[0] for i in r_cmap_tbl.items()]
 
         glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in glyphs[font] and
                         i[0] not in r_encoded_glyphs]
     return glyphs
 
-def missing_fonts_glyphs(local_fonts, remote_fonts):
+def missing_fonts_glyphs(target_fonts, base_fonts):
     """Return glyphs which are missing in local fonts"""
     glyphs = {}
 
-    for font in local_fonts:
-        l_glyphs = local_fonts[font].font['glyf'].glyphs.keys()
-        r_glyphs = remote_fonts[font].font['glyf'].glyphs.keys()
+    for font in target_fonts:
+        l_glyphs = target_fonts[font].font['glyf'].glyphs.keys()
+        r_glyphs = base_fonts[font].font['glyf'].glyphs.keys()
         glyphs[font] = set(r_glyphs) - set(l_glyphs)
 
-        l_cmap_tbl = local_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        l_cmap_tbl = target_fonts[font].font['cmap'].getcmap(3, 1).cmap
         l_encoded_glyphs = [i[0] for i in l_cmap_tbl.items()]
-        r_cmap_tbl = remote_fonts[font].font['cmap'].getcmap(3, 1).cmap
+        r_cmap_tbl = base_fonts[font].font['cmap'].getcmap(3, 1).cmap
 
         glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
                         i[0] not in l_encoded_glyphs]

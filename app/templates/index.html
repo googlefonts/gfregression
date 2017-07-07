@@ -3,7 +3,7 @@
     {{ super() }}
   <style>
     /*Load local fonts*/
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       @font-face{
         font-family: {{ font.cssname }};
         src: url('{{ font.path }}');
@@ -11,7 +11,7 @@
     {% endfor %}
 
     /*Load remote fonts*/
-    {% for font in remote_fonts %}
+    {% for font in base_fonts %}
       @font-face{
         font-family: {{ font.cssname }};
         src: url('{{ font.path }}');
@@ -19,14 +19,14 @@
     {% endfor %}
 
     /*Create classes for local fonts*/
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       .{{ font.cssname }}{
         font-family: {{ font.cssname }};
       }
     {% endfor %}
 
-    /*Create classes for remote_fonts*/
-    {% for font in remote_fonts %}
+    /*Create classes for base_fonts*/
+    {% for font in base_fonts %}
       .{{ font.cssname }}{
         font-family: {{ font.cssname }};
       }
@@ -35,17 +35,17 @@
 {% endblock %}
 
 {% block content %}
-  <meta id="to_local_fonts" data-name="local-fonts" data-str="{{ to_local_fonts }}">
-  <meta id="to_remote_fonts" data-name="remote-fonts" data-str="{{ to_remote_fonts }}">
+  <meta id="to_target_fonts" data-name="local-fonts" data-str="{{ to_target_fonts }}">
+  <meta id="to_base_fonts" data-name="remote-fonts" data-str="{{ to_base_fonts }}">
 
   <div id="page-vertical-metrics" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
     {% endfor %}
 
     <div id="container-left">
       <h2>Local</h2>
-      {% for font in local_fonts %}
+      {% for font in target_fonts %}
         <div class="box-200px">
           <div class="box-header" id="{{ font.fullname }}-vert">{{ font.fullname }}</div>
           <div class="box-content">
@@ -57,7 +57,7 @@
 
     <div id="container-right">
       <h2>fonts.google.com</h2>
-      {% for font in remote_fonts %}
+      {% for font in base_fonts %}
         <div class="box-200px">
           <div class="box-header">{{ font.cssname }}</div>
           <div class="box-content">
@@ -69,11 +69,11 @@
   </div>
 
   <div id="page-glyph-modified" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in remote_fonts %}
+    {% for font in base_fonts %}
       <div class="box-large">
         <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
         <div class="box-content">
@@ -91,11 +91,11 @@
   </div>
 
   <div id="page-glyph-new" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in remote_fonts %}
+    {% for font in base_fonts %}
       <div class="box-large">
         <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
         <div class="box-content">
@@ -117,11 +117,11 @@
   </div>
 
   <div id="page-glyph-missing" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in remote_fonts %}
+    {% for font in base_fonts %}
       <div class="box-large">
         <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
         <div class="box-content">
@@ -143,11 +143,11 @@
   </div>
 
   <div id="page-waterfall" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
     <div class="box-large">
       <div class="box-header" id="{{ font.fullname }}-waterfall">{{ font.fullname }}</div>
       <div class="box-content">
@@ -168,11 +168,11 @@
   </div>
 
   <div id="page-languages" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-languages">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
     <div class="box-large">
       <div class="box-header" id="{{ font.fullname }}-langauges">{{ font.fullname }}</div>
       <div class="box-content">
@@ -190,11 +190,11 @@
   </div>
 
     <div id="page-editor" class="pages">
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
       <h2><a href="#{{ font.fullname }}-editor">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in local_fonts %}
+    {% for font in target_fonts %}
     <div class="box-large">
       <div class="box-header" id="{{ font.fullname }}-editor">
         <div class="width-33">
@@ -226,11 +226,11 @@
   <div id="alert"></div>
 
 <script>
-  local = $('#to_local_fonts').data();
-  local_fonts = local['str'].split(',') 
+  local = $('#to_target_fonts').data();
+  target_fonts = local['str'].split(',') 
 
-  remote = $('#to_remote_fonts').data();
-  remote_fonts = remote['str'].split(',');
+  remote = $('#to_base_fonts').data();
+  base_fonts = remote['str'].split(',');
 
   $('#info-button').on('click', function(){
     $('#info').toggle();
@@ -239,15 +239,15 @@
   ee = true;
   $('#font-toggle-button').on('click', function(){
     if(ee == true) {
-      for (i in remote_fonts) {
-        $('.font-swap ' + '.' + remote_fonts[i]).attr('class', local_fonts[i])
+      for (i in base_fonts) {
+        $('.font-swap ' + '.' + base_fonts[i]).attr('class', target_fonts[i])
         $('#alert').show().text('Local')
         console.log('changed to local version');
       }
       ee = false;
     } else {
-      for (i in local_fonts) {
-        $('.font-swap ' + '.' + local_fonts[i]).attr('class', remote_fonts[i])
+      for (i in target_fonts) {
+        $('.font-swap ' + '.' + target_fonts[i]).attr('class', base_fonts[i])
         $('#alert').show().text('fonts.google.com')
         console.log('changed to google version');
       }

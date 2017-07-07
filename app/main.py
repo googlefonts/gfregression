@@ -16,6 +16,14 @@ import json
 from urllib import urlopen
 from zipfile import ZipFile
 from StringIO import StringIO
+
+from utils import (
+    download_fonts,
+    upload_fonts,
+    get_fonts,
+    delete_fonts,
+    gf_download_url,
+)
 from fontchecks import (
     inconsistent_fonts_glyphs,
     new_fonts_glyphs,
@@ -26,17 +34,9 @@ from fontchecks import (
 __version__ = 1.200
 
 
-URL_PREFIX = 'https://fonts.google.com/download?family='
+BASE_FONTS_PATH = './static/basefonts/'
+TARGET_FONTS_PATH = './static/targetfonts/'
 
-FONT_EXCEPTIONS = {
-    'VT323': 'VT323',
-    'AmaticSC': 'Amatic SC',
-    'AmaticaSC': 'Amatica SC',
-    'OldStandardTT': 'Old Standard TT',
-}
-
-LOCAL_FONTS_PATH = './static/localfonts/'
-REMOTE_FONTS_PATH = './static/remotefonts/'
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -44,173 +44,46 @@ with open('./dummy_text.txt', 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
 
 
-def url_200_response(url):
-    '''Check if the url mataches the Google fonts api url'''
-    if requests.get(url).status_code == 200:
-        return True
-    return False
-
-
-def _convert_camelcase(fam_name, seperator=' '):
-    '''RubikMonoOne > Rubik+Mono+One'''
-    if fam_name not in FONT_EXCEPTIONS:
-        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, fam_name)
-    else:
-        fam_name = FONT_EXCEPTIONS[fam_name].replace(' ', seperator)
-        return fam_name
-
-
-def gf_download_url(local_fonts):
-    """Assemble download url for families"""
-    remote_families_name = set([_convert_camelcase(f.split('-')[0], '%20')
-                               for f in local_fonts])
-    remote_families_url_suffix = '|'.join(remote_families_name)
-    return URL_PREFIX + remote_families_url_suffix
-
-
-def download_family_from_gf(url):
-    """Return a zipfile containing a font family hosted on fonts.google.com"""
-    request = urlopen(url)
-    return ZipFile(StringIO(request.read()))
-
-
-def fonts_from_zip(zipfile, to):
-    """download the fonts and store them locally"""
-    unnest = False
-    for file_name in zipfile.namelist():
-        if file_name.endswith(".ttf"):
-            zipfile.extract(file_name, to)
-        if '/' in file_name:
-            unnest = True
-    if unnest:
-        _unnest_folder(to)
-
-
-def _unnest_folder(folder):
-    """If multiple fonts have been downloaded, move them from sub dirs to
-    parent dir"""
-    for r, path, files, in os.walk(folder):
-        for file in files:
-            if file.endswith('.ttf'):
-                shutil.move(os.path.join(r, file), folder)
-
-    for f in os.listdir(folder):
-        if os.path.isdir(os.path.join(folder, f)):
-            os.rmdir(os.path.join(folder, f))
-
-
-def fonts(paths, suffix):
-    """Create a collection of css_property objects"""
-    fonts = []
-    for path in paths:
-        name = ntpath.basename(path)[:-4]
-        font = css_property(
-            path=path.replace('\\', '/'),
-            fullname=name,
-            cssname='%s-%s' % (name, suffix),
-            font=TTFont(path)
-        )
-        fonts.append(font)
-    return fonts
-
-
-def css_property(path, fullname, cssname, font):
-    """Create the properties needed to load @fontface fonts"""
-    Font = namedtuple('Font', [
-        'path', 'fullname', 'cssname', 'font',
-        # OS/2 typo attributes
-        'sTypoAscender', 'sTypoDescender', 'sTypoLineGap',
-        # OS/2 win attributes
-        'usWinAscent', 'usWinDescent',
-        # hhea attributes
-        'hheaAscender', 'hheaDescender', 'hheaLineGap',
-        # glyph counts
-        'glyph_count', 'glyph_encoded_count',
-    ])
-    name = ntpath.basename(path)[:-4]
-    font = Font(
-        path=path,
-        fullname=fullname,
-        cssname=cssname,
-        font=font,
-        sTypoAscender=font['OS/2'].sTypoAscender,
-        sTypoDescender=font['OS/2'].sTypoDescender,
-        sTypoLineGap=font['OS/2'].sTypoLineGap,
-        usWinAscent=font['OS/2'].usWinAscent,
-        usWinDescent=font['OS/2'].usWinDescent,
-        hheaAscender=font['hhea'].ascent,
-        hheaDescender=font['hhea'].descent,
-        hheaLineGap=font['hhea'].lineGap,
-        glyph_count=len(font.getGlyphSet().keys()),
-        glyph_encoded_count=len(font['cmap'].getcmap(3, 1).cmap.keys()),
-
-    )
-    return font
-
-
-def _delete_fonts(path):
-    """Delete any ttfs in a specific folder"""
-    for item in os.listdir(path):
-        if os.path.isdir(os.path.join(path, item)):
-            shutil.rmtree(os.path.join(path, item))
-        else:
-            if item.endswith('.ttf'):
-                os.remove(os.path.join(path, item))
-
-@app.route("/<uuid>")
+@app.route("/compare/<uuid>")
 def test_fonts(uuid):
 
-    user_session_fonts = os.path.join(LOCAL_FONTS_PATH, uuid)
-    local_fonts_paths = glob(user_session_fonts + '/*.ttf')
-    local_fonts = fonts(local_fonts_paths, 'new')
+    base_fonts_path = os.path.join(BASE_FONTS_PATH, uuid)
+    base_fonts = get_fonts(base_fonts_path, 'base')
 
-    if not os.listdir(REMOTE_FONTS_PATH):
-        # Assemble download url for families
-        remote_download_url = gf_download_url([i.fullname for i in local_fonts])
-        # download last fonts from fonts.google.com
-        if url_200_response(remote_download_url):
-            remote_fonts_zip = download_family_from_gf(remote_download_url)
-            fonts_from_zip(remote_fonts_zip, REMOTE_FONTS_PATH)
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
+    target_fonts = get_fonts(target_fonts_path, 'target')
 
-            remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
-            remote_fonts = fonts(remote_fonts_paths, 'old')
-        else:
-            return 'Font is not hosted on fonts.google.com'
-    else:
-        print('DOING IT LOCALLY')
-        remote_fonts_paths = glob(REMOTE_FONTS_PATH + '*.ttf')
-        remote_fonts = fonts(remote_fonts_paths, 'old')
 
-    shared_fonts = set([i.fullname for i in local_fonts]) & \
-                   set([i.fullname for i in remote_fonts])
+    shared_fonts = set([i.fullname for i in base_fonts]) & \
+                   set([i.fullname for i in target_fonts])
 
-    local_fonts = {f.fullname: f for f in local_fonts
+    target_fonts = {f.fullname: f for f in target_fonts
                    if f.fullname in shared_fonts}
-    remote_fonts = {f.fullname: f for f in remote_fonts
-                    if f.fullname in shared_fonts}
+    base_fonts = {f.fullname: f for f in base_fonts
+                  if f.fullname in shared_fonts}
 
-    changed_glyphs = inconsistent_fonts_glyphs(local_fonts, remote_fonts)
-    new_glyphs = new_fonts_glyphs(local_fonts, remote_fonts)
-    missing_glyphs = missing_fonts_glyphs(local_fonts, remote_fonts)
+    changed_glyphs = inconsistent_fonts_glyphs(target_fonts, base_fonts)
+    new_glyphs = new_fonts_glyphs(target_fonts, base_fonts)
+    missing_glyphs = missing_fonts_glyphs(target_fonts, base_fonts)
 
-    languages = gsub_languages(local_fonts)
+    languages = gsub_languages(target_fonts)
 
     # css hook to swap remote fonts to local fonts and vice versa
-    to_local_fonts = ','.join([local_fonts[i].cssname for i in local_fonts])
-    to_remote_fonts = ','.join([remote_fonts[i].cssname for i in remote_fonts])
+    to_target_fonts = ','.join([target_fonts[i].cssname for i in target_fonts])
+    to_base_fonts = ','.join([base_fonts[i].cssname for i in base_fonts])
 
     return render_template(
         'index.html',
         dummy_text=dummy_text,
-        local_fonts=local_fonts.values(),
-        remote_fonts=remote_fonts.values(),
-        grouped_fonts=[(l,r) for l,r in zip(local_fonts.values(), remote_fonts.values())],
+        target_fonts=target_fonts.values(),
+        base_fonts=base_fonts.values(),
+        grouped_fonts=[(l,r) for l,r in zip(target_fonts.values(), base_fonts.values())],
         changed_glyphs=changed_glyphs,
         new_glyphs=new_glyphs,
         missing_glyphs=missing_glyphs,
         languages=languages,
-        to_local_fonts=to_local_fonts,
-        to_remote_fonts=to_remote_fonts
+        to_target_fonts=to_target_fonts,
+        to_base_fonts=to_base_fonts
     )
 
 
@@ -220,38 +93,38 @@ def index():
 
     Each user who runs this view will clear the font cache. This will not
     affect other users, as long as they don't refresh their browsers"""
-    _delete_fonts(LOCAL_FONTS_PATH)
-    _delete_fonts(REMOTE_FONTS_PATH)
+    delete_fonts(TARGET_FONTS_PATH)
+    delete_fonts(BASE_FONTS_PATH)
     return render_template('upload.html')
 
 
-@app.route('/upload-fonts', methods=["POST"])
-def upload_fonts():
-    """Handle the upload of a file."""
+@app.route('/retrieve-fonts', methods=["POST"])
+def retrieve_fonts():
+    """Upload/download the two sets of fonts to compare"""
     form = request.form
 
-    # Create a unique "session ID" for this particular batch of uploads.
+    # Create a unique "session ID" for this particular session.
     upload_key = str(uuid4())
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, upload_key)
+    base_fonts_path = os.path.join(BASE_FONTS_PATH, upload_key)
 
-    # Is the upload using Ajax, or a direct POST by the form?
+    # # Is the upload using Ajax, or a direct POST by the form?
     is_ajax = False
     if form.get("__ajax", None) == "true":
         is_ajax = True
 
-    # Target folder for these uploads.
-    target = LOCAL_FONTS_PATH + upload_key
-    os.mkdir(target)
+    # User wants to compare fonts against GF hosted.
+    if form.get('fonts') == 'from_gf':
+        target_families = (request.files.getlist('target_fonts'))
+        families = [f.filename for f in target_families]
+        gf_family_url = gf_download_url(families)
+        download_fonts(gf_family_url, base_fonts_path)
+        upload_fonts(request, "target_fonts", target_fonts_path)
 
-    for upload in request.files.getlist("file"):
-        filename = upload.filename.rsplit("/")[0]
-        destination = "/".join([target, filename])
-        upload.save(destination)
-
-    if request.files.getlist("file2"):
-        for upload in request.files.getlist("file2"):
-            filename = upload.filename.rsplit("/")[0]
-            destination = "/".join([REMOTE_FONTS_PATH, filename])
-            upload.save(destination)
+    # User wants to compare two sets of local fonts.
+    elif form.get('fonts') == 'from_local':
+        upload_fonts(request, "base_fonts", base_fonts_path)
+        upload_fonts(request, "target_fonts", target_fonts_path)
 
     if is_ajax:
         return ajax_response(True, upload_key)
@@ -266,10 +139,11 @@ def ajax_response(status, msg):
         msg=msg,
     ))
 
+
 @app.template_global(name='zip')
 def _zip(*args, **kwargs): #to not overwrite builtin zip in globals
     return __builtins__.zip(*args, **kwargs)
 
+
 if __name__ == "__main__":
-    app.config['STATIC_FOLDER'] = 'static'
     app.run(debug=True)

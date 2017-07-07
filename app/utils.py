@@ -18,6 +18,23 @@ FONT_EXCEPTIONS = {
 }
 
 
+def consolidate_fonts(fonts1, fonts2):
+    shared_fonts = set([f.fullname for f in fonts1]) & \
+                   set([f.fullname for f in fonts2])
+    _keep_listed_fonts(shared_fonts, fonts1)
+    _keep_listed_fonts(shared_fonts, fonts2)
+
+    fonts1.sort(key=lambda x: x.fullname, reverse=True)
+    fonts2.sort(key=lambda x: x.fullname, reverse=True)
+
+
+def _keep_listed_fonts(store, l):
+    for idx, item in enumerate(l):
+        for idx, item in enumerate(l):
+            if item.fullname not in store:
+                l.pop(idx)
+
+
 def get_fonts(path, ext):
     """Retrieve a collection of fonts from a url, zipped url or local
     collection of ttfs"""

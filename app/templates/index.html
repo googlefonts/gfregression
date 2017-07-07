@@ -241,15 +241,15 @@
     if(ee == true) {
       for (i in base_fonts) {
         $('.font-swap ' + '.' + base_fonts[i]).attr('class', target_fonts[i])
-        $('#alert').show().text('Local')
-        console.log('changed to local version');
+        $('#alert').show().text('Target')
+        console.log('changed to target');
       }
       ee = false;
     } else {
       for (i in target_fonts) {
         $('.font-swap ' + '.' + target_fonts[i]).attr('class', base_fonts[i])
-        $('#alert').show().text('fonts.google.com')
-        console.log('changed to google version');
+        $('#alert').show().text('Base')
+        console.log('changed to base');
       }
       ee = true;
     }

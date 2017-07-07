@@ -3,19 +3,9 @@ Compare local fonts against fonts available on fonts.google.com
 '''
 from __future__ import print_function
 from flask import Flask, request, render_template, redirect, url_for
-from fontTools.ttLib import TTFont
-from glob import glob
 from uuid import uuid4
-from collections import namedtuple
-import ntpath
-import requests
-import re
 import os
-import shutil
 import json
-from urllib import urlopen
-from zipfile import ZipFile
-from StringIO import StringIO
 
 from utils import (
     download_fonts,
@@ -23,20 +13,15 @@ from utils import (
     get_fonts,
     delete_fonts,
     gf_download_url,
+    consolidate_fonts
 )
-from fontchecks import (
-    inconsistent_fonts_glyphs,
-    new_fonts_glyphs,
-    missing_fonts_glyphs,
-    gsub_languages,
-)
+from comparefonts import CompareFonts
+
 
 __version__ = 1.200
 
-
 BASE_FONTS_PATH = './static/basefonts/'
 TARGET_FONTS_PATH = './static/targetfonts/'
-
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -53,35 +38,23 @@ def test_fonts(uuid):
     target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
     target_fonts = get_fonts(target_fonts_path, 'target')
 
-
-    shared_fonts = set([i.fullname for i in base_fonts]) & \
-                   set([i.fullname for i in target_fonts])
-
-    target_fonts = {f.fullname: f for f in target_fonts
-                   if f.fullname in shared_fonts}
-    base_fonts = {f.fullname: f for f in base_fonts
-                  if f.fullname in shared_fonts}
-
-    changed_glyphs = inconsistent_fonts_glyphs(target_fonts, base_fonts)
-    new_glyphs = new_fonts_glyphs(target_fonts, base_fonts)
-    missing_glyphs = missing_fonts_glyphs(target_fonts, base_fonts)
-
-    languages = gsub_languages(target_fonts)
+    consolidate_fonts(base_fonts, target_fonts)
+    compare_fonts = CompareFonts(base_fonts, target_fonts)
 
     # css hook to swap remote fonts to local fonts and vice versa
-    to_target_fonts = ','.join([target_fonts[i].cssname for i in target_fonts])
-    to_base_fonts = ','.join([base_fonts[i].cssname for i in base_fonts])
+    to_target_fonts = ','.join([i.cssname for i in target_fonts])
+    to_base_fonts = ','.join([i.cssname for i in base_fonts])
 
     return render_template(
         'index.html',
         dummy_text=dummy_text,
-        target_fonts=target_fonts.values(),
-        base_fonts=base_fonts.values(),
-        grouped_fonts=[(l,r) for l,r in zip(target_fonts.values(), base_fonts.values())],
-        changed_glyphs=changed_glyphs,
-        new_glyphs=new_glyphs,
-        missing_glyphs=missing_glyphs,
-        languages=languages,
+        target_fonts=target_fonts,
+        base_fonts=base_fonts,
+        grouped_fonts=[(l,r) for l,r in zip(target_fonts, base_fonts)],
+        changed_glyphs=compare_fonts.inconsistent_glyphs(),
+        new_glyphs=compare_fonts.new_glyphs(),
+        missing_glyphs=compare_fonts.missing_glyphs(),
+        languages=compare_fonts.languages(),
         to_target_fonts=to_target_fonts,
         to_base_fonts=to_base_fonts
     )
@@ -115,7 +88,7 @@ def retrieve_fonts():
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        target_families = (request.files.getlist('target_fonts'))
+        target_families = request.files.getlist('target_fonts')
         families = [f.filename for f in target_families]
         gf_family_url = gf_download_url(families)
         download_fonts(gf_family_url, base_fonts_path)

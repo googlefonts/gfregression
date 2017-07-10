@@ -39,8 +39,14 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
 <script>
-    $('.comparison-toggle').on('click', function() {
-      $('#base_dropbox').toggle();
+
+    $('.comparison-toggle').on('change', function() {
+      if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_local') {
+        $('#base_dropbox').show();
+      }
+      else {
+        $('#base_dropbox').hide();
+      }
     })
 </script>
 {% endblock %}

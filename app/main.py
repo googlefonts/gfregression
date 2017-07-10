@@ -13,7 +13,7 @@ from utils import (
     get_fonts,
     delete_fonts,
     gf_download_url,
-    unify_font_sets
+    equalize_font_sets
 )
 from comparefonts import CompareFonts
 from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
@@ -85,7 +85,7 @@ def test_fonts(uuid):
     target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
     target_fonts = get_fonts(target_fonts_path, 'target')
 
-    unify_font_sets(base_fonts, target_fonts)
+    equalize_font_sets(base_fonts, target_fonts)
     compare_fonts = CompareFonts(base_fonts, target_fonts)
 
     # css hook to swap remote fonts to local fonts and vice versa
@@ -93,7 +93,7 @@ def test_fonts(uuid):
     to_base_fonts = ','.join([i.cssname for i in base_fonts])
 
     return render_template(
-        'index.html',
+        'test_fonts.html',
         dummy_text=dummy_text,
         target_fonts=target_fonts,
         base_fonts=base_fonts,

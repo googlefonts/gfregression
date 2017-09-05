@@ -9,6 +9,8 @@ from StringIO import StringIO
 import ntpath
 from fontTools.ttLib import TTFont
 from collections import namedtuple
+import json
+
 
 FONT_EXCEPTIONS = {
     'VT323': 'VT323',
@@ -103,12 +105,34 @@ def css_property(path, fullname, cssname, font):
     return font
 
 
+def download_files_from_repo(url, to_dir):
+    """Download files from a directory inside a github repository"""
+    os.mkdir(to_dir)
+    branch, api_url = _convert_github_url_to_api(url)
+    request = requests.get(api_url, params={'ref': branch})
+    api_request = json.loads(request.text)
+    for item in api_request:
+        dl_url = item['download_url']
+        file_path = os.path.join(to_dir, item['name'])
+        download_file(dl_url, file_path)
 
 
+def _convert_github_url_to_api(url):
+    """Convert github html url to api url"""
+    url = url.split('/')  # urls are always forwad slash regardless of OS
+    user, repo, branch, dirpath = url[3], url[4], url[6], url[7:]
+    dirpath = '/'.join(dirpath)
+    return branch, 'https://api.github.com/repos/%s/%s/contents/%s' %(
+        user,
+        repo,
+        dirpath
+    )
 
 
-
-
+def download_file(url, p):
+    request = requests.get(url, stream=True)
+    with open(p, 'wb') as f:
+        shutil.copyfileobj(request.raw, f)
 
 
 def _convert_camelcase(fam_name, seperator=' '):

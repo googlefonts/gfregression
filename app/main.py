@@ -10,6 +10,7 @@ import json
 from utils import (
     download_fonts,
     upload_fonts,
+    download_files_from_repo,
     get_fonts,
     delete_fonts,
     gf_download_url,
@@ -57,6 +58,15 @@ def retrieve_fonts():
         gf_family_url = gf_download_url(families)
         download_fonts(gf_family_url, base_fonts_path)
         upload_fonts(request, "target_fonts", target_fonts_path)
+
+    # User wants to compare upstream github fonts against GF hosted.
+    if form.get('fonts') == 'from_git_url':
+        fonts_url = form.get('git-url')
+        download_files_from_repo(fonts_url, target_fonts_path)
+
+        families = [f for f in os.listdir(target_fonts_path)]
+        gf_family_url = gf_download_url(families)
+        download_fonts(gf_family_url, base_fonts_path)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':

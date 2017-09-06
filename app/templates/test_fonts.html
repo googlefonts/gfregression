@@ -77,14 +77,18 @@
       <div class="box-large">
         <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
         <div class="box-content">
-          {% for uni, name in changed_glyphs[font.fullname] %}
-          <div class="font-swap">
-            <div class="box-char">
-              <span class="{{ font.cssname }}" style="font-size: 60px">&#{{ uni }};</span>
-              <div class="caption">{{ name }}</div>
+          {% if changed_glyphs[font.fullname] %}
+            {% for uni, name in changed_glyphs[font.fullname] %}
+            <div class="font-swap">
+              <div class="box-char">
+                <span class="{{ font.cssname }}" style="font-size: 60px">&#{{ uni }};</span>
+                <div class="caption">{{ name }}</div>
+              </div>
             </div>
-          </div>
-          {% endfor %}
+            {% endfor %}
+          {% else %}
+            <p>No modified glyphs</p>
+          {% endif %}
         </div>
       </div>
     {% endfor %}

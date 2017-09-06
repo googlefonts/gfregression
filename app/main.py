@@ -52,10 +52,10 @@ def retrieve_fonts():
         retrievefonts.google_fonts(base_fonts_path, families)
 
     # User wants to compare upstream github fonts against GF hosted.
-    if form.get('fonts') == 'from_github_url':
+    elif form.get('fonts') == 'from_github_url':
         retrievefonts.github_dir(form.get('github-url'), target_fonts_path)
         families = [f for f in os.listdir(target_fonts_path)]
-        retrievefonts.google_fonts(base_fonts_path, families)
+        retrieve_fontsnts.google_fonts(base_fonts_path, families)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':

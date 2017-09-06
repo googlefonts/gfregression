@@ -7,16 +7,14 @@ from uuid import uuid4
 import os
 import json
 
+import retrievefonts
+from comparefonts import CompareFonts
+from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
 from utils import (
-    download_gf_fonts,
-    upload_fonts,
-    download_files_from_repo,
     get_fonts,
     delete_fonts,
     equalize_font_sets
 )
-from comparefonts import CompareFonts
-from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
 
 __version__ = 1.200
 
@@ -49,20 +47,20 @@ def retrieve_fonts():
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        upload_fonts(request, "target_fonts", target_fonts_path)
+        retrievefonts.user_upload(request, "target_fonts", target_fonts_path)
         families = [f for f in os.listdir(target_fonts_path)]
-        download_gf_fonts(base_fonts_path, families)
+        retrievefonts.google_fonts(base_fonts_path, families)
 
     # User wants to compare upstream github fonts against GF hosted.
     if form.get('fonts') == 'from_github_url':
-        download_files_from_repo(form.get('github-url'), target_fonts_path)
+        retrievefonts.github_dir(form.get('github-url'), target_fonts_path)
         families = [f for f in os.listdir(target_fonts_path)]
-        download_gf_fonts(base_fonts_path, families)
+        retrievefonts.google_fonts(base_fonts_path, families)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':
-        upload_fonts(request, "target_fonts", target_fonts_path)
-        upload_fonts(request, "base_fonts", base_fonts_path)
+        retrievefonts.user_upload(request, "target_fonts", target_fonts_path)
+        retrievefonts.user_upload(request, "base_fonts", base_fonts_path)
 
     if is_ajax:
         return ajax_response(True, session_id)

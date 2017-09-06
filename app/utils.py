@@ -4,20 +4,11 @@ from glob import glob
 import shutil
 import requests
 from urllib import urlopen
-from zipfile import ZipFile
-from StringIO import StringIO
 import ntpath
+from StringIO import StringIO
 from fontTools.ttLib import TTFont
 from collections import namedtuple
 import json
-
-
-FONT_EXCEPTIONS = {
-    'VT323': 'VT323',
-    'AmaticSC': 'Amatic SC',
-    'AmaticaSC': 'Amatica SC',
-    'OldStandardTT': 'Old Standard TT',
-}
 
 
 def equalize_font_sets(fonts1, fonts2):
@@ -44,16 +35,6 @@ def get_fonts(path, ext):
     collection of ttfs"""
     fonts_paths = glob(path + '/*.ttf')
     return fonts(fonts_paths, ext)
-
-
-def upload_fonts(request, ajax_key, fonts_path):
-    """Upload the fonts from a request to a specified path"""
-    os.mkdir(fonts_path)
-
-    for upload in request.files.getlist(ajax_key):
-        filename = upload.filename.rsplit("/")[0]
-        destination = "/".join([fonts_path, filename])
-        upload.save(destination)
 
 
 def fonts(paths, suffix):
@@ -105,88 +86,14 @@ def css_property(path, fullname, cssname, font):
     return font
 
 
-def download_files_from_repo(url, to_dir):
-    """Download files from a directory inside a github repository"""
-    os.mkdir(to_dir)
-    branch, api_url = _convert_github_url_to_api(url)
-    request = requests.get(api_url, params={'ref': branch})
-    api_request = json.loads(request.text)
-    for item in api_request:
-        dl_url = item['download_url']
-        file_path = os.path.join(to_dir, item['name'])
-        download_file(dl_url, file_path)
-
-
-def _convert_github_url_to_api(url):
-    """Convert github html url to api url"""
-    url = url.split('/')  # urls are always forward slash regardless of OS
-    user, repo, branch, dirpath = url[3], url[4], url[6], url[7:]
-    dirpath = '/'.join(dirpath)
-    return branch, 'https://api.github.com/repos/%s/%s/contents/%s' %(
-        user,
-        repo,
-        dirpath
-    )
-
-
-def download_file(url, p):
+def download_file(url, dst_path=None):
+    """Download a file from a url. If no url is specified, store the file
+    as a StringIO object"""
     request = requests.get(url, stream=True)
-    with open(p, 'wb') as f:
-        shutil.copyfileobj(request.raw, f)
-
-
-def _convert_camelcase(fam_name, seperator=' '):
-    '''RubikMonoOne > Rubik+Mono+One'''
-    if fam_name not in FONT_EXCEPTIONS:
-        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, fam_name)
-    else:
-        fam_name = FONT_EXCEPTIONS[fam_name].replace(' ', seperator)
-        return fam_name
-
-
-def download_gf_fonts(to_dir, *families):
-    """Return a zipfile containing a font family hosted on fonts.google.com"""
-    url = _gf_download_url(*families)
-    request = urlopen(url)
-    if request.getcode() == 200:
-        fonts_zip = ZipFile(StringIO(request.read()))
-        fonts_from_zip(fonts_zip, to_dir)
-    else:
-        return 'Url does not contain fonts'
-
-
-def _gf_download_url(families):
-    """Assemble download url for families"""
-    gf_url_prefix = 'https://fonts.google.com/download?family='
-    families_name = set([_convert_camelcase(f.split('-')[0], '%20')
-                        for f in families if f.endswith('.ttf')])
-    families_url_suffix = '|'.join(families_name)
-    return gf_url_prefix + families_url_suffix
-
-
-def fonts_from_zip(zipfile, to):
-    """download the fonts and store them locally"""
-    unnest = False
-    for file_name in zipfile.namelist():
-        if file_name.endswith(".ttf"):
-            zipfile.extract(file_name, to)
-        if '/' in file_name:
-            unnest = True
-    if unnest:
-        _unnest_folder(to)
-
-
-def _unnest_folder(folder):
-    """If multiple fonts have been downloaded, move them from sub dirs to
-    parent dir"""
-    for r, path, files, in os.walk(folder):
-        for file in files:
-            if file.endswith('.ttf'):
-                shutil.move(os.path.join(r, file), folder)
-
-    for f in os.listdir(folder):
-        if os.path.isdir(os.path.join(folder, f)):
-            os.rmdir(os.path.join(folder, f))
+    if not dst_path:
+        return StringIO(request.content)
+    with open(dst_path, 'wb') as downloaded_file:
+        shutil.copyfileobj(request.raw, downloaded_file)
 
 
 def delete_fonts(path):

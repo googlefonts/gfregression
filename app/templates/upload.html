@@ -12,7 +12,7 @@
       <form id="upload-form" action="{{ url_for('retrieve_fonts') }}" method="POST" enctype="multipart/form-data">
 
       <input type="radio" name="fonts" value="from_gf" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
-      <input type="radio" name="fonts" value="from_git_url" class="comparison-toggle"><p>Compare upstream github repository fonts folder against hosted fonts on fonts.google.com</p>
+      <input type="radio" name="fonts" value="from_github_url" class="comparison-toggle"><p>Compare upstream github repository fonts folder against hosted fonts on fonts.google.com</p>
       <input type="radio" name="fonts" value="from_local" class="comparison-toggle"><p>Compare two sets of local fonts</p>
 
         <div id="target_dropbox">
@@ -20,7 +20,7 @@
         </div>
 
         <div id="git_url_text">
-            <input type="text" name="git-url">
+            <input type="text" name="github-url">
         </div>
 
         <div id="base_dropbox">
@@ -58,7 +58,7 @@
         $('#git_url_text').hide();
       }
 
-      else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_git_url') {
+      else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_github_url') {
         $('#base_dropbox').hide();
         $('#target_dropbox').hide();
         $('#git_url_text').show();

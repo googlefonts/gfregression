@@ -119,7 +119,7 @@ def download_files_from_repo(url, to_dir):
 
 def _convert_github_url_to_api(url):
     """Convert github html url to api url"""
-    url = url.split('/')  # urls are always forwad slash regardless of OS
+    url = url.split('/')  # urls are always forward slash regardless of OS
     user, repo, branch, dirpath = url[3], url[4], url[6], url[7:]
     dirpath = '/'.join(dirpath)
     return branch, 'https://api.github.com/repos/%s/%s/contents/%s' %(
@@ -144,23 +144,24 @@ def _convert_camelcase(fam_name, seperator=' '):
         return fam_name
 
 
-def gf_download_url(fontspath):
-    """Assemble download url for families"""
-    gf_url_prefix = 'https://fonts.google.com/download?family='
-    families_name = set([_convert_camelcase(f.split('-')[0], '%20')
-                        for f in fontspath if f.endswith('.ttf')])
-    families_url_suffix = '|'.join(families_name)
-    return gf_url_prefix + families_url_suffix
-
-
-def download_fonts(url, to_dir):
+def download_gf_fonts(to_dir, *families):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
+    url = _gf_download_url(*families)
     request = urlopen(url)
     if request.getcode() == 200:
         fonts_zip = ZipFile(StringIO(request.read()))
         fonts_from_zip(fonts_zip, to_dir)
     else:
         return 'Url does not contain fonts'
+
+
+def _gf_download_url(families):
+    """Assemble download url for families"""
+    gf_url_prefix = 'https://fonts.google.com/download?family='
+    families_name = set([_convert_camelcase(f.split('-')[0], '%20')
+                        for f in families if f.endswith('.ttf')])
+    families_url_suffix = '|'.join(families_name)
+    return gf_url_prefix + families_url_suffix
 
 
 def fonts_from_zip(zipfile, to):

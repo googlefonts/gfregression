@@ -8,12 +8,11 @@ import os
 import json
 
 from utils import (
-    download_fonts,
+    download_gf_fonts,
     upload_fonts,
     download_files_from_repo,
     get_fonts,
     delete_fonts,
-    gf_download_url,
     equalize_font_sets
 )
 from comparefonts import CompareFonts
@@ -29,9 +28,7 @@ with open('./dummy_text.txt', 'r') as dummy_text_file:
 
 @app.route('/')
 def index():
-    """Drag n drop font families to be tested.
-
-    Each user who runs this view will clear the font cache. This will not
+    """Each user who runs this view will clear the font cache. This will not
     affect other users, as long as they don't refresh their browsers"""
     delete_fonts(TARGET_FONTS_PATH)
     delete_fonts(BASE_FONTS_PATH)
@@ -42,40 +39,34 @@ def index():
 def retrieve_fonts():
     """Upload/download the two sets of fonts to compare"""
     form = request.form
-
     # Create a unique "session ID" for this particular session.
-    upload_key = str(uuid4())
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, upload_key)
-    base_fonts_path = os.path.join(BASE_FONTS_PATH, upload_key)
+    session_id = str(uuid4())
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, session_id)
+    base_fonts_path = os.path.join(BASE_FONTS_PATH, session_id)
 
     # # Is the upload using Ajax, or a direct POST by the form?
     is_ajax = True if form.get("__ajax", None) == "true" else False
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        target_families = request.files.getlist('target_fonts')
-        families = [f.filename for f in target_families]
-        gf_family_url = gf_download_url(families)
-        download_fonts(gf_family_url, base_fonts_path)
         upload_fonts(request, "target_fonts", target_fonts_path)
+        families = [f for f in os.listdir(target_fonts_path)]
+        download_gf_fonts(base_fonts_path, families)
 
     # User wants to compare upstream github fonts against GF hosted.
-    if form.get('fonts') == 'from_git_url':
-        fonts_url = form.get('git-url')
-        download_files_from_repo(fonts_url, target_fonts_path)
-
+    if form.get('fonts') == 'from_github_url':
+        download_files_from_repo(form.get('github-url'), target_fonts_path)
         families = [f for f in os.listdir(target_fonts_path)]
-        gf_family_url = gf_download_url(families)
-        download_fonts(gf_family_url, base_fonts_path)
+        download_gf_fonts(base_fonts_path, families)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':
-        upload_fonts(request, "base_fonts", base_fonts_path)
         upload_fonts(request, "target_fonts", target_fonts_path)
+        upload_fonts(request, "base_fonts", base_fonts_path)
 
     if is_ajax:
-        return ajax_response(True, upload_key)
-    return redirect(url_for("test_fonts", uuid=upload_key))
+        return ajax_response(True, session_id)
+    return redirect(url_for("compare_fonts", uuid=session_id))
 
 
 def ajax_response(status, msg):
@@ -87,7 +78,7 @@ def ajax_response(status, msg):
 
 
 @app.route("/compare/<uuid>")
-def test_fonts(uuid):
+def compare_fonts(uuid):
 
     base_fonts_path = os.path.join(BASE_FONTS_PATH, uuid)
     base_fonts = get_fonts(base_fonts_path, 'base')

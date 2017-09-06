@@ -2,8 +2,7 @@ from fontTools.pens.areaPen import AreaPen
 from otlang2iso import otlang2iso
 from script2iso import script2iso
 from models import db, Languages
-
-GLYPH_THRESHOLD = 0
+from settings import GLYPH_THRESHOLD
 
 
 class CompareFonts:

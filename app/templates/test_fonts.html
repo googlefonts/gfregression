@@ -47,7 +47,9 @@
       <h2>Local</h2>
       {% for font in target_fonts %}
         <div class="box-200px">
-          <div class="box-header" id="{{ font.fullname }}-vert">{{ font.fullname }}</div>
+          <div class="box-header" id="{{ font.fullname }}-vert">
+            <p>{{ font.fullname }} Base</p>
+          </div>
           <div class="box-content">
             <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
           </div>
@@ -59,7 +61,9 @@
       <h2>fonts.google.com</h2>
       {% for font in base_fonts %}
         <div class="box-200px">
-          <div class="box-header">{{ font.cssname }}</div>
+          <div class="box-header">
+            <p>{{ font.cssname }}</p>
+          </div>
           <div class="box-content">
             <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
           </div>
@@ -75,7 +79,9 @@
 
     {% for font in base_fonts %}
       <div class="box-large">
-        <div class="box-header" id="{{ font.fullname }}-modified">{{ font.fullname }}</div>
+        <div class="box-header" id="{{ font.fullname }}-modified">
+          <p>{{ font.fullname }} Base</p>
+        </div>
         <div class="box-content">
           {% if changed_glyphs[font.fullname] %}
             {% for uni, name in changed_glyphs[font.fullname] %}
@@ -101,7 +107,9 @@
 
     {% for font in base_fonts %}
       <div class="box-large">
-        <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+        <div class="box-header" id="{{ font.fullname }}-new">
+          <p>{{ font.fullname }} Base</p>
+        </div>
         <div class="box-content">
           {% if new_glyphs[font.fullname] %}
             {% for uni, name in new_glyphs[font.fullname] %}
@@ -127,7 +135,9 @@
 
     {% for font in base_fonts %}
       <div class="box-large">
-        <div class="box-header" id="{{ font.fullname }}-new">{{ font.fullname }}</div>
+        <div class="box-header" id="{{ font.fullname }}-new">
+          <p>{{ font.fullname }} Base</p>
+        </div>
         <div class="box-content">
           {% if missing_glyphs[font.fullname] %}
             {% for uni, name in missing_glyphs[font.fullname] %}
@@ -153,7 +163,9 @@
 
     {% for font in target_fonts %}
     <div class="box-large">
-      <div class="box-header" id="{{ font.fullname }}-waterfall">{{ font.fullname }}</div>
+      <div class="box-header" id="{{ font.fullname }}-waterfall">
+        <p>{{ font.fullname }} Base</p>
+      </div>
       <div class="box-content">
         <div class='font-swap'>
           {% for n in range(7, 22) %}
@@ -178,7 +190,9 @@
 
     {% for font in target_fonts %}
     <div class="box-large">
-      <div class="box-header" id="{{ font.fullname }}-langauges">{{ font.fullname }}</div>
+      <div class="box-header" id="{{ font.fullname }}-langauges">
+        <p>{{ font.fullname }} Base</p>
+      </div>
       <div class="box-content">
         <div class='font-swap'>
           <span class="{{ font.cssname }}">
@@ -201,8 +215,8 @@
     {% for font in target_fonts %}
     <div class="box-large">
       <div class="box-header" id="{{ font.fullname }}-editor">
+          <p>{{ font.fullname }} Base</p>
         <div class="width-33">
-          {{ font.fullname }}
         </div>
         <div class="width-33">
           <i class="material-icons" id="textsize-icon">text_fields</i>
@@ -227,7 +241,7 @@
   </div>
 
   </div>
-  <div id="alert"></div>
+
 
 <script>
   local = $('#to_target_fonts').data();
@@ -245,14 +259,21 @@
     if(ee == true) {
       for (i in base_fonts) {
         $('.font-swap ' + '.' + base_fonts[i]).attr('class', target_fonts[i])
-        $('#alert').show().text('Target')
+        $('.box-header > p').each(function() {
+            text = $(this).text();
+            $(this).text(text.replace('Base', 'Target'));
+
+        })
         console.log('changed to target');
       }
       ee = false;
     } else {
       for (i in target_fonts) {
         $('.font-swap ' + '.' + target_fonts[i]).attr('class', base_fonts[i])
-        $('#alert').show().text('Base')
+        $('.box-header > p').each(function() {
+            text = $(this).text();
+            $(this).text(text.replace('Target', 'Base'));
+        })
         console.log('changed to base');
       }
       ee = true;
@@ -264,7 +285,6 @@
   $('.container-button').on('click', function() {
     $('.pages').hide();
     $('.info').hide();
-    $('#alert').hide();
     var page = '#' + $(this).data('page')
     var infopanel = '#' + $(this).data('info')
     $(page).show()

@@ -48,7 +48,7 @@
       {% for font in target_fonts %}
         <div class="box-200px">
           <div class="box-header" id="{{ font.fullname }}-vert">
-            <p>{{ font.fullname }} Base</p>
+            <p>{{ font.fullname }}</p>
           </div>
           <div class="box-content">
             <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
@@ -62,7 +62,7 @@
       {% for font in base_fonts %}
         <div class="box-200px">
           <div class="box-header">
-            <p>{{ font.cssname }}</p>
+            <p>{{ font.fullname }}</p>
           </div>
           <div class="box-content">
             <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>

@@ -26,15 +26,13 @@ with open('./dummy_text.txt', 'r') as dummy_text_file:
 
 @app.route('/')
 def index():
-    """Each user who runs this view will clear the font cache. This will not
-    affect other users, as long as they don't refresh their browsers"""
-    delete_fonts(TARGET_FONTS_PATH)
-    delete_fonts(BASE_FONTS_PATH)
     return render_template('upload.html')
 
 
 @app.route('/retrieve-fonts', methods=["POST"])
 def retrieve_fonts():
+    delete_fonts(TARGET_FONTS_PATH)
+    delete_fonts(BASE_FONTS_PATH)
     """Upload/download the two sets of fonts to compare"""
     form = request.form
     # Create a unique "session ID" for this particular session.
@@ -105,6 +103,35 @@ def compare_fonts(uuid):
         to_base_fonts=to_base_fonts
     )
 
+
+@app.route("/api/upload", methods=['POST'])
+def api_retrieve_fonts():
+    """Upload a font via the api.
+    Caveat, compatible only for GoogleFonts at the moment"""
+    delete_fonts(TARGET_FONTS_PATH)
+    delete_fonts(BASE_FONTS_PATH)
+    session_id = str(uuid4())
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, session_id)
+    base_fonts_path = os.path.join(BASE_FONTS_PATH, session_id)
+
+    retrievefonts.user_upload(request, "fonts", target_fonts_path)
+    families = [f for f in os.listdir(target_fonts_path)]
+    retrievefonts.google_fonts(base_fonts_path, families)
+
+    targetfonts_url = url_for("screenshot_comparison", uuid=session_id)
+    return targetfonts_url
+
+
+@app.route("/screenshot/<uuid>")
+def screenshot_comparison(uuid):
+    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
+    target_fonts = get_fonts(target_fonts_path, 'target')
+
+    return render_template(
+        'screenshot.html',
+        dummy_text=dummy_text,
+        target_fonts=target_fonts,
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

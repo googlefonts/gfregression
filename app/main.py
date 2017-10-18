@@ -119,7 +119,7 @@ def api_retrieve_fonts():
     retrievefonts.google_fonts(base_fonts_path, families)
 
     targetfonts_url = url_for("screenshot_comparison", uuid=session_id)
-    return targetfonts_url
+    return json.dumps(targetfonts_url)
 
 
 @app.route("/screenshot/<uuid>")

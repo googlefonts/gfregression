@@ -1,0 +1,33 @@
+<div id="page-vertical-metrics" class="pages">
+    {% for font in target_fonts %}
+      <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
+    {% endfor %}
+
+    <div id="container-left">
+      <h2>Local</h2>
+      {% for font in target_fonts %}
+        <div class="box-200px">
+          <div class="box-header" id="{{ font.fullname }}-vert">
+            <p>{{ font.fullname }}</p>
+          </div>
+          <div class="box-content">
+            <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div id="container-right">
+      <h2>fonts.google.com</h2>
+      {% for font in base_fonts %}
+        <div class="box-200px">
+          <div class="box-header">
+            <p>{{ font.fullname }}</p>
+          </div>
+          <div class="box-content">
+            <span class="{{ font.cssname }}" style="font-size: 20px;" contenteditable="true">{{ dummy_text }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>

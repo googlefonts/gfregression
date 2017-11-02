@@ -6,7 +6,7 @@
     {% for font in target_fonts %}
       @font-face{
         font-family: {{ font.cssname }};
-        src: url('{{ font.path }}');
+        src: url('{{ font.csspath }}');
       }
     {% endfor %}
 
@@ -29,11 +29,5 @@
 {% endblock %}
 
 {% block content %}
-  <meta id="to_target_fonts" data-name="local-fonts" data-str="{{ to_target_fonts }}">
-  <meta id="to_base_fonts" data-name="remote-fonts" data-str="{{ to_base_fonts }}">
-
   {% include "page-waterfall.html" %}
-
 {% endblock %}
-
-

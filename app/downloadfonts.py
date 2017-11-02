@@ -14,7 +14,6 @@ from blacklist import FONT_EXCEPTIONS
 
 def github_dir(url, to_dir):
     """Download fonts from a github repo directory"""
-    os.mkdir(to_dir)
     branch, api_url = _convert_github_url_to_api(url)
     request = requests.get(api_url, params={'ref': branch})
     api_request = json.loads(request.text)
@@ -88,8 +87,6 @@ def _unnest_folder(folder):
 
 def user_upload(request, ajax_key, fonts_path):
     """Upload fonts from a users system"""
-    os.mkdir(fonts_path)
-
     for upload in request.files.getlist(ajax_key):
         filename = upload.filename.rsplit("/")[0]
         destination = "/".join([fonts_path, filename])

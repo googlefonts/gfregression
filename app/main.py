@@ -7,20 +7,17 @@ from uuid import uuid4
 import os
 import json
 
-import retrievefonts
+import downloadfonts
+import fontmanager
 from comparefonts import CompareFonts
 from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
-from utils import (
-    get_fonts,
-    delete_fonts,
-    equalize_font_sets
-)
 
 __version__ = 1.200
 
 app = Flask(__name__, static_url_path='/static')
 
-with open('./dummy_text.txt', 'r') as dummy_text_file:
+dummy_text_path = os.path.join(os.path.dirname(__file__), 'dummy_text.txt')
+with open(dummy_text_path, 'r') as dummy_text_file:
     dummy_text = dummy_text_file.read()
 
 
@@ -31,38 +28,34 @@ def index():
 
 @app.route('/retrieve-fonts', methods=["POST"])
 def retrieve_fonts():
-    delete_fonts(TARGET_FONTS_PATH)
-    delete_fonts(BASE_FONTS_PATH)
     """Upload/download the two sets of fonts to compare"""
-    form = request.form
-    # Create a unique "session ID" for this particular session.
-    session_id = str(uuid4())
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, session_id)
-    base_fonts_path = os.path.join(BASE_FONTS_PATH, session_id)
-
+    fonts = fontmanager.new()
     # # Is the upload using Ajax, or a direct POST by the form?
+    form = request.form
     is_ajax = True if form.get("__ajax", None) == "true" else False
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        retrievefonts.user_upload(request, "target_fonts", target_fonts_path)
-        families = [f for f in os.listdir(target_fonts_path)]
-        retrievefonts.google_fonts(base_fonts_path, families)
+        downloadfonts.user_upload(request, "target_fonts", fonts.target_dir)
+        families = os.listdir(fonts.target_dir)
+        downloadfonts.google_fonts(fonts.base_dir, families)
 
     # User wants to compare upstream github fonts against GF hosted.
     elif form.get('fonts') == 'from_github_url':
-        retrievefonts.github_dir(form.get('github-url'), target_fonts_path)
-        families = [f for f in os.listdir(target_fonts_path)]
-        retrievefonts.google_fonts(base_fonts_path, families)
+        downloadfonts.github_dir(form.get('github-url'), fonts.target_dir)
+        families = os.listdir(fonts.target_dir)
+        downloadfonts.google_fonts(fonts.base_dir, families)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':
-        retrievefonts.user_upload(request, "target_fonts", target_fonts_path)
-        retrievefonts.user_upload(request, "base_fonts", base_fonts_path)
+        downloadfonts.user_upload(request, "target_fonts", fonts.target_dir)
+        downloadfonts.user_upload(request, "base_fonts", fonts.base_dir)
+
+    fonts.equalize_fonts()
 
     if is_ajax:
-        return ajax_response(True, session_id)
-    return redirect(url_for("compare_fonts", uuid=session_id))
+        return ajax_response(True, fonts.uid)
+    return redirect(url_for("compare_fonts", uid=fonts.uid))
 
 
 def ajax_response(status, msg):
@@ -73,28 +66,23 @@ def ajax_response(status, msg):
     ))
 
 
-@app.route("/compare/<uuid>")
-def compare_fonts(uuid):
-
-    base_fonts_path = os.path.join(BASE_FONTS_PATH, uuid)
-    base_fonts = get_fonts(base_fonts_path, 'base')
-
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
-    target_fonts = get_fonts(target_fonts_path, 'target')
-
-    equalize_font_sets(base_fonts, target_fonts)
-    compare_fonts = CompareFonts(base_fonts, target_fonts)
-
+@app.route("/compare/<uid>")
+def compare_fonts(uid):
+    if not fontmanager.has_fonts(uid):
+        # TODO (M Foley) add 404 style html page
+        return 'Fonts do not exist!'
+    fonts = fontmanager.load(uid)
+    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
     # css hook to swap remote fonts to local fonts and vice versa
-    to_target_fonts = ','.join([i.cssname for i in target_fonts])
-    to_base_fonts = ','.join([i.cssname for i in base_fonts])
+    to_target_fonts = ','.join([i.cssname for i in fonts.target_fonts])
+    to_base_fonts = ','.join([i.cssname for i in fonts.base_fonts])
 
     return render_template(
         'test_fonts.html',
         dummy_text=dummy_text,
-        target_fonts=target_fonts,
-        base_fonts=base_fonts,
-        grouped_fonts=zip(target_fonts, base_fonts),
+        target_fonts=fonts.target_fonts,
+        base_fonts=fonts.base_fonts,
+        grouped_fonts=zip(fonts.target_fonts, fonts.base_fonts),
         changed_glyphs=compare_fonts.inconsistent_glyphs(),
         new_glyphs=compare_fonts.new_glyphs(),
         missing_glyphs=compare_fonts.missing_glyphs(),
@@ -106,32 +94,37 @@ def compare_fonts(uuid):
 
 @app.route("/api/upload", methods=['POST'])
 def api_retrieve_fonts():
-    """Upload a font via the api.
+    """Upload fonts via the api.
     Caveat, compatible only for GoogleFonts at the moment"""
-    delete_fonts(TARGET_FONTS_PATH)
-    delete_fonts(BASE_FONTS_PATH)
-    session_id = str(uuid4())
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, session_id)
-    base_fonts_path = os.path.join(BASE_FONTS_PATH, session_id)
+    fonts = fontmanager.new()
 
-    retrievefonts.user_upload(request, "fonts", target_fonts_path)
-    families = [f for f in os.listdir(target_fonts_path)]
-    retrievefonts.google_fonts(base_fonts_path, families)
+    downloadfonts.user_upload(request, "fonts", fonts.target_dir)
+    families = os.listdir(fonts.target_dir)
+    downloadfonts.google_fonts(fonts.base_dir, families)
 
-    targetfonts_url = url_for("screenshot_comparison", uuid=session_id)
-    return json.dumps(targetfonts_url)
+    fonts.equalize_fonts()
+
+    basefonts_url = url_for("screenshot_comparison",
+                            uuid=fonts.uid,
+                            font_dir='basefonts')
+    targetfonts_url = url_for("screenshot_comparison",
+                              uuid=fonts.uid,
+                              font_dir='targetfonts')
+    return json.dumps({'basefonts': basefonts_url,
+                       'targetfonts': targetfonts_url})
 
 
-@app.route("/screenshot/<uuid>")
-def screenshot_comparison(uuid):
-    target_fonts_path = os.path.join(TARGET_FONTS_PATH, uuid)
-    target_fonts = get_fonts(target_fonts_path, 'target')
+@app.route("/screenshot/<uuid>/<font_dir>")
+def screenshot_comparison(uuid, font_dir):
 
+    fonts = fontmanager.load(uuid)
+    fonts_type = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
     return render_template(
         'screenshot.html',
         dummy_text=dummy_text,
-        target_fonts=target_fonts,
+        target_fonts=fonts_type,
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

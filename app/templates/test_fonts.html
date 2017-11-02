@@ -6,7 +6,7 @@
     {% for font in target_fonts %}
       @font-face{
         font-family: {{ font.cssname }};
-        src: url('{{ font.path }}');
+        src: url('{{ font.csspath }}');
       }
     {% endfor %}
 
@@ -14,7 +14,7 @@
     {% for font in base_fonts %}
       @font-face{
         font-family: {{ font.cssname }};
-        src: url('{{ font.path }}');
+        src: url('{{ font.csspath }}');
       }
     {% endfor %}
 

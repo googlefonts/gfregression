@@ -1,6 +1,7 @@
+import os
 import unittest
 import requests
-from app.main import app
+from main import app
 
 
 class TestApiEndPoints(unittest.TestCase):
@@ -16,8 +17,8 @@ class TestApiEndPoints(unittest.TestCase):
         url_upload = url_gfregression + '/api/upload'
         # TODO make local
         fonts = [
-            '/Users/marc/Documents/gfregression/app/tests/data/Roboto-Regular.ttf',
-            '/Users/marc/Documents/gfregression/app/tests/data/Roboto-Bold.ttf',
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Regular.ttf'),
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Bold.ttf'),
         ]
         payload = [('fonts', open(f, 'rb')) for f in fonts]
         request = requests.post(url_upload, files=payload)

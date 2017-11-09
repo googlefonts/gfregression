@@ -40,11 +40,11 @@ class CompareFonts:
                 r_area = r_pen.value
                 r_pen.value = 0
 
-                l_area_norm = abs(l_area / l_upm) * r_upm
-                r_area_norm = abs(r_area / r_upm) * l_upm
+                l_area_norm = (l_area / l_upm) * r_upm
+                r_area_norm = (r_area / r_upm) * l_upm
 
                 if l_area_norm != r_area_norm:
-                    if int(l_area_norm) ^ int(r_area_norm) > GLYPH_THRESHOLD:
+                    if abs(l_area_norm - r_area_norm) > GLYPH_THRESHOLD:
 
                         if font not in bad_glyphs:
                             bad_glyphs[font] = []

@@ -22,6 +22,9 @@ class CompareFonts:
             r_glyphs = self.base_fonts[font].font['glyf'].glyphs.keys()
             shared_glyphs = set(l_glyphs) & set(r_glyphs)
 
+            l_upm = self.target_fonts[font].font['head'].unitsPerEm 
+            r_upm = self.base_fonts[font].font['head'].unitsPerEm
+
             l_glyphs = self.target_fonts[font].font.getGlyphSet()
             r_glyphs = self.base_fonts[font].font.getGlyphSet()
 
@@ -37,8 +40,11 @@ class CompareFonts:
                 r_area = r_pen.value
                 r_pen.value = 0
 
-                if l_area != r_area:
-                    if int(l_area) ^ int(r_area) > GLYPH_THRESHOLD:
+                l_area_norm = abs(l_area / l_upm) * r_upm
+                r_area_norm = abs(r_area / r_upm) * l_upm
+
+                if l_area_norm != r_area_norm:
+                    if int(l_area_norm) ^ int(r_area_norm) > GLYPH_THRESHOLD:
 
                         if font not in bad_glyphs:
                             bad_glyphs[font] = []

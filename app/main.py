@@ -114,15 +114,28 @@ def api_retrieve_fonts():
                        'targetfonts': targetfonts_url})
 
 
-@app.route("/screenshot/<uuid>/<font_dir>")
-def screenshot_comparison(uuid, font_dir):
+@app.route("/screenshot/<page>/<uuid>/<font_dir>")
+def screenshot_comparison(page, uuid, font_dir):
+    pages = {
+        'waterfall': 'page-waterfall.html',
+        'glyphs-modified': 'page-glyphs-modified.html',
+        'glyphs-new': 'page-glyphs-new.html',
+        'glyphs-missing': 'page-glyphs-missing.html',
+    }
 
     fonts = fontmanager.load(uuid)
-    fonts_type = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
+    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+    fonts = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
+    fonts_type = 'Google Fonts' if font_dir == 'basefonts' else 'New Fonts'
     return render_template(
         'screenshot.html',
         dummy_text=dummy_text,
-        target_fonts=fonts_type,
+        target_fonts=fonts,
+        changed_glyphs=compare_fonts.inconsistent_glyphs(),
+        new_glyphs=compare_fonts.new_glyphs(),
+        missing_glyphs=compare_fonts.missing_glyphs(),
+        page_to_load=pages[page],
+        fonts_type=fonts_type
     )
 
 

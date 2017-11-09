@@ -3,10 +3,10 @@
       <h2><a href="#{{ font.fullname }}-new">{{ font.fullname }}</a></h2>
     {% endfor %}
 
-    {% for font in base_fonts %}
+    {% for font in target_fonts %}
       <div class="box-large">
         <div class="box-header" id="{{ font.fullname }}-new">
-          <p>{{ font.fullname }} Base</p>
+          <p>{{ font.fullname }} Target</p>
         </div>
         <div class="box-content">
           {% if missing_glyphs[font.fullname] %}

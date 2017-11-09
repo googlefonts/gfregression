@@ -19,15 +19,16 @@
     {% endfor %}
 
 
-    #page-vertical-metrics, #header{
-      display: none;
+    #header{
+        display: none;
     }
-    #page-waterfall{
-      display: block;
-    }
+    #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages, #page-editor{
+  display: block;
+}
   </style>
 {% endblock %}
 
 {% block content %}
-  {% include "page-waterfall.html" %}
+  <h1>Fonts: {{ fonts_type }}</h1>
+  {% include page_to_load %}
 {% endblock %}

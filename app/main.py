@@ -104,14 +104,7 @@ def api_retrieve_fonts():
 
     fonts.equalize_fonts()
 
-    basefonts_url = url_for("screenshot_comparison",
-                            uuid=fonts.uid,
-                            font_dir='basefonts')
-    targetfonts_url = url_for("screenshot_comparison",
-                              uuid=fonts.uid,
-                              font_dir='targetfonts')
-    return json.dumps({'basefonts': basefonts_url,
-                       'targetfonts': targetfonts_url})
+    return json.dumps({'uid': fonts.uid})
 
 
 @app.route("/screenshot/<page>/<uuid>/<font_dir>")

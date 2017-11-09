@@ -22,6 +22,7 @@ class TestApiEndPoints(unittest.TestCase):
         ]
         payload = [('fonts', open(f, 'rb')) for f in fonts]
         request = requests.post(url_upload, files=payload)
+        print(request.content)
         self.assertEqual(request.status_code, 200)
 
 

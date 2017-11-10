@@ -1,23 +1,23 @@
-  <div id="page-languages" class="pages">
-    {% for font in target_fonts %}
-      <h2><a href="#{{ font.fullname }}-languages">{{ font.fullname }}</a></h2>
-    {% endfor %}
+<div id="page-languages" class="pages">
+  {% for font in target_fonts %}
+    <h2><a href="#{{ font.fullname }}-languages">{{ font.fullname }}</a></h2>
+  {% endfor %}
 
-    {% for font in target_fonts %}
-    <div class="box-large">
-      <div class="box-header" id="{{ font.fullname }}-langauges">
-        <p>{{ font.fullname }} Target</p>
-      </div>
-      <div class="box-content">
-        <div class='font-swap'>
-          <span class="{{ font.cssname }}">
-            {% for lang in languages[font.fullname] %}
-              <div class="box-header" lang="{{ languages[font.fullname][lang].part1 }}">{{ languages[font.fullname][lang].name }}</div>
-              {{ languages[font.fullname][lang].text }}<br><br>
-            {% endfor %}
-          </span>
-        </div>
+  {% for font in target_fonts %}
+  <div class="box-large">
+    <div class="box-header" id="{{ font.fullname }}-langauges">
+      <p>{{ font.fullname }} Target</p>
+    </div>
+    <div class="box-content">
+      <div class='font-swap'>
+        <span class="{{ font.cssname }}">
+          {% for lang in languages[font.fullname] %}
+            <div class="box-header" lang="{{ languages[font.fullname][lang].part1 }}">{{ languages[font.fullname][lang].name }}</div>
+            {{ languages[font.fullname][lang].text }}<br><br>
+          {% endfor %}
+        </span>
       </div>
     </div>
-    {% endfor %}
   </div>
+  {% endfor %}
+</div>

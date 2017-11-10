@@ -1,26 +1,26 @@
-  <div id="page-waterfall" class="pages">
-    {% for font in target_fonts %}
-      <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
-    {% endfor %}
+<div id="page-waterfall" class="pages">
+  {% for font in target_fonts %}
+    <h2><a href="#{{ font.fullname }}-waterfall">{{ font.fullname }}</a></h2>
+  {% endfor %}
 
-    {% for font in target_fonts %}
-    <div class="box-large">
-      <div class="box-header" id="{{ font.fullname }}-waterfall">
-        <p>{{ font.fullname }} Target</p>
-      </div>
-      <div class="box-content">
-        <div class='font-swap'>
-          {% for n in range(7, 22) %}
-          <div class="box-header">{{ n }}pt</div>
-          <span class="{{ font.cssname }}" style="font-size: {{ n }}pt">
-            QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
-            quick wafting zephyrs vex bold jim.<br>
-            $14.95<br>
-            <br>
-          </span>
-          {% endfor %}
-        </div>
+  {% for font in target_fonts %}
+  <div class="box-large">
+    <div class="box-header" id="{{ font.fullname }}-waterfall">
+      <p>{{ font.fullname }} Target</p>
+    </div>
+    <div class="box-content">
+      <div class='font-swap'>
+        {% for n in range(7, 22) %}
+        <div class="box-header">{{ n }}pt</div>
+        <span class="{{ font.cssname }}" style="font-size: {{ n }}pt">
+          QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
+          quick wafting zephyrs vex bold jim.<br>
+          $14.95<br>
+          <br>
+        </span>
+        {% endfor %}
       </div>
     </div>
-    {% endfor %}
   </div>
+  {% endfor %}
+</div>

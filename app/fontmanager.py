@@ -92,7 +92,6 @@ class FontManager(object):
                 path=path.replace('\\', '/'),
                 fullname=name,
                 cssname='%s-%s' % (name, suffix),
-                font=TTFont(path)
             )
             fonts.append(font)
         return fonts

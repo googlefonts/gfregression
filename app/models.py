@@ -34,9 +34,10 @@ class Languages(Model):
         database = db
 
 
-def gfr_font(path, fullname, cssname, font):
+def gfr_font(path, fullname, cssname):
     """High level wrapper for TTFont object which contains additional
-    properties for css manipulation"""
+    properties for html/css manipulation"""
+    font = TTFont(path)
     Font = namedtuple('Font', [
         'path', 'csspath', 'fullname', 'cssname', 'font',
         # OS/2 typo attributes

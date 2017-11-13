@@ -119,13 +119,14 @@ def screenshot_comparison(page, uuid, font_dir):
         'glyphs-new': 'page-glyphs-new.html',
         'glyphs-missing': 'page-glyphs-missing.html',
         'glyphs-all': 'page-glyphs-all.html',
+        'glyphs-all-waterfall': 'page-glyphs-all-waterfall.html'
     }
 
     fonts = fontmanager.load(uuid)
     font_to_display = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
     fonts_type = 'Google Fonts' if font_dir == 'basefonts' else 'New Fonts'
 
-    if page == 'glyphs-all':
+    if page == 'glyphs-all' or page == 'glyphs-all-waterfall':
         from glyphpalette import fonts_glyph_palettes
         glyph_palettes = fonts_glyph_palettes(fonts.target_fonts)
         return render_template(

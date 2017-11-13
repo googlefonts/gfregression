@@ -1,0 +1,31 @@
+<div id="page-glyphs-all-waterfall" class="pages">
+  {% for font in target_fonts %}
+    {% for n in range(7, 22) %}
+    <div class="box-large">
+      <div class="box-header" id="{{ font.fullname }}-modified">
+        <p>{{ font.fullname }} {{ n }}pt</p>
+      </div>
+      <div class="box-content">
+          {% for name, features, glyph in glyph_pallettes[font.fullname] %}
+            {% if features %}
+              {% for feat in features %}
+                <div style="float: left; width: 2em; line-height: 2em;">
+                  <span class="{{ font.cssname }}" style="font-feature-settings: '{{ feat }}' on;
+                  font-size: {{ n }}pt;"> {{ glyph }} </span>
+                </div>
+              {% endfor %}
+
+            {% else %}
+              <!-- Glyphs which are accesible with unicodes -->
+              <div style="float: left; width: 2em; line-height: 2em;">
+              <span class="{{ font.cssname }}" style="font-feature-settings: '{{ feat }}' on;
+                  font-size: {{ n }}pt;"> {{ glyph }} </span>
+              </div>
+            {% endif %}
+
+          {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  {% endfor %}
+</div>

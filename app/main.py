@@ -92,15 +92,19 @@ def compare_fonts(uid):
     )
 
 
-@app.route("/api/upload", methods=['POST'])
-def api_retrieve_fonts():
-    """Upload fonts via the api.
-    Caveat, compatible only for GoogleFonts at the moment"""
+@app.route("/api/upload/<upload_type>", methods=['POST'])
+def api_retrieve_fonts(upload_type):
+    """Upload fonts via the api."""
     fonts = fontmanager.new()
 
-    downloadfonts.user_upload(request, "fonts", fonts.target_dir)
-    families = os.listdir(fonts.target_dir)
-    downloadfonts.google_fonts(fonts.base_dir, families)
+    if upload_type == 'googlefonts':
+        downloadfonts.user_upload(request, "fonts", fonts.target_dir)
+        families = os.listdir(fonts.target_dir)
+        downloadfonts.google_fonts(fonts.base_dir, families)
+
+    elif upload_type == 'user':
+        downloadfonts.user_upload(request, "fonts", fonts.target_dir)
+        downloadfonts.user_upload(request, "fonts2", fonts.base_dir)
 
     fonts.equalize_fonts()
 

@@ -1,0 +1,38 @@
+<div id="page-glyph-all" class="pages">
+  {% for font in target_fonts %}
+    <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
+  {% endfor %}
+
+  {% for font in target_fonts %}
+    <div class="box-large">
+      <div class="box-header" id="{{ font.fullname }}-modified">
+        <p>{{ font.fullname }} Target</p>
+      </div>
+      <div class="box-content">
+          {% for name, features, glyph in glyph_pallettes[font.fullname] %}
+            {% if features %}
+              {% for feat in features %}
+                <div class="font-swap">
+                  <div class="box-char">
+                  <span class="{{ font.cssname }}" style="font-size: 60px; font-feature-settings: '{{ feat }}' on;
+                  ">{{ glyph }}</span>
+                  <div class="caption">{{ name }} | {{ feat }}</div>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+            <div class="font-swap">
+              <div class="box-char">
+              <span class="{{ font.cssname }}" style="font-size: 60px; font-feature-settings: '{{ feat }}' on;
+              ">{{ glyph }}</span>
+              <div class="caption">{{ name }}</div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+

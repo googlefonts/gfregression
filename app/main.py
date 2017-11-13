@@ -114,22 +114,37 @@ def screenshot_comparison(page, uuid, font_dir):
         'glyphs-modified': 'page-glyphs-modified.html',
         'glyphs-new': 'page-glyphs-new.html',
         'glyphs-missing': 'page-glyphs-missing.html',
+        'glyphs-all': 'page-glyphs-all.html',
     }
 
     fonts = fontmanager.load(uuid)
-    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
-    fonts = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
+    font_to_display = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
     fonts_type = 'Google Fonts' if font_dir == 'basefonts' else 'New Fonts'
-    return render_template(
-        'screenshot.html',
-        dummy_text=dummy_text,
-        target_fonts=fonts,
-        changed_glyphs=compare_fonts.inconsistent_glyphs(),
-        new_glyphs=compare_fonts.new_glyphs(),
-        missing_glyphs=compare_fonts.missing_glyphs(),
-        page_to_load=pages[page],
-        fonts_type=fonts_type
+
+    if page == 'glyphs-all':
+        from glyphpalette import fonts_glyph_palettes
+        glyph_palettes = fonts_glyph_palettes(fonts.target_fonts)
+        return render_template(
+            'screenshot.html',
+            target_fonts=font_to_display,
+            glyph_pallettes=glyph_palettes,
+            page_to_load=pages[page],
+            fonts_type=fonts_type
     )
+    elif page in pages and page != 'glyphs-all':
+        compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+        return render_template(
+            'screenshot.html',
+            dummy_text=dummy_text,
+            target_fonts=font_to_display,
+            changed_glyphs=compare_fonts.inconsistent_glyphs(),
+            new_glyphs=compare_fonts.new_glyphs(),
+            missing_glyphs=compare_fonts.missing_glyphs(),
+            page_to_load=pages[page],
+            fonts_type=fonts_type
+        )
+    else:
+        return "Page does not exist. Choose from [%s]" % ', '.join(pages)
 
 
 if __name__ == "__main__":

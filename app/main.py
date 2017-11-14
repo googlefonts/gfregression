@@ -9,6 +9,7 @@ import json
 
 import downloadfonts
 import fontmanager
+from glyphpalette import fonts_glyph_palettes
 from comparefonts import CompareFonts
 from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
 
@@ -111,33 +112,38 @@ def api_retrieve_fonts(upload_type):
     return json.dumps({'uid': fonts.uid})
 
 
+@app.route("/screenshot/glyphs-all/<uuid>/<font_dir>/<pt_size>")
+def screenshot_glyphs_all(uuid, font_dir, pt_size):
+    """Screenshot view for all glyphs at a particular point size"""
+    fonts = fontmanager.load(uuid)
+    font_to_display = fonts.base_fonts if font_dir == 'before' else fonts.target_fonts
+    fonts_type = 'Before' if font_dir == 'before' else 'After'
+
+    glyph_palettes = fonts_glyph_palettes(fonts.base_fonts)
+    return render_template(
+        'screenshot.html',
+        target_fonts=font_to_display,
+        glyph_pallettes=glyph_palettes,
+        page_to_load='page-glyphs-all.html',
+        fonts_type=fonts_type,
+        pt_size=int(pt_size),
+    )
+
+
 @app.route("/screenshot/<page>/<uuid>/<font_dir>")
 def screenshot_comparison(page, uuid, font_dir):
     pages = {
         'waterfall': 'page-waterfall.html',
         'glyphs-modified': 'page-glyphs-modified.html',
         'glyphs-new': 'page-glyphs-new.html',
-        'glyphs-missing': 'page-glyphs-missing.html',
-        'glyphs-all': 'page-glyphs-all.html',
-        'glyphs-all-waterfall': 'page-glyphs-all-waterfall.html'
     }
-
     fonts = fontmanager.load(uuid)
-    font_to_display = fonts.base_fonts if font_dir == 'basefonts' else fonts.target_fonts
-    fonts_type = 'Google Fonts' if font_dir == 'basefonts' else 'New Fonts'
+    font_to_display = fonts.base_fonts if font_dir == 'before' else fonts.target_fonts
+    fonts_type = 'Before' if font_dir == 'before' else 'After'
 
-    if page == 'glyphs-all' or page == 'glyphs-all-waterfall':
-        from glyphpalette import fonts_glyph_palettes
-        glyph_palettes = fonts_glyph_palettes(fonts.target_fonts)
-        return render_template(
-            'screenshot.html',
-            target_fonts=font_to_display,
-            glyph_pallettes=glyph_palettes,
-            page_to_load=pages[page],
-            fonts_type=fonts_type
-    )
-    elif page in pages and page != 'glyphs-all':
-        compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+
+    if page in pages:
         return render_template(
             'screenshot.html',
             dummy_text=dummy_text,

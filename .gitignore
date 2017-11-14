@@ -1,3 +1,5 @@
 env/
 .DS_Store
 *.pyc
+app/static/basefonts/20*
+app/static/targetfonts/20*

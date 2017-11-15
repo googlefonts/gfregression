@@ -15,9 +15,9 @@ import uuid
 
 from models import gfr_font
 
-
-FONTS_BEFORE_ROOT = os.path.join('static', 'fonts_before')
-FONTS_AFTER_ROOT = os.path.join('static', 'fonts_after')
+ROOT = os.path.dirname(__file__)
+FONTS_BEFORE_ROOT = os.path.join(ROOT, 'static', 'fonts_before')
+FONTS_AFTER_ROOT = os.path.join(ROOT, 'static', 'fonts_after')
 LIMIT = 10
 
 
@@ -28,10 +28,6 @@ def directories():
 
 def new():
     current_directories = directories()
-    if len(current_directories) >= LIMIT:
-        _remove_sessions()
-        current_directories = []
-
     date = datetime.now()
     _id = len(current_directories) + 1
     uid = str(uuid.uuid4())
@@ -99,8 +95,8 @@ class FontManager(object):
         return fonts
 
 
-def _remove_sessions():
-    """Remove all sessions"""
+def remove_font_dirs():
+    """Remove all font dirs"""
     map(_delete_dirs, (FONTS_BEFORE_ROOT, FONTS_AFTER_ROOT))
 
 

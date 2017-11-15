@@ -4,6 +4,12 @@ MAINTAINER Sebastian Ramirez <tiangolo@gmail.com>
 # Install uWSGI
 RUN pip install uwsgi
 
+# Install cron
+RUN apt-get update && apt-get -y install cron
+ADD cron-remove-fonts /etc/cron.d/remove-fonts
+RUN chmod 0644 /etc/cron.d/remove-fonts
+RUN touch /var/log/cron.log
+
 # Standard set up Nginx
 ENV NGINX_VERSION 1.9.11-1~jessie
 
@@ -35,6 +41,9 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY ./app /app
 WORKDIR /app
+
+# Start cron
+CMD cron && tail -f /var/log/cron.log
 
 # Add maximum upload of 100 m
 COPY upload_100m.conf /etc/nginx/conf.d/

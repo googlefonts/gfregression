@@ -106,7 +106,7 @@ def api_retrieve_fonts(upload_type):
         downloadfonts.user_upload(request, "fonts", manager.after_dir)
         downloadfonts.user_upload(request, "fonts2", manager.before_dir)
 
-    fonts.equalize_fonts()
+    manager.equalize_fonts()
 
     return json.dumps({'uid': manager.uid})
 

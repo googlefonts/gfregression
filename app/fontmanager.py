@@ -15,9 +15,8 @@ import uuid
 
 from models import gfr_font
 
-ROOT = os.path.dirname(__file__)
-FONTS_BEFORE_ROOT = os.path.join(ROOT, 'static', 'fonts_before')
-FONTS_AFTER_ROOT = os.path.join(ROOT, 'static', 'fonts_after')
+FONTS_BEFORE_ROOT = os.path.join('static', 'fonts_before')
+FONTS_AFTER_ROOT = os.path.join('static', 'fonts_after')
 LIMIT = 10
 
 

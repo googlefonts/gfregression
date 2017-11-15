@@ -1,11 +1,11 @@
 <div id="page-vertical-metrics" class="pages">
-  {% for font in target_fonts %}
+  {% for font in fonts_after %}
     <h2><a href="#{{ font.fullname }}-vert">{{ font.fullname }}</a></h2>
   {% endfor %}
 
   <div id="container-left">
     <h2>Local</h2>
-    {% for font in target_fonts %}
+    {% for font in fonts_after %}
       <div class="box-200px">
         <div class="box-header" id="{{ font.fullname }}-vert">
           <p>{{ font.fullname }}</p>
@@ -19,7 +19,7 @@
 
   <div id="container-right">
     <h2>fonts.google.com</h2>
-    {% for font in base_fonts %}
+    {% for font in fonts_before %}
       <div class="box-200px">
         <div class="box-header">
           <p>{{ font.fullname }}</p>

@@ -11,7 +11,6 @@ import downloadfonts
 import fontmanager
 from glyphpalette import fonts_glyph_palettes
 from comparefonts import CompareFonts
-from settings import BASE_FONTS_PATH, TARGET_FONTS_PATH
 
 __version__ = 1.200
 
@@ -30,33 +29,33 @@ def index():
 @app.route('/retrieve-fonts', methods=["POST"])
 def retrieve_fonts():
     """Upload/download the two sets of fonts to compare"""
-    fonts = fontmanager.new()
+    manager = fontmanager.new()
     # # Is the upload using Ajax, or a direct POST by the form?
     form = request.form
     is_ajax = True if form.get("__ajax", None) == "true" else False
 
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        downloadfonts.user_upload(request, "target_fonts", fonts.target_dir)
-        families = os.listdir(fonts.target_dir)
-        downloadfonts.google_fonts(fonts.base_dir, families)
+        downloadfonts.user_upload(request, "fonts_after", manager.after_dir)
+        families = os.listdir(manager.after_dir)
+        downloadfonts.google_fonts(manager.before_dir, families)
 
     # User wants to compare upstream github fonts against GF hosted.
     elif form.get('fonts') == 'from_github_url':
-        downloadfonts.github_dir(form.get('github-url'), fonts.target_dir)
-        families = os.listdir(fonts.target_dir)
-        downloadfonts.google_fonts(fonts.base_dir, families)
+        downloadfonts.github_dir(form.get('github-url'), manager.after_dir)
+        families = os.listdir(manager.after_dir)
+        downloadfonts.google_fonts(manager.before_dir, families)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':
-        downloadfonts.user_upload(request, "target_fonts", fonts.target_dir)
-        downloadfonts.user_upload(request, "base_fonts", fonts.base_dir)
+        downloadfonts.user_upload(request, "fonts_after", manager.after_dir)
+        downloadfonts.user_upload(request, "fonts_before", manager.before_dir)
 
-    fonts.equalize_fonts()
+    manager.equalize_fonts()
 
     if is_ajax:
-        return ajax_response(True, fonts.uid)
-    return redirect(url_for("compare_fonts", uid=fonts.uid))
+        return ajax_response(True, manager.uid)
+    return redirect(url_for("compare_fonts", uid=manager.uid))
 
 
 def ajax_response(status, msg):
@@ -72,60 +71,60 @@ def compare_fonts(uid):
     if not fontmanager.has_fonts(uid):
         # TODO (M Foley) add 404 style html page
         return 'Fonts do not exist!'
-    fonts = fontmanager.load(uid)
-    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+    manager = fontmanager.load(uid)
+    compare_fonts = CompareFonts(manager.fonts_before, manager.fonts_after)
     # css hook to swap remote fonts to local fonts and vice versa
-    to_target_fonts = ','.join([i.cssname for i in fonts.target_fonts])
-    to_base_fonts = ','.join([i.cssname for i in fonts.base_fonts])
+    to_fonts_after = ','.join([i.cssname for i in manager.fonts_after])
+    to_fonts_before = ','.join([i.cssname for i in manager.fonts_before])
 
     return render_template(
         'test_fonts.html',
         dummy_text=dummy_text,
-        target_fonts=fonts.target_fonts,
-        base_fonts=fonts.base_fonts,
-        grouped_fonts=zip(fonts.target_fonts, fonts.base_fonts),
+        fonts_after=manager.fonts_after,
+        fonts_before=manager.fonts_before,
+        grouped_fonts=zip(manager.fonts_after, manager.fonts_before),
         changed_glyphs=compare_fonts.inconsistent_glyphs(),
         new_glyphs=compare_fonts.new_glyphs(),
         missing_glyphs=compare_fonts.missing_glyphs(),
         languages=compare_fonts.languages(),
-        to_target_fonts=to_target_fonts,
-        to_base_fonts=to_base_fonts
+        to_fonts_after=to_fonts_after,
+        to_fonts_before=to_fonts_before
     )
 
 
 @app.route("/api/upload/<upload_type>", methods=['POST'])
 def api_retrieve_fonts(upload_type):
     """Upload fonts via the api."""
-    fonts = fontmanager.new()
+    manager = fontmanager.new()
 
     if upload_type == 'googlefonts':
-        downloadfonts.user_upload(request, "fonts", fonts.target_dir)
-        families = os.listdir(fonts.target_dir)
-        downloadfonts.google_fonts(fonts.base_dir, families)
+        downloadfonts.user_upload(request, "fonts", manager.after_dir)
+        families = os.listdir(manager.after_dir)
+        downloadfonts.google_fonts(manager.before_dir, families)
 
     elif upload_type == 'user':
-        downloadfonts.user_upload(request, "fonts", fonts.target_dir)
-        downloadfonts.user_upload(request, "fonts2", fonts.base_dir)
+        downloadfonts.user_upload(request, "fonts", manager.after_dir)
+        downloadfonts.user_upload(request, "fonts2", manager.before_dir)
 
     fonts.equalize_fonts()
 
-    return json.dumps({'uid': fonts.uid})
+    return json.dumps({'uid': manager.uid})
 
 
 @app.route("/screenshot/glyphs-all/<uuid>/<font_dir>/<pt_size>")
 def screenshot_glyphs_all(uuid, font_dir, pt_size):
     """Screenshot view for all glyphs at a particular point size"""
-    fonts = fontmanager.load(uuid)
-    font_to_display = fonts.base_fonts if font_dir == 'before' else fonts.target_fonts
-    fonts_type = 'Before' if font_dir == 'before' else 'After'
+    manager = fontmanager.load(uuid)
+    font_to_display = manager.fonts_before if font_dir == 'before' else manager.fonts_after
+    fonts_label = 'Before' if font_dir == 'before' else 'After'
 
-    glyph_palettes = fonts_glyph_palettes(fonts.base_fonts)
+    glyph_palettes = fonts_glyph_palettes(manager.fonts_before)
     return render_template(
         'screenshot.html',
-        target_fonts=font_to_display,
+        fonts_after=font_to_display,
         glyph_pallettes=glyph_palettes,
         page_to_load='page-glyphs-all.html',
-        fonts_type=fonts_type,
+        fonts_label=fonts_label,
         pt_size=int(pt_size),
     )
 
@@ -137,22 +136,22 @@ def screenshot_comparison(page, uuid, font_dir):
         'glyphs-modified': 'page-glyphs-modified.html',
         'glyphs-new': 'page-glyphs-new.html',
     }
-    fonts = fontmanager.load(uuid)
-    font_to_display = fonts.base_fonts if font_dir == 'before' else fonts.target_fonts
-    fonts_type = 'Before' if font_dir == 'before' else 'After'
+    manager = fontmanager.load(uuid)
+    font_to_display = manager.fonts_before if font_dir == 'before' else manager.fonts_after
+    fonts_label = 'Before' if font_dir == 'before' else 'After'
 
-    compare_fonts = CompareFonts(fonts.base_fonts, fonts.target_fonts)
+    compare_fonts = CompareFonts(manager.fonts_before, manager.fonts_after)
 
     if page in pages:
         return render_template(
             'screenshot.html',
             dummy_text=dummy_text,
-            target_fonts=font_to_display,
+            fonts_after=font_to_display,
             changed_glyphs=compare_fonts.inconsistent_glyphs(),
             new_glyphs=compare_fonts.new_glyphs(),
             missing_glyphs=compare_fonts.missing_glyphs(),
             page_to_load=pages[page],
-            fonts_type=fonts_type
+            fonts_label=fonts_label
         )
     else:
         return "Page does not exist. Choose from [%s]" % ', '.join(pages)

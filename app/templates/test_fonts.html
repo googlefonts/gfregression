@@ -3,7 +3,7 @@
   {{ super() }}
   <style>
     /*Load local fonts*/
-    {% for font in target_fonts %}
+    {% for font in fonts_after %}
       @font-face{
         font-family: {{ font.cssname }};
         src: url('{{ font.csspath }}');
@@ -11,7 +11,7 @@
     {% endfor %}
 
     /*Load remote fonts*/
-    {% for font in base_fonts %}
+    {% for font in fonts_before %}
       @font-face{
         font-family: {{ font.cssname }};
         src: url('{{ font.csspath }}');
@@ -19,14 +19,14 @@
     {% endfor %}
 
     /*Create classes for local fonts*/
-    {% for font in target_fonts %}
+    {% for font in fonts_after %}
       .{{ font.cssname }}{
         font-family: {{ font.cssname }};
       }
     {% endfor %}
 
-    /*Create classes for base_fonts*/
-    {% for font in base_fonts %}
+    /*Create classes for fonts_before*/
+    {% for font in fonts_before %}
       .{{ font.cssname }}{
         font-family: {{ font.cssname }};
       }
@@ -35,8 +35,8 @@
 {% endblock %}
 
 {% block content %}
-  <meta id="to_target_fonts" data-name="local-fonts" data-str="{{ to_target_fonts }}">
-  <meta id="to_base_fonts" data-name="remote-fonts" data-str="{{ to_base_fonts }}">
+  <meta id="to_fonts_after" data-name="fonts-after" data-str="{{ to_fonts_after }}">
+  <meta id="to_fonts_before" data-name="fonts-before" data-str="{{ to_fonts_before }}">
 
   {% include "page-vertical-metrics.html" %}
   {% include "page-glyphs-modified.html" %}
@@ -47,11 +47,11 @@
   {% include "page-editor.html" %}
 
 <script>
-  local = $('#to_target_fonts').data();
-  target_fonts = local['str'].split(',') 
+  after_str = $('#to_fonts_after').data();
+  fonts_after = after_str['str'].split(',') 
 
-  remote = $('#to_base_fonts').data();
-  base_fonts = remote['str'].split(',');
+  before_str = $('#to_fonts_before').data();
+  fonts_before = before_str['str'].split(',');
 
   $('#info-button').on('click', function(){
     $('#info').toggle();
@@ -59,27 +59,27 @@
   })
   ee = true;
   $('#font-toggle-button').on('click', function(){
-    if(ee == true) {
-      for (i in base_fonts) {
-        $('.font-swap ' + '.' + base_fonts[i]).attr('class', target_fonts[i])
+    if(ee == false) {
+      for (i in fonts_after) {
+        $('.font-swap ' + '.' + fonts_after[i]).attr('class', fonts_before[i])
         $('.box-header > p').each(function() {
             text = $(this).text();
-            $(this).text(text.replace('Base', 'Target'));
+            $(this).text(text.replace('After', 'Before'));
+        })
+        console.log('changed to base');
+      }
+      ee = true;
+    } else {
+      for (i in fonts_before) {
+        $('.font-swap ' + '.' + fonts_before[i]).attr('class', fonts_after[i])
+        $('.box-header > p').each(function() {
+            text = $(this).text();
+            $(this).text(text.replace('Before', 'After'));
 
         })
         console.log('changed to target');
       }
       ee = false;
-    } else {
-      for (i in target_fonts) {
-        $('.font-swap ' + '.' + target_fonts[i]).attr('class', base_fonts[i])
-        $('.box-header > p').each(function() {
-            text = $(this).text();
-            $(this).text(text.replace('Target', 'Base'));
-        })
-        console.log('changed to base');
-      }
-      ee = true;
     }
     $('.dropdown').hide();
   })

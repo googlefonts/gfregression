@@ -8,14 +8,14 @@ var UPLOAD_URL = "/retrieve-fonts";
 var NEXT_URL   = "/compare/";
 
 // List of pending files to handle when the Upload button is finally clicked.
-var TARGET_FONTS  = [];
-var BASE_FONTS = [];
+var FONTS_AFTER  = [];
+var FONTS_BEFORE = [];
 
 
 $(document).ready(function() {
     // Set up the drag/drop zone.
-    initDropbox("#target_dropbox", TARGET_FONTS);
-    initDropbox("#base_dropbox", BASE_FONTS);
+    initDropbox("#target_dropbox", FONTS_AFTER);
+    initDropbox("#base_dropbox", FONTS_BEFORE);
 
     // Set up the handler for the file input box.
     $("#file-picker").on("change", function() {
@@ -48,14 +48,14 @@ function doUpload() {
     fd = collectFormData();
     
     // Attach the files.
-    for (var i = 0, ie = TARGET_FONTS.length; i < ie; i++) {
+    for (var i = 0, ie = FONTS_AFTER.length; i < ie; i++) {
         // Collect the other form data.
-        fd.append("target_fonts", TARGET_FONTS[i]);
+        fd.append("fonts_after", FONTS_AFTER[i]);
     }
 
-    for (var i = 0, ie = BASE_FONTS.length; i < ie; i++) {
+    for (var i = 0, ie = FONTS_BEFORE.length; i < ie; i++) {
         // Collect the other form data.
-        fd.append("base_fonts", BASE_FONTS[i]);
+        fd.append("fonts_before", FONTS_BEFORE[i]);
     }
 
 

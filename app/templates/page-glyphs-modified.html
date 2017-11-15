@@ -1,12 +1,12 @@
 <div id="page-glyph-modified" class="pages">
-  {% for font in target_fonts %}
+  {% for font in fonts_after %}
     <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
   {% endfor %}
 
-  {% for font in target_fonts %}
+  {% for font in fonts_after %}
     <div class="box-large">
       <div class="box-header" id="{{ font.fullname }}-modified">
-        <p>{{ font.fullname }} Target</p>
+        <p>{{ font.fullname }} After</p>
       </div>
       <div class="box-content">
         {% if changed_glyphs[font.fullname] %}

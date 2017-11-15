@@ -1,12 +1,12 @@
 <div id="page-editor" class="pages">
-  {% for font in target_fonts %}
+  {% for font in fonts_after %}
     <h2><a href="#{{ font.fullname }}-editor">{{ font.fullname }}</a></h2>
   {% endfor %}
 
-  {% for font in target_fonts %}
+  {% for font in fonts_after %}
   <div class="box-large">
     <div class="box-header" id="{{ font.fullname }}-editor">
-        <p>{{ font.fullname }} Base</p>
+        <p>{{ font.fullname }} After</p>
       <div class="width-33">
       </div>
       <div class="width-33">

@@ -7,10 +7,10 @@ from settings import GLYPH_THRESHOLD
 
 class CompareFonts:
 
-    def __init__(self, base_fonts, target_fonts):
-        self.base_fonts = {f.fullname: f for f in base_fonts}
-        self.target_fonts = {f.fullname: f for f in target_fonts}
-        self.shared_fonts = set(self.base_fonts) & set(self.target_fonts)
+    def __init__(self, fonts_before, fonts_after):
+        self.fonts_before = {f.fullname: f for f in fonts_before}
+        self.fonts_after = {f.fullname: f for f in fonts_after}
+        self.shared_fonts = set(self.fonts_before) & set(self.fonts_after)
 
     def inconsistent_glyphs(self):
         """return glyphs which have changed from local to remote"""
@@ -18,15 +18,15 @@ class CompareFonts:
         bad_glyphs = {}
 
         for font in self.shared_fonts:
-            l_glyphs = self.target_fonts[font].font['glyf'].glyphs.keys()
-            r_glyphs = self.base_fonts[font].font['glyf'].glyphs.keys()
+            l_glyphs = self.fonts_after[font].font['glyf'].glyphs.keys()
+            r_glyphs = self.fonts_before[font].font['glyf'].glyphs.keys()
             shared_glyphs = set(l_glyphs) & set(r_glyphs)
 
-            l_upm = self.target_fonts[font].font['head'].unitsPerEm 
-            r_upm = self.base_fonts[font].font['head'].unitsPerEm
+            l_upm = self.fonts_after[font].font['head'].unitsPerEm 
+            r_upm = self.fonts_before[font].font['head'].unitsPerEm
 
-            l_glyphs = self.target_fonts[font].font.getGlyphSet()
-            r_glyphs = self.base_fonts[font].font.getGlyphSet()
+            l_glyphs = self.fonts_after[font].font.getGlyphSet()
+            r_glyphs = self.fonts_before[font].font.getGlyphSet()
 
             l_pen = AreaPen(l_glyphs)
             r_pen = AreaPen(r_glyphs)
@@ -50,7 +50,7 @@ class CompareFonts:
                             bad_glyphs[font] = []
                         bad_glyphs[font].append(glyph)
 
-            l_cmap_tbl = self.target_fonts[font].font['cmap'].getcmap(3, 1).cmap
+            l_cmap_tbl = self.fonts_after[font].font['cmap'].getcmap(3, 1).cmap
             try:
                 glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in bad_glyphs[font]]
             except:
@@ -62,13 +62,13 @@ class CompareFonts:
         glyphs = {}
 
         for font in self.shared_fonts:
-            l_glyphs = self.target_fonts[font].font['glyf'].glyphs.keys()
-            r_glyphs = self.base_fonts[font].font['glyf'].glyphs.keys()
+            l_glyphs = self.fonts_after[font].font['glyf'].glyphs.keys()
+            r_glyphs = self.fonts_before[font].font['glyf'].glyphs.keys()
             glyphs[font] = set(l_glyphs) - set(r_glyphs)
 
-            l_cmap_tbl = self.target_fonts[font].font['cmap'].getcmap(3, 1).cmap
+            l_cmap_tbl = self.fonts_after[font].font['cmap'].getcmap(3, 1).cmap
 
-            r_cmap_tbl = self.base_fonts[font].font['cmap'].getcmap(3, 1).cmap
+            r_cmap_tbl = self.fonts_before[font].font['cmap'].getcmap(3, 1).cmap
             r_encoded_glyphs = [i[0] for i in r_cmap_tbl.items()]
 
             glyphs[font] = [i for i in l_cmap_tbl.items() if i[1] in glyphs[font] and
@@ -80,13 +80,13 @@ class CompareFonts:
         glyphs = {}
 
         for font in self.shared_fonts:
-            l_glyphs = self.target_fonts[font].font['glyf'].glyphs.keys()
-            r_glyphs = self.base_fonts[font].font['glyf'].glyphs.keys()
+            l_glyphs = self.fonts_after[font].font['glyf'].glyphs.keys()
+            r_glyphs = self.fonts_before[font].font['glyf'].glyphs.keys()
             glyphs[font] = set(r_glyphs) - set(l_glyphs)
 
-            l_cmap_tbl = self.target_fonts[font].font['cmap'].getcmap(3, 1).cmap
+            l_cmap_tbl = self.fonts_after[font].font['cmap'].getcmap(3, 1).cmap
             l_encoded_glyphs = [i[0] for i in l_cmap_tbl.items()]
-            r_cmap_tbl = self.base_fonts[font].font['cmap'].getcmap(3, 1).cmap
+            r_cmap_tbl = self.fonts_before[font].font['cmap'].getcmap(3, 1).cmap
 
             glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
                             i[0] not in l_encoded_glyphs]
@@ -96,9 +96,9 @@ class CompareFonts:
         """for each defined gsub language, download and return some
         sample text"""
         font_languages = {}
-        for font in self.target_fonts:
+        for font in self.fonts_after:
             try:
-                script_records = self.target_fonts[font].font['GSUB'].table.ScriptList.ScriptRecord
+                script_records = self.fonts_after[font].font['GSUB'].table.ScriptList.ScriptRecord
 
                 font_languages[font] = {}
                 for script in script_records:

@@ -3,7 +3,7 @@
   {{ super() }}
   <style>
     /*Load local fonts*/
-    {% for font in target_fonts %}
+    {% for font in fonts_after %}
       @font-face{
         font-family: {{ font.cssname }};
         src: url('{{ font.csspath }}');
@@ -12,7 +12,7 @@
 
 
     /*Create classes for local fonts*/
-    {% for font in target_fonts %}
+    {% for font in fonts_after %}
       .{{ font.cssname }}{
         font-family: {{ font.cssname }};
       }
@@ -29,6 +29,6 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Font Set: {{ fonts_type }}</h1>
+  <h1>Font Set: {{ fonts_label }}</h1>
   {% include page_to_load %}
 {% endblock %}

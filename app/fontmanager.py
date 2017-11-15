@@ -11,6 +11,8 @@ import shutil
 from glob import glob
 import ntpath
 from fontTools.ttLib import TTFont
+import uuid
+
 from models import gfr_font
 
 
@@ -32,7 +34,7 @@ def new():
 
     date = datetime.now()
     _id = len(current_directories) + 1
-    uid = '{}-{}-{}-{}'.format(date.year, date.month, date.day, _id)
+    uid = str(uuid.uuid4())
     manager = FontManager(uid)
     manager.mkdirs()
     return manager

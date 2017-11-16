@@ -86,7 +86,6 @@ def compare_fonts(uid):
         changed_glyphs=compare_fonts.inconsistent_glyphs(),
         new_glyphs=compare_fonts.new_glyphs(),
         missing_glyphs=compare_fonts.missing_glyphs(),
-        languages=compare_fonts.languages(),
         to_fonts_after=to_fonts_after,
         to_fonts_before=to_fonts_before
     )

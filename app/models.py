@@ -1,11 +1,3 @@
-from peewee import (
-    SqliteDatabase,
-    Model,
-    CharField,
-    IntegerField,
-    TextField,
-    )
-
 import re
 import os
 from glob import glob
@@ -17,21 +9,6 @@ from StringIO import StringIO
 from fontTools.ttLib import TTFont
 from collections import namedtuple
 import json
-
-
-db = SqliteDatabase('iso639corpora.db')
-
-
-class Languages(Model):
-    name = CharField()
-    part1 = CharField(null=True)
-    part2 = CharField(null=True)
-    part3 = CharField(null=True)
-    wiki_id = IntegerField(null=True)
-    text = TextField(null=True)
-
-    class Meta:
-        database = db
 
 
 Font = namedtuple('Font', [

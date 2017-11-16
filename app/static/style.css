@@ -133,7 +133,7 @@ a, ul, li {
   padding-bottom: 10px;
   cursor: pointer;
 }
-#page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages, #page-editor{
+#page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-editor{
   display: none;
 }
 #alert{

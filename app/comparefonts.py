@@ -1,7 +1,4 @@
 from fontTools.pens.areaPen import AreaPen
-from otlang2iso import otlang2iso
-from script2iso import script2iso
-from models import db, Languages
 from settings import GLYPH_THRESHOLD
 
 
@@ -91,32 +88,3 @@ class CompareFonts:
             glyphs[font] = [i for i in r_cmap_tbl.items() if i[1] in glyphs[font] and
                             i[0] not in l_encoded_glyphs]
         return glyphs
-
-    def languages(self):
-        """for each defined gsub language, download and return some
-        sample text"""
-        font_languages = {}
-        for font in self.fonts_after:
-            try:
-                script_records = self.fonts_after[font].font['GSUB'].table.ScriptList.ScriptRecord
-
-                font_languages[font] = {}
-                for script in script_records:
-                    font_languages[font][script2iso[script.ScriptTag]] = ''
-                    languages = list(script.Script.LangSysRecord)
-                    for language in languages:
-                        lang_tag = language.LangSysTag
-                        font_languages[font][lang_tag] = ''
-
-                for lang_tag in font_languages[font]:
-                    try:
-                        db.connect()
-                        db_language = Languages.get(Languages.part3 == otlang2iso[lang_tag])
-                        font_languages[font][lang_tag] = db_language
-                        db.close()
-                    except:
-                        all # Need to add other OpenType scripts to script2iso
-            except KeyError:
-                print('Skipping language tests, no GSUB table')
-                return None
-        return font_languages

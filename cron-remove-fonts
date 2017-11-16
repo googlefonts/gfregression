@@ -1,1 +1,1 @@
-5 8 * * 0 root python removefonts.py >> /var/log/cron.log 2>&1
+5 8 * * 0 root cd app/ && python removefonts.py >> /var/log/cron.log 2>&1

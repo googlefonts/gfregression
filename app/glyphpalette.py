@@ -1,6 +1,9 @@
 """
 Use Nototool's hbinput generator to get every accesible character
-in a font
+in a font.
+
+TODO (M Foley) This approach is too slow on complex multilingual families
+A better approach may be to assign puas to unencoded glyphs.
 """
 from fontTools.ttLib import TTFont
 from fontTools.misc.py23 import unichr

@@ -10,7 +10,7 @@
             {% if features %}
               {% for feat in features %}
                 <div style="float: left; width: {{ pt_size * 1.5 }}pt; line-height: {{ pt_size * 1.5 }}pt;">
-                  <span class="{{ font.cssname }}" style="font-feature-settings: '{{ feat }}' on;
+                  <span class="{{ font.css_class }}" style="font-feature-settings: '{{ feat }}' on;
                   font-size: {{ pt_size }}pt;"> {{ glyph }} </span>
                 </div>
               {% endfor %}
@@ -18,7 +18,7 @@
             {% else %}
               <!-- Glyphs which are accesible with unicodes -->
               <div style="float: left; width: {{ pt_size * 1.5 }}pt; line-height: {{ pt_size * 1.5 }}pt;">
-              <span class="{{ font.cssname }}" style="font-feature-settings: '{{ feat }}' on;
+              <span class="{{ font.css_class }}" style="font-feature-settings: '{{ feat }}' on;
                   font-size: {{ pt_size }}pt;"> {{ glyph }} </span>
               </div>
             {% endif %}

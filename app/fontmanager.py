@@ -75,8 +75,8 @@ class FontManager(object):
 
     def refresh(self):
         """Reload session font changes"""
-        self.fonts_before = self._get_fonts(self.before_dir, 'fonts_before')
-        self.fonts_after = self._get_fonts(self.after_dir, 'fonts_after')
+        self.fonts_before = self._get_fonts(self.before_dir, '_before')
+        self.fonts_after = self._get_fonts(self.after_dir, '_after')
 
     def _get_fonts(self, path, suffix):
         fonts = []
@@ -84,12 +84,7 @@ class FontManager(object):
         if not fonts_paths:
             return None
         for path in fonts_paths:
-            name = ntpath.basename(path)[:-4]
-            font = gfr_font(
-                path=path.replace('\\', '/'),
-                fullname=name,
-                cssname='%s-%s' % (name, suffix),
-            )
+            font = gfr_font(path, suffix)
             fonts.append(font)
         return fonts
 

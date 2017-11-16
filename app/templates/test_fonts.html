@@ -5,7 +5,9 @@
     /*Load local fonts*/
     {% for font in fonts_after %}
       @font-face{
-        font-family: {{ font.cssname }};
+        font-family: {{ font.css_name }};
+        font-style: {{ font.css_style }};
+        font-weight: {{ font.css_weight }};
         src: url('{{ font.csspath }}');
       }
     {% endfor %}
@@ -13,22 +15,28 @@
     /*Load remote fonts*/
     {% for font in fonts_before %}
       @font-face{
-        font-family: {{ font.cssname }};
+        font-family: {{ font.css_name }};
+        font-style: {{ font.css_style }};
+        font-weight: {{ font.css_weight }};
         src: url('{{ font.csspath }}');
       }
     {% endfor %}
 
     /*Create classes for local fonts*/
     {% for font in fonts_after %}
-      .{{ font.cssname }}{
-        font-family: {{ font.cssname }};
+      .{{ font.css_class }}{
+        font-family: {{ font.css_name }};
+        font-style: {{ font.css_style }};
+        font-weight: {{ font.css_weight }};
       }
     {% endfor %}
 
     /*Create classes for fonts_before*/
     {% for font in fonts_before %}
-      .{{ font.cssname }}{
-        font-family: {{ font.cssname }};
+      .{{ font.css_class }}{
+        font-family: {{ font.css_name }};
+        font-style: {{ font.css_style }};
+        font-weight: {{ font.css_weight }};
       }
     {% endfor %}
   </style>

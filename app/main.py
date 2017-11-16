@@ -74,8 +74,8 @@ def compare_fonts(uid):
     manager = fontmanager.load(uid)
     compare_fonts = CompareFonts(manager.fonts_before, manager.fonts_after)
     # css hook to swap remote fonts to local fonts and vice versa
-    to_fonts_after = ','.join([i.cssname for i in manager.fonts_after])
-    to_fonts_before = ','.join([i.cssname for i in manager.fonts_before])
+    to_fonts_after = ','.join([i.css_name for i in manager.fonts_after])
+    to_fonts_before = ','.join([i.css_name for i in manager.fonts_before])
 
     return render_template(
         'test_fonts.html',

@@ -1,38 +1,36 @@
 {% extends "base.html" %}
 {% block head %}
   {{ super() }}
-  <style>
-    /*Load local fonts*/
-    {% for font in fonts_after %}
-      @font-face{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
-        src: url('{{ font.csspath }}');
+  <head>
+    <style>
+      /* @font-face family */
+      {% for f in fonts[font_position]['ttfs'] %}
+          {{ f['font_face'] }}
+      {% endfor %}
+      {% for f in fonts[font_position]['ttfs'] %}
+          {{ f['span_class'] }}
+      {% endfor %}
+
+      /* swap div*/
+      .swap-fonts-before {
+        display: block;
+        font-family: {{ fonts['before']['css_family_name'] }};
       }
-    {% endfor %}
-
-
-    /*Create classes for local fonts*/
-    {% for font in fonts_after %}
-      .{{ font.css_class }}{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
+      .swap-fonts-after {
+        display: block;
+        font-family: {{ fonts['after']['css_family_name'] }};
       }
-    {% endfor %}
-
-
     #header{
         display: none;
     }
-    #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-gsub, #page-languages, #page-editor{
-  display: block;
-}
-  </style>
+    #page-glyph-modified, #page-glyph-missing, #page-glyph-new, #page-spacing, #page-waterfall, #page-editor{
+      display: block;
+  }
+    </style>
 {% endblock %}
-
-{% block content %}
-  <h1>Font Set: {{ fonts_label }}</h1>
+  </head>
+  {% block content %}
+    <h1>View: {{ view.title() }}</h1>
+    <h1>Font Set: {{ font_position.title() }}</h1>
   {% include page_to_load %}
-{% endblock %}
+  {% endblock %}

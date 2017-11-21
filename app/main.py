@@ -1,24 +1,38 @@
-'''
-Compare local fonts against fonts available on fonts.google.com
-'''
-from __future__ import print_function
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, g, request, render_template, redirect, url_for
 from uuid import uuid4
 import os
 import json
+import rethinkdb as r
+from rethinkdb.errors import RqlRuntimeError, RqlDriverError
 
 import downloadfonts
-import fontmanager
-from glyphpalette import fonts_glyph_palettes
-from comparefonts import CompareFonts
+import models
+from comparefonts import compare_fonts
+from glyphpalette import fonts_all_glyphs
 
-__version__ = 1.200
+__version__ = 2.000
 
 app = Flask(__name__, static_url_path='/static')
 
-dummy_text_path = os.path.join(os.path.dirname(__file__), 'dummy_text.txt')
-with open(dummy_text_path, 'r') as dummy_text_file:
-    dummy_text = dummy_text_file.read()
+RDB_HOST =  os.environ.get('RDB_HOST') or 'localhost'
+RDB_PORT = os.environ.get('RDB_PORT') or 28015
+DB = 'diffenator_web'
+
+
+@app.before_request
+def before_request():
+    try:
+        g.rdb_conn = r.connect(host=RDB_HOST, port=RDB_PORT, db=DB)
+    except RqlDriverError:
+        abort(503, "No database connection could be established.")
+
+
+@app.teardown_request
+def teardown_request(exception):
+    try:
+        g.rdb_conn.close()
+    except AttributeError:
+        pass
 
 
 @app.route('/')
@@ -26,36 +40,49 @@ def index():
     return render_template('upload.html')
 
 
-@app.route('/retrieve-fonts', methods=["POST"])
-def retrieve_fonts():
+@app.route('/upload-fonts', methods=["POST"])
+def upload_fonts():
     """Upload/download the two sets of fonts to compare"""
-    manager = fontmanager.new()
+
     # # Is the upload using Ajax, or a direct POST by the form?
     form = request.form
     is_ajax = True if form.get("__ajax", None) == "true" else False
 
+    uuid = str(uuid4())
+
     # User wants to compare fonts against GF hosted.
     if form.get('fonts') == 'from_gf':
-        downloadfonts.user_upload(request, "fonts_after", manager.after_dir)
-        families = os.listdir(manager.after_dir)
-        downloadfonts.google_fonts(manager.before_dir, families)
+        after = downloadfonts.user_upload(request, "fonts_after")
+        fonts_after = models.add_fonts(after, 'after', uuid)
 
+        before = downloadfonts.google_fonts(map(os.path.basename, after))
+        fonts_before = models.add_fonts(before, 'before', uuid)
+        
     # User wants to compare upstream github fonts against GF hosted.
     elif form.get('fonts') == 'from_github_url':
-        downloadfonts.github_dir(form.get('github-url'), manager.after_dir)
-        families = os.listdir(manager.after_dir)
-        downloadfonts.google_fonts(manager.before_dir, families)
+        after = downloadfonts.github_dir(form.get('github-url'))
+        fonts_after = models.add_fonts(after, 'after', uuid)
+
+        before = downloadfonts.google_fonts(map(os.path.basename, after))
+        fonts_before = models.add_fonts(before, 'before', uuid)
 
     # User wants to compare two sets of local fonts.
     elif form.get('fonts') == 'from_local':
-        downloadfonts.user_upload(request, "fonts_after", manager.after_dir)
-        downloadfonts.user_upload(request, "fonts_before", manager.before_dir)
+        after = downloadfonts.user_upload(request, "fonts_after")
+        fonts_after = models.add_fonts(after, 'after', uuid)
+        
+        before = downloadfonts.user_upload(request, "fonts_before")
+        fonts_before = models.add_fonts(before, 'before', uuid)
 
-    manager.equalize_fonts()
+    fontset = models.add_fontset(fonts_before, fonts_after, uuid)
+    r.table('fontsets').insert(fontset).run(g.rdb_conn)
+
+    comparison = compare_fonts(fonts_before, fonts_after, uuid)
+    r.table('comparisons').insert(comparison).run(g.rdb_conn)
 
     if is_ajax:
-        return ajax_response(True, manager.uid)
-    return redirect(url_for("compare_fonts", uid=manager.uid))
+        return ajax_response(True, uuid)
+    return redirect(url_for("compare", uid=uuid))
 
 
 def ajax_response(status, msg):
@@ -66,94 +93,82 @@ def ajax_response(status, msg):
     ))
 
 
-@app.route("/compare/<uid>")
-def compare_fonts(uid):
-    if not fontmanager.has_fonts(uid):
-        # TODO (M Foley) add 404 style html page
-        return 'Fonts do not exist!'
-    manager = fontmanager.load(uid)
-    compare_fonts = CompareFonts(manager.fonts_before, manager.fonts_after)
-    # css hook to swap remote fonts to local fonts and vice versa
-    to_fonts_after = ','.join([i.css_name for i in manager.fonts_after])
-    to_fonts_before = ','.join([i.css_name for i in manager.fonts_before])
+@app.route('/compare/<uuid>')
+def compare(uuid):
+    fonts = list(r.table('fontsets')
+                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    comparison = list(r.table('comparisons')
+                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
 
     return render_template(
-        'test_fonts.html',
-        dummy_text=dummy_text,
-        fonts_after=manager.fonts_after,
-        fonts_before=manager.fonts_before,
-        grouped_fonts=zip(manager.fonts_after, manager.fonts_before),
-        changed_glyphs=compare_fonts.inconsistent_glyphs(),
-        new_glyphs=compare_fonts.new_glyphs(),
-        missing_glyphs=compare_fonts.missing_glyphs(),
-        to_fonts_after=to_fonts_after,
-        to_fonts_before=to_fonts_before
+        "test_fonts.html",
+        fonts=fonts,
+        comparisons=comparison,
+        font_position='before',
     )
 
 
-@app.route("/api/upload/<upload_type>", methods=['POST'])
-def api_retrieve_fonts(upload_type):
-    """Upload fonts via the api."""
-    manager = fontmanager.new()
-
-    if upload_type == 'googlefonts':
-        downloadfonts.user_upload(request, "fonts", manager.after_dir)
-        families = os.listdir(manager.after_dir)
-        downloadfonts.google_fonts(manager.before_dir, families)
-
-    elif upload_type == 'user':
-        downloadfonts.user_upload(request, "fonts", manager.after_dir)
-        downloadfonts.user_upload(request, "fonts2", manager.before_dir)
-
-    manager.equalize_fonts()
-
-    return json.dumps({'uid': manager.uid})
-
-
-@app.route("/screenshot/glyphs-all/<uuid>/<font_dir>/<pt_size>")
-def screenshot_glyphs_all(uuid, font_dir, pt_size):
-    """Screenshot view for all glyphs at a particular point size"""
-    manager = fontmanager.load(uuid)
-    font_to_display = manager.fonts_before if font_dir == 'before' else manager.fonts_after
-    fonts_label = 'Before' if font_dir == 'before' else 'After'
-
-    glyph_palettes = fonts_glyph_palettes(manager.fonts_before)
-    return render_template(
-        'screenshot.html',
-        fonts_after=font_to_display,
-        glyph_pallettes=glyph_palettes,
-        page_to_load='page-glyphs-all.html',
-        fonts_label=fonts_label,
-        pt_size=int(pt_size),
-    )
-
-
-@app.route("/screenshot/<page>/<uuid>/<font_dir>")
-def screenshot_comparison(page, uuid, font_dir):
+@app.route('/screenshot/<uuid>/<view>/<font_position>',
+           defaults={'font_size': 20})
+@app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
+def screenshot(uuid, view, font_position, font_size):
+    """View gets used with Browserstack's screenshot api"""
     pages = {
         'waterfall': 'page-waterfall.html',
         'glyphs-modified': 'page-glyphs-modified.html',
         'glyphs-new': 'page-glyphs-new.html',
+        'glyphs-missing': 'page-glyphs-missing.html',
+        'glyphs-all': 'page-glyphs-all.html',
     }
-    manager = fontmanager.load(uuid)
-    font_to_display = manager.fonts_before if font_dir == 'before' else manager.fonts_after
-    fonts_label = 'Before' if font_dir == 'before' else 'After'
+    fonts = list(r.table('fontsets')
+                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    comparison = list(r.table('comparisons')
+                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    glyphs = list(r.table('glyphs')
+                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
 
-    compare_fonts = CompareFonts(manager.fonts_before, manager.fonts_after)
+    return render_template(
+        "screenshot.html",
+        fonts=fonts,
+        comparisons=comparison,
+        glyphs=glyphs,
+        view=view,
+        font_position=font_position,
+        font_size=int(font_size),
+        page_to_load=pages[view],
+    )
 
-    if page in pages:
-        return render_template(
-            'screenshot.html',
-            dummy_text=dummy_text,
-            fonts_after=font_to_display,
-            changed_glyphs=compare_fonts.inconsistent_glyphs(),
-            new_glyphs=compare_fonts.new_glyphs(),
-            missing_glyphs=compare_fonts.missing_glyphs(),
-            page_to_load=pages[page],
-            fonts_label=fonts_label
-        )
-    else:
-        return "Page does not exist. Choose from [%s]" % ', '.join(pages)
+
+
+@app.route("/api/upload/<upload_type>", methods=['POST'])
+def api_upload_fonts(upload_type):
+    """Upload fonts via the api."""
+    uuid = str(uuid4())
+
+    if upload_type == 'googlefonts':
+        after = downloadfonts.user_upload(request, "fonts_after")
+        fonts_after = models.add_fonts(after, 'after', uuid)
+
+        before = downloadfonts.google_fonts(map(os.path.basename, after))
+        fonts_before = models.add_fonts(before, 'before', uuid)
+
+    elif upload_type == 'user':
+        after = downloadfonts.user_upload(request, "fonts_after")
+        fonts_after = models.add_fonts(after, 'after', uuid)
+        
+        before = downloadfonts.user_upload(request, "fonts_before")
+        fonts_before = models.add_fonts(before, 'before', uuid)
+
+    fontset = models.add_fontset(fonts_before, fonts_after, uuid)
+    r.table('fontsets').insert(fontset).run(g.rdb_conn)
+
+    comparison = compare_fonts(fonts_before, fonts_after, uuid)
+    r.table('comparisons').insert(comparison).run(g.rdb_conn)
+
+    fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
+    r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
+
+    return json.dumps({'uid': uuid})
 
 
 if __name__ == "__main__":

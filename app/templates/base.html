@@ -19,17 +19,13 @@
     </div>
     {% if request.path != '/' %}
     <div class="header-nav">
-      <!-- Toggle between local and remote fonts -->
-      <div class="button" id="font-toggle-button">
-        <i class="material-icons">sync</i>
-      </div>
+      <div class="button" id="font-toggle-button">Fonts Before</div>
       <!-- Info button -->
       <div class="button">
         <i class="material-icons" id="info-button">info</i>
       </div>
-      <div class="button" id="dropdown-button">Vertical Metrics  <span class="caret">&#x25BC;</span></div>
+      <div class="button" id="dropdown-button">New Glyphs  <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
-        <li span class="container-button" data-page="page-vertical-metrics" data-info="info-vertical-metrics">Vertical Metrics</li>
         <li span class="container-button" data-page="page-glyph-new" data-info="info-glyphs">New Glyphs</li>
         <li span class="container-button" data-page="page-glyph-modified" data-info="info-glyphs">Modified Glyphs</li>
         <li span class="container-button" data-page="page-glyph-missing" data-info="info-glyphs">Missing Glyphs</li>

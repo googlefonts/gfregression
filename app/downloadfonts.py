@@ -10,17 +10,40 @@ from StringIO import StringIO
 
 from utils import download_file
 from blacklist import FONT_EXCEPTIONS
+from settings import FONTS_DIR
 
 
-def github_dir(url, to_dir):
+def google_fonts(families):
+    """Download a collection of font families from Google Fonts"""
+    url = _gf_download_url(families)
+    fonts_zip = ZipFile(download_file(url))
+    fonts = fonts_from_zip(fonts_zip, FONTS_DIR)
+    return fonts
+
+
+def github_dir(url):
     """Download fonts from a github repo directory"""
+    fonts = []
     branch, api_url = _convert_github_url_to_api(url)
     request = requests.get(api_url, params={'ref': branch})
     api_request = json.loads(request.text)
     for item in api_request:
         dl_url = item['download_url']
-        file_path = os.path.join(to_dir, item['name'])
+        file_path = os.path.join(FONTS_DIR, item['name'])
+        fonts.append(file_path)
         download_file(dl_url, file_path)
+    return fonts
+
+
+def user_upload(request, ajax_key):
+    """Upload fonts from a user's system"""
+    fonts = []
+    for upload in request.files.getlist(ajax_key):
+        filename = upload.filename
+        destination = os.path.join(FONTS_DIR, filename)
+        upload.save(destination)
+        fonts.append(destination) 
+    return fonts
 
 
 def _convert_github_url_to_api(url):
@@ -33,13 +56,6 @@ def _convert_github_url_to_api(url):
         repo,
         dirpath
     )
-
-
-def google_fonts(to_dir, *families):
-    """Download a collection of font families from Google Fonts"""
-    url = _gf_download_url(*families)
-    fonts_zip = ZipFile(download_file(url))
-    fonts_from_zip(fonts_zip, to_dir)
 
 
 def _gf_download_url(families):
@@ -63,31 +79,32 @@ def _convert_camelcase(fam_name, seperator=' '):
 def fonts_from_zip(zipfile, to):
     """download the fonts and store them locally"""
     unnest = False
-    for file_name in zipfile.namelist():
-        if file_name.endswith(".ttf"):
-            zipfile.extract(file_name, to)
-        if '/' in file_name:
+    fonts = []
+    for filename in zipfile.namelist():
+        if filename.endswith(".ttf"):
+            fonts.append(os.path.join(to, filename))
+            zipfile.extract(filename, to)
+        if '/' in filename:
             unnest = True
     if unnest:
-        _unnest_folder(to)
+        fonts = _unnest_folder(to)
+    return fonts
 
 
 def _unnest_folder(folder):
     """If multiple fonts have been downloaded, move them from sub dirs to
     parent dir"""
+    fonts = []
     for r, path, files, in os.walk(folder):
         for file in files:
             if file.endswith('.ttf'):
-                shutil.move(os.path.join(r, file), folder)
+                os.path.join(r, file)
+                shutil.move(font_path, folder)
+                new_font_path = os.path.join(folder, file)
+                font.append(new_font_path)
 
     for f in os.listdir(folder):
         if os.path.isdir(os.path.join(folder, f)):
             os.rmdir(os.path.join(folder, f))
+    return fonts
 
-
-def user_upload(request, ajax_key, fonts_path):
-    """Upload fonts from a users system"""
-    for upload in request.files.getlist(ajax_key):
-        filename = upload.filename.rsplit("/")[0]
-        destination = "/".join([fonts_path, filename])
-        upload.save(destination)

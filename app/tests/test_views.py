@@ -12,7 +12,7 @@ class TestApiEndPoints(unittest.TestCase):
         self.app = app.test_client()
         self.local_base_url = 'http://127.0.0.1:5000'
 
-    def test_api_retrieve_fonts_gf_upload(self):
+    def test_api_upload_fonts_gf_upload(self):
         """Test we can upload fonts via the /upload/googlefonts endpoint.
 
         This endpoint will retrieve a set of fonts from the user and a set
@@ -27,7 +27,7 @@ class TestApiEndPoints(unittest.TestCase):
         request = requests.post(url, files=payload)
         self.assertEqual(request.status_code, 200)
 
-    def test_api_retrieve_fonts_user_upload(self):
+    def test_api_upload_fonts_user_upload(self):
         """Test we can upload fonts via the /upload/user endpoint.
 
         this endpoint will retrieve two sets of fonts from a user."""

@@ -2,51 +2,38 @@
 {% block head %}
   {{ super() }}
   <style>
-    /*Load local fonts*/
-    {% for font in fonts_after %}
-      @font-face{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
-        src: url('{{ font.csspath }}');
-      }
+    /* @font-face before and after families */
+    {% for f in fonts['before']['ttfs'] %}
+      {{ f['font_face'] }}
     {% endfor %}
 
-    /*Load remote fonts*/
-    {% for font in fonts_before %}
-      @font-face{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
-        src: url('{{ font.csspath }}');
-      }
+    {% for f in fonts['after']['ttfs'] %}
+      {{ f['font_face'] }}
     {% endfor %}
 
-    /*Create classes for local fonts*/
-    {% for font in fonts_after %}
-      .{{ font.css_class }}{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
-      }
+    {% for f in fonts['before']['ttfs'] %}
+      {{ f['span_class'] }}
     {% endfor %}
 
-    /*Create classes for fonts_before*/
-    {% for font in fonts_before %}
-      .{{ font.css_class }}{
-        font-family: {{ font.css_name }};
-        font-style: {{ font.css_style }};
-        font-weight: {{ font.css_weight }};
-      }
+    {% for f in fonts['after']['ttfs'] %}
+      {{ f['span_class'] }}
     {% endfor %}
+
+    /* swap div*/
+    .swap-fonts-before {
+      display: block;
+      font-family: {{ fonts['before']['css_family_name'] }};
+    }
+    .swap-fonts-after {
+      display: block;
+      font-family: {{ fonts['after']['css_family_name'] }};
+    }
+
   </style>
 {% endblock %}
 
 {% block content %}
-  <meta id="to_fonts_after" data-name="fonts-after" data-str="{{ to_fonts_after }}">
-  <meta id="to_fonts_before" data-name="fonts-before" data-str="{{ to_fonts_before }}">
 
-  {% include "page-vertical-metrics.html" %}
   {% include "page-glyphs-modified.html" %}
   {% include "page-glyphs-new.html" %}
   {% include "page-glyphs-missing.html" %}
@@ -54,41 +41,20 @@
   {% include "page-editor.html" %}
 
 <script>
-  after_str = $('#to_fonts_after').data();
-  fonts_after = after_str['str'].split(',') 
-
-  before_str = $('#to_fonts_before').data();
-  fonts_before = before_str['str'].split(',');
 
   $('#info-button').on('click', function(){
     $('#info').toggle();
     $('.dropdown').hide();
   })
-  ee = true;
-  $('#font-toggle-button').on('click', function(){
-    if(ee == false) {
-      for (i in fonts_after) {
-        $('.font-swap ' + '.' + fonts_after[i]).attr('class', fonts_before[i])
-        $('.box-header > p').each(function() {
-            text = $(this).text();
-            $(this).text(text.replace('After', 'Before'));
-        })
-        console.log('changed to base');
-      }
-      ee = true;
-    } else {
-      for (i in fonts_before) {
-        $('.font-swap ' + '.' + fonts_before[i]).attr('class', fonts_after[i])
-        $('.box-header > p').each(function() {
-            text = $(this).text();
-            $(this).text(text.replace('Before', 'After'));
 
-        })
-        console.log('changed to target');
-      }
-      ee = false;
+  $('#font-toggle-button').on('click', function() {
+    swapFonts()
+    if ($(this).text() == 'Fonts Before') {
+      $(this).text('Fonts After')
+    } 
+    else {
+      $(this).text('Fonts Before')
     }
-    $('.dropdown').hide();
   })
 
 
@@ -120,5 +86,20 @@
 
   })
 
+    // Swap fonts between before and after
+    function swapFonts() {
+        var fonts_before = document.getElementsByClassName('swap-fonts-before')
+        if (fonts_before.length > 0) {
+            while (fonts_before.length > 0) {
+                fonts_before[0].className = 'swap-fonts-after';
+            }
+        }
+        else {
+            var fonts_after = document.getElementsByClassName('swap-fonts-after')
+            while (fonts_after.length > 0) {
+                fonts_after[0].className = 'swap-fonts-before';
+            }            
+        }
+    }
 </script>
 {% endblock %}

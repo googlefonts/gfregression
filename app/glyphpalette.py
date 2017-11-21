@@ -24,7 +24,9 @@ class HtmlInputGenerator(HbInputGenerator):
                 feat, char_seq = cur_input
                 if feat == ('ccmp',):
                     char_seq = char_seq.replace(' ', '')
-                inputs.append((name, feat, char_seq))
+                inputs.append(
+                    {'name': name, 'features': feat, 'characters': char_seq}
+                )
             elif warn:
                 print('not tested (unreachable?): %s' % name)
         return inputs
@@ -88,16 +90,24 @@ def font_glyph_palette(font):
     return combinations.all_inputs()
 
 
-def fonts_glyph_palettes(fonts):
-    """Return a dictionary containing every accesible character
-    for each font.
+def fonts_all_glyphs(fonts_before, fonts_after, uuid):
+    """..."""
+    glyphs_all = {'uuid': uuid,
+                  'glyphs_all': {
+                      'title': 'Glyphs All',
+                      'tests': []},
+                  }
+    shared_fonts = set([f['full_name'] for f in fonts_before]) & \
+                   set([f['full_name'] for f in fonts_after])
+    fonts_before = {f['full_name']: f for f in fonts_before}
+    fonts_after = {f['full_name']: f for f in fonts_after}
 
-    {'font-name: [((feat,), 'uniesc'), ((feat,), 'uniesc')],
-     'font-name: [((feat,), 'uniesc'), ((feat,), 'uniesc')]}"""
-    
-    glyph_palettes = {}
-
-    for font in fonts:
-        glyph_palettes[font.fullname] = font_glyph_palette(font.font)
-    return glyph_palettes
+    for font in shared_fonts:
+        ttfont = TTFont(fonts_before[font]['filename'])
+        glyphs_all['glyphs_all']['tests'].append({
+            'font_before': fonts_before[font],
+            'font_after': fonts_after[font],
+            'glyphs': font_glyph_palette(ttfont)
+        })
+    return glyphs_all
 

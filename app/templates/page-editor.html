@@ -1,33 +1,27 @@
 <div id="page-editor" class="pages">
-  {% for font in fonts_after %}
-    <h2><a href="#{{ font.fullname }}-editor">{{ font.fullname }}</a></h2>
-  {% endfor %}
-
-  {% for font in fonts_after %}
+  {% for font in fonts['before']['ttfs'] %}
   <div class="box-large">
-    <div class="box-header" id="{{ font.fullname }}-editor">
-        <p>{{ font.fullname }} After</p>
+    <div class="box-header"><p>{{ font['full_name'] }}</p></div>
       <div class="width-33">
       </div>
       <div class="width-33">
         <i class="material-icons" id="textsize-icon">text_fields</i>
         <input class="mdl-slider mdl-js-slider" type="range"
-        min="0" max="100" value="50" tabindex="0" id="{{ font.fullname }}-sl">
-        <span id="{{ font.fullname }}-textsize">50px</span>
+        min="7" max="100" value="50" tabindex="0" id="{{ font['full_name'] }}-sl">
+        <span id="{{ font['full_name'] }}-textsize">50px</span>
       </div>
       <div class="width-33">
-        <i class="material-icons" id="{{ font.fullname }}-hide">remove_circle_outline</i>
+        <i class="material-icons" id="{{ font['full_name'] }}-hide">remove_circle_outline</i>
       </div>
     </div>
 
-    <div class="box-content" id="{{ font.fullname }}-textbox" style="font-size: 50px;">
-      <div class='font-swap'>
-        <span class="{{ font.css_class }}" contenteditable="true" spellcheck="false">
+    <div class="box-content" id="{{ font['full_name'] }}-textbox" style="font-size: 50px;">
+      <div class="swap-fonts-{{ font_position }}">
+        <span class={{ font['span_name'] }} contenteditable="true" spellcheck="false">
           This is a live editor... get typing
-        </span>
+        </span>&nbsp;
       </div>
     </div>
-  </div>
   {% endfor %}
   </div>
 </div>

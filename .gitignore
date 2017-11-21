@@ -1,5 +1,4 @@
 env/
 .DS_Store
 *.pyc
-app/static/fonts_before/
-app/static/fonts_after/
+app/static/fonts/*.ttf

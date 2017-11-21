@@ -9,7 +9,7 @@
 
   <div id="family-upload">
     <div class="box-large">
-      <form id="upload-form" action="{{ url_for('retrieve_fonts') }}" method="POST" enctype="multipart/form-data">
+      <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
 
       <input type="radio" name="fonts" value="from_gf" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
       <input type="radio" name="fonts" value="from_github_url" class="comparison-toggle"><p>Compare upstream github repository fonts folder against hosted fonts on fonts.google.com</p>

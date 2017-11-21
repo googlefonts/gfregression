@@ -1,22 +1,16 @@
 <div id="page-glyph-modified" class="pages">
-  {% for font in fonts_after %}
-    <h2><a href="#{{ font.fullname }}-modified">{{ font.fullname }}</a></h2>
-  {% endfor %}
-
-  {% for font in fonts_after %}
+  {% for test in comparisons['glyphs_modified']['tests'] %}
     <div class="box-large">
-      <div class="box-header" id="{{ font.fullname }}-modified">
-        <p>{{ font.fullname }} After</p>
-      </div>
+      <div class="box-header"><p>{{ test["font_before"]["full_name"] }}</p></div>
       <div class="box-content">
-        {% if changed_glyphs[font.fullname] %}
-          {% for uni, name in changed_glyphs[font.fullname] %}
-          <div class="font-swap">
-            <div class="box-char">
-              <span class="{{ font.css_class }}" style="font-size: 60px">&#{{ uni }};</span>
-              <div class="caption">{{ name }}</div>
-            </div>
-          </div>
+        {% if test["glyphs"] %}
+          {% for glyph in test["glyphs"] %}
+              <div class="swap-fonts-{{ font_position }}">
+                <div class="box-char">
+                  <span class={{ test["font_before"]["span_name"] }} style="font-size: 60px">{{ glyph['char'] }}</span>
+                  <div class="caption">{{ glyph['name'] }}</div>
+                </div>
+              </div>
           {% endfor %}
         {% else %}
           <p>No modified glyphs</p>

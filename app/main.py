@@ -9,6 +9,8 @@ import downloadfonts
 import models
 from comparefonts import compare_fonts
 from glyphpalette import fonts_all_glyphs
+import init_db
+
 
 __version__ = 2.000
 
@@ -80,6 +82,9 @@ def upload_fonts():
     comparison = compare_fonts(fonts_before, fonts_after, uuid)
     r.table('comparisons').insert(comparison).run(g.rdb_conn)
 
+    fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
+    r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
+
     if is_ajax:
         return ajax_response(True, uuid)
     return redirect(url_for("compare", uid=uuid))
@@ -142,7 +147,8 @@ def screenshot(uuid, view, font_position, font_size):
 
 @app.route("/api/upload/<upload_type>", methods=['POST'])
 def api_upload_fonts(upload_type):
-    """Upload fonts via the api."""
+    """Upload fonts via the api.
+    TODO (M Foley) use std upload_fonts view"""
     uuid = str(uuid4())
 
     if upload_type == 'googlefonts':
@@ -172,4 +178,5 @@ def api_upload_fonts(upload_type):
 
 
 if __name__ == "__main__":
+    init_db.build_tables()
     app.run(debug=True)

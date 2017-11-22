@@ -10,6 +10,16 @@ ADD cron-remove-fonts /etc/cron.d/remove-fonts
 RUN chmod 0644 /etc/cron.d/remove-fonts
 RUN touch /var/log/cron.log
 
+# Install Rethinkdb
+RUN apt-key adv --keyserver keys.gnupg.net --recv-keys 3B87619DF812A63A8C1005C30742918E5C8DA04A
+RUN echo "deb http://download.rethinkdb.com/apt jessie main" > /etc/apt/sources.list.d/rethinkdb.list
+
+ENV RETHINKDB_PACKAGE_VERSION 2.3.6~0jessie
+
+RUN apt-get update \
+    && apt-get install -y rethinkdb=$RETHINKDB_PACKAGE_VERSION \
+    && rm -rf /var/lib/apt/lists/*
+
 # Standard set up Nginx
 ENV NGINX_VERSION 1.9.11-1~jessie
 
@@ -47,6 +57,5 @@ CMD cron && tail -f /var/log/cron.log
 
 # Add maximum upload of 100 m
 COPY upload_100m.conf /etc/nginx/conf.d/
-
 
 CMD ["/usr/bin/supervisord"]

@@ -2,3 +2,4 @@ env/
 .DS_Store
 *.pyc
 app/static/fonts/*.ttf
+app/rethinkdb_data/

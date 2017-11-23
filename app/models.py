@@ -65,16 +65,21 @@ def add_font(path, font_type, uuid):
 def add_fontset(fonts_before, fonts_after, uuid):
     shared_fonts = set([f['full_name'] for f in fonts_before]) & \
                    set([f['full_name'] for f in fonts_after])
+    fonts_before = [f for f in fonts_before if f['full_name'] in shared_fonts]
+    fonts_after = [f for f in fonts_after if f['full_name'] in shared_fonts]
+    
+    fonts_before_sorted = sorted(fonts_before, key=lambda n: n['full_name'])
+    fonts_after_sorted = sorted(fonts_after, key=lambda n: n['full_name'])
     return {
         'uuid': uuid,
         'before': {
             'family_name': fonts_before[0]['family_name'],
             'css_family_name': fonts_before[0]['css_family_name'],
-            'ttfs': [f for f in fonts_before if f['full_name'] in shared_fonts],
+            'ttfs': fonts_before_sorted,
         },
         'after': {
             'family_name': fonts_after[0]['family_name'],
             'css_family_name': fonts_after[0]['css_family_name'],
-            'ttfs': [f for f in fonts_after if f['full_name'] in shared_fonts],
+            'ttfs': fonts_after_sorted,
         },
     }

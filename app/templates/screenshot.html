@@ -4,10 +4,16 @@
   <head>
     <style>
       /* @font-face family */
-      {% for f in fonts[font_position]['ttfs'] %}
+      {% for f in fonts['before']['ttfs'] %}
           {{ f['font_face'] }}
       {% endfor %}
-      {% for f in fonts[font_position]['ttfs'] %}
+      {% for f in fonts['after']['ttfs'] %}
+          {{ f['font_face'] }}
+      {% endfor %}
+      {% for f in fonts['before']['ttfs'] %}
+          {{ f['span_class'] }}
+      {% endfor %}
+      {% for f in fonts['after']['ttfs'] %}
           {{ f['span_class'] }}
       {% endfor %}
 

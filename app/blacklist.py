@@ -36,5 +36,6 @@ FONT_EXCEPTIONS = {
     'PTSerifCaption': 'PT Serif Caption',
     'PatrickHandSC': 'Patrick Hand SC',
     'PlayfairDisplaySC': 'Playfair Display SC',
+    'VollkornSC': 'Vollkorn SC',
     'VT323': 'VT323',
 }

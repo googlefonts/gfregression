@@ -7,6 +7,7 @@ import os
 import re
 from zipfile import ZipFile
 from StringIO import StringIO
+import shutil
 
 from utils import download_file
 from blacklist import FONT_EXCEPTIONS

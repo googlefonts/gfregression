@@ -17,6 +17,19 @@ CSS_WEIGHT = {
 
 }
 
+class NoMatchingFonts(Exception):
+    def __init__(self, set1_name, set1, set2_name, set2):
+        self.set1_name = set1_name
+        self.set1 = set1
+        self.set2_name = set2_name
+        self.set2 = set2
+        Exception.__init__(self, 'No matching fonts found between sets {}: [{}] & {}: [{}]'.format(
+                self.set1_name,
+                ', '.join(self.set1),
+                self.set2_name,
+                ', '.join(self.set2),
+            ))
+
 def add_fonts(fonts_paths, font_type, uuid):
     fonts = []
     for path in fonts_paths:
@@ -65,6 +78,12 @@ def add_font(path, font_type, uuid):
 def add_fontset(fonts_before, fonts_after, uuid):
     shared_fonts = set([f['full_name'] for f in fonts_before]) & \
                    set([f['full_name'] for f in fonts_after])
+    if len(shared_fonts) == 0:
+        raise NoMatchingFonts('Fonts Before',
+                              [f['full_name'] for f in fonts_before],
+                              'Fonts After',
+                              [f['full_name'] for f in fonts_after],
+        )
     fonts_before = [f for f in fonts_before if f['full_name'] in shared_fonts]
     fonts_after = [f for f in fonts_after if f['full_name'] in shared_fonts]
     

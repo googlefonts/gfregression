@@ -9,17 +9,31 @@ from zipfile import ZipFile
 from StringIO import StringIO
 import shutil
 
-from utils import download_file
+from utils import download_file, secret
 from blacklist import FONT_EXCEPTIONS
 from settings import FONTS_DIR
 
 
 def google_fonts(families):
     """Download a collection of font families from Google Fonts"""
+    googlefonts_has_families(families)
     url = _gf_download_url(families)
     fonts_zip = ZipFile(download_file(url))
     fonts = fonts_from_zip(fonts_zip, FONTS_DIR)
     return fonts
+
+
+def googlefonts_has_families(families):
+    """Check if Google Fonts has the specified font family"""
+    api_url = 'https://www.googleapis.com/webfonts/v1/webfonts?key={}'.format(
+        secret('GF_API_KEY')
+    )
+    r = requests.get(api_url)
+    families_on_gf = [f['family'] for f in r.json()['items']]
+
+    for family in families:
+        if family not in families_on_gf:
+            raise Exception('Family {} does not exist on Google Fonts!'.format(family))
 
 
 def github_dir(url):
@@ -62,19 +76,9 @@ def _convert_github_url_to_api(url):
 def _gf_download_url(families):
     """Assemble download url for families"""
     gf_url_prefix = 'https://fonts.google.com/download?family='
-    families_name = set([_convert_camelcase(f.split('-')[0], '%20')
-                        for f in families if f.endswith('.ttf')])
+    families_name = [f.replace(' ', '%20') for f in families]
     families_url_suffix = '|'.join(families_name)
     return gf_url_prefix + families_url_suffix
-
-
-def _convert_camelcase(fam_name, seperator=' '):
-    '''RubikMonoOne > Rubik+Mono+One'''
-    if fam_name not in FONT_EXCEPTIONS:
-        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, fam_name)
-    else:
-        fam_name = FONT_EXCEPTIONS[fam_name].replace(' ', seperator)
-        return fam_name
 
 
 def fonts_from_zip(zipfile, to):

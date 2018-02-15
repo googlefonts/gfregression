@@ -3,3 +3,4 @@ env/
 *.pyc
 app/static/fonts/*.ttf
 app/rethinkdb_data/
+secrets.json

@@ -10,7 +10,7 @@ import models
 from comparefonts import compare_fonts
 from glyphpalette import fonts_all_glyphs
 import init_db
-
+from utils import filename_to_family_name
 
 __version__ = 2.000
 
@@ -57,7 +57,8 @@ def upload_fonts():
         after = downloadfonts.user_upload(request, "fonts_after")
         fonts_after = models.add_fonts(after, 'after', uuid)
 
-        before = downloadfonts.google_fonts(map(os.path.basename, after))
+        families_to_dl = set(map(filename_to_family_name, after))
+        before = downloadfonts.google_fonts(families_to_dl)
         fonts_before = models.add_fonts(before, 'before', uuid)
         
     # User wants to compare upstream github fonts against GF hosted.
@@ -151,29 +152,32 @@ def api_upload_fonts(upload_type):
     TODO (M Foley) use std upload_fonts view"""
     uuid = str(uuid4())
 
-    if upload_type == 'googlefonts':
-        after = downloadfonts.user_upload(request, "fonts_after")
-        fonts_after = models.add_fonts(after, 'after', uuid)
+    try:
+        if upload_type == 'googlefonts':
+            after = downloadfonts.user_upload(request, "fonts_after")
+            fonts_after = models.add_fonts(after, 'after', uuid)
 
-        before = downloadfonts.google_fonts(map(os.path.basename, after))
-        fonts_before = models.add_fonts(before, 'before', uuid)
+            families_to_dl = set(map(filename_to_family_name, after))
+            before = downloadfonts.google_fonts(families_to_dl)
+            fonts_before = models.add_fonts(before, 'before', uuid)
 
-    elif upload_type == 'user':
-        after = downloadfonts.user_upload(request, "fonts_after")
-        fonts_after = models.add_fonts(after, 'after', uuid)
-        
-        before = downloadfonts.user_upload(request, "fonts_before")
-        fonts_before = models.add_fonts(before, 'before', uuid)
+        elif upload_type == 'user':
+            after = downloadfonts.user_upload(request, "fonts_after")
+            fonts_after = models.add_fonts(after, 'after', uuid)
 
-    fontset = models.add_fontset(fonts_before, fonts_after, uuid)
-    r.table('fontsets').insert(fontset).run(g.rdb_conn)
+            before = downloadfonts.user_upload(request, "fonts_before")
+            fonts_before = models.add_fonts(before, 'before', uuid)
 
-    comparison = compare_fonts(fonts_before, fonts_after, uuid)
-    r.table('comparisons').insert(comparison).run(g.rdb_conn)
+        fontset = models.add_fontset(fonts_before, fonts_after, uuid)
+        r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-    fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
-    r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
+        comparison = compare_fonts(fonts_before, fonts_after, uuid)
+        r.table('comparisons').insert(comparison).run(g.rdb_conn)
 
+        fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
+        r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
+    except Exception, e:
+        return json.dumps({'error': str(e)})
     return json.dumps({'uid': uuid})
 
 

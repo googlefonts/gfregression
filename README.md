@@ -11,3 +11,14 @@ Visit [GF Regression](http://45.55.138.144)
 *"Measure twice, cut once" - English Proverb*
 
 *"Measure seven times, cut once" - Russian Proverb*
+
+## Installation
+
+To run GF Regression locally, you'll need a [Google Fonts api key](https://developers.google.com/fonts/). This must be stored in a .json file located at /app/secrets.json. It must have the following structure.
+
+```
+{
+    "GF_API_KEY": "YOUR-GF-API-KEY"
+}
+
+```

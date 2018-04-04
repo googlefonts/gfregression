@@ -14,8 +14,8 @@ var FONTS_BEFORE = [];
 
 $(document).ready(function() {
     // Set up the drag/drop zone.
-    initDropbox("#target_dropbox", FONTS_AFTER);
-    initDropbox("#base_dropbox", FONTS_BEFORE);
+    initDropbox("#fonts_after_dropbox", FONTS_AFTER);
+    initDropbox("#fonts_before_dropbox", FONTS_BEFORE);
 
     // Set up the handler for the file input box.
     $("#file-picker").on("change", function() {

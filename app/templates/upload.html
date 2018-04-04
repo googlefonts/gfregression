@@ -15,15 +15,15 @@
       <input type="radio" name="fonts" value="from_github_url" class="comparison-toggle"><p>Compare upstream github repository fonts folder against hosted fonts on fonts.google.com</p>
       <input type="radio" name="fonts" value="from_local" class="comparison-toggle"><p>Compare two sets of local fonts</p>
 
-        <div id="target_dropbox">
-          Drag and drop ttfs
-        </div>
-
         <div id="git_url_text">
             <input type="text" name="github-url">
         </div>
 
-        <div id="base_dropbox">
+        <div id="fonts_before_dropbox">
+          Drag and drop ttfs
+        </div>
+
+        <div id="fonts_after_dropbox">
           Drag and drop ttfs
         </div>
 
@@ -46,20 +46,25 @@
 
     $('.comparison-toggle').on('change', function() {
       if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_gf') {
-        $('#base_dropbox').hide();
-        $('#target_dropbox').show();
+        $('#fonts_before_dropbox').hide();
+        $('#fonts_after_dropbox').show();
+        $('#fonts_after_dropbox').text('Drag and drop ttfs')
         $('#git_url_text').hide();
       }
 
       else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_local') {
-        $('#target_dropbox').show();
-        $('#base_dropbox').show();
+        $('#fonts_before_dropbox').show();
+        $('#fonts_before_dropbox').text('Drag and drop before ttfs')
+
+        $('#fonts_after_dropbox').show();
+        $('#fonts_after_dropbox').text('Drag and drop after ttfs')
         $('#git_url_text').hide();
       }
 
       else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_github_url') {
-        $('#base_dropbox').hide();
-        $('#target_dropbox').hide();
+        $('#fonts_before_dropbox').hide();
+
+        $('#fonts_after_dropbox').hide();
         $('#git_url_text').show();
       }
     })

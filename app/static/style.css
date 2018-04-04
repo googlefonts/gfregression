@@ -143,7 +143,7 @@ a, ul, li {
   right: 30px;
   padding: 5px;
 }
-#target_dropbox, #base_dropbox, #target_dropbox.active, #base_dropbox.active {
+#fonts_after_dropbox, #fonts_before_dropbox, #fonts_after_dropbox.active, #fonts_before_dropbox.active {
   background-color: #fcfcfc;
   width: 20em;
   padding-top: 20px;
@@ -152,7 +152,7 @@ a, ul, li {
   margin-bottom: 20px;
   font-family: sans-serif;
 }
-#base_dropbox{
+#fonts_before_dropbox{
     display: none;
 }
 #info{

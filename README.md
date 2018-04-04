@@ -14,11 +14,38 @@ Visit [GF Regression](http://45.55.138.144)
 
 ## Installation
 
+### Run from Docker
+
+Create a new docker machine:
+```
+docker-machine create gf-regression
+```
+
+Run the machine:
+```
+docker-machine start gf-regression
+```
+
+Log into machine:
+```
+docker-machine env gf-regression
+# Copy and paste the returned text in your shell.
+```
+
+Build and run the container using docker-compose. Make sure you are in the project's root directory.
+```
+python2 -m virtualenv venv
+# Activate the virtualenv
+
+docker-compose up
+```
+
+### Run app directly
+
 To run GF Regression locally, you'll need a [Google Fonts api key](https://developers.google.com/fonts/). This must be stored in a .json file located at /app/secrets.json. It must have the following structure.
 
 ```
 {
     "GF_API_KEY": "YOUR-GF-API-KEY"
 }
-
 ```

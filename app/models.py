@@ -40,7 +40,11 @@ def add_fonts(fonts_paths, font_type, uuid):
 def add_font(path, font_type, uuid):
     """Rename font to uuid and derive css properties from filename"""
     filename = os.path.basename(path)
-    family_name, style = filename[:-4].split('-')
+    if '-' in filename:
+        family_name, style = filename[:-4].split('-')
+    else:
+        family_name = filename[:-4]
+        style = 'Regular'
     css_family_name = '%s-%s' % (family_name, font_type)
     full_name = filename[:-4]
     weight = style.replace('Italic', '')

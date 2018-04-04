@@ -11,7 +11,7 @@ RUN chmod 0644 /etc/cron.d/remove-fonts
 RUN touch /var/log/cron.log
 
 # Install Rethinkdb
-RUN apt-key adv --keyserver keys.gnupg.net --recv-keys 3B87619DF812A63A8C1005C30742918E5C8DA04A
+RUN wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | apt-key add -
 RUN echo "deb http://download.rethinkdb.com/apt jessie main" > /etc/apt/sources.list.d/rethinkdb.list
 
 ENV RETHINKDB_PACKAGE_VERSION 2.3.6~0jessie
@@ -23,7 +23,7 @@ RUN apt-get update \
 # Standard set up Nginx
 ENV NGINX_VERSION 1.9.11-1~jessie
 
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62 \
+RUN wget -qO- http://nginx.org/keys/nginx_signing.key | apt-key add - \
 	&& echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install -y ca-certificates nginx=${NGINX_VERSION} gettext-base \

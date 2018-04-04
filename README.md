@@ -40,6 +40,13 @@ python2 -m virtualenv venv
 docker-compose up
 ```
 
+Find out where the app is listening:
+```
+docker-machine ls
+
+# Copy the _bare_ IP address from the "URL" column and paste it into your browser, no port and no tcp://!
+```
+
 ### Run app directly
 
 To run GF Regression locally, you'll need a [Google Fonts api key](https://developers.google.com/fonts/). This must be stored in a .json file located at /app/secrets.json. It must have the following structure.

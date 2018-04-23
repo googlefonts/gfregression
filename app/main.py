@@ -184,6 +184,17 @@ def api_upload_fonts(upload_type):
     })
 
 
+@app.route("/api/info/<uuid>")
+def api_uuid_info(uuid):
+    """Return info regarding a uuid comparison"""
+    fonts = list(r.table('fontsets')
+                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    return json.dumps({
+        'uuid': uuid,
+        'fonts': [f['full_name'] for f in fonts['after']['ttfs']]
+    })
+
+
 if __name__ == "__main__":
     init_db.build_tables()
     app.run(debug=True)

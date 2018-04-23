@@ -178,7 +178,10 @@ def api_upload_fonts(upload_type):
         r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
     except Exception, e:
         return json.dumps({'error': str(e)})
-    return json.dumps({'uid': uuid})
+    return json.dumps({
+        'uuid': uuid,
+        'fonts': [f['full_name'] for f in fontset['after']['ttfs']]
+    })
 
 
 if __name__ == "__main__":

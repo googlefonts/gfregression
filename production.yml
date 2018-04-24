@@ -3,3 +3,11 @@ web:
   build: .
   ports:
     - "80:80"
+  links:
+    - db
+  environment:
+    - RDB_HOST=db
+
+db:
+  image: rethinkdb
+  command: rethinkdb --bind all

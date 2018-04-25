@@ -12,4 +12,6 @@ web:
 
 db:
   image: rethinkdb
-  command: rethinkdb --bind all
+  command: rethinkdb --bind all -d /data
+  volumes:
+    - /data:/data

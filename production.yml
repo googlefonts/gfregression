@@ -1,6 +1,8 @@
 web:
   restart: always
   build: .
+  volumes:
+    - fonts:/app/static/fonts
   ports:
     - "80:80"
   links:
@@ -10,4 +12,6 @@ web:
 
 db:
   image: rethinkdb
-  command: rethinkdb --bind all
+  command: rethinkdb --bind all -d /data
+  volumes:
+    - /data:/data

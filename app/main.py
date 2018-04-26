@@ -16,9 +16,11 @@ __version__ = 2.000
 
 app = Flask(__name__, static_url_path='/static')
 
-RDB_HOST =  os.environ.get('RDB_HOST') or 'localhost'
+RDB_HOST = os.environ.get('RDB_HOST') or 'localhost'
 RDB_PORT = os.environ.get('RDB_PORT') or 28015
 DB = 'diffenator_web'
+
+init_db.build_tables(host=RDB_HOST, port=RDB_PORT, db=DB)
 
 
 @app.before_request
@@ -185,5 +187,4 @@ def api_upload_fonts(upload_type):
 
 
 if __name__ == "__main__":
-    init_db.build_tables()
     app.run(debug=True)

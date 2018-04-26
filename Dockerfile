@@ -10,16 +10,6 @@ ADD cron-remove-fonts /etc/cron.d/remove-fonts
 RUN chmod 0644 /etc/cron.d/remove-fonts
 RUN touch /var/log/cron.log
 
-# Install Rethinkdb
-RUN wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | apt-key add -
-RUN echo "deb http://download.rethinkdb.com/apt jessie main" > /etc/apt/sources.list.d/rethinkdb.list
-
-ENV RETHINKDB_PACKAGE_VERSION 2.3.6~0jessie
-
-RUN apt-get update \
-    && apt-get install -y rethinkdb=$RETHINKDB_PACKAGE_VERSION \
-    && rm -rf /var/lib/apt/lists/*
-
 # Standard set up Nginx
 ENV NGINX_VERSION 1.9.11-1~jessie
 

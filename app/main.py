@@ -180,9 +180,17 @@ def api_upload_fonts(upload_type):
         r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
     except Exception, e:
         return json.dumps({'error': str(e)})
+    return redirect(url_for("api_uuid_info", uuid=uuid))
+
+
+@app.route("/api/info/<uuid>")
+def api_uuid_info(uuid):
+    """Return info regarding a uuid comparison"""
+    fonts = list(r.table('fontsets')
+                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
     return json.dumps({
         'uuid': uuid,
-        'fonts': [f['full_name'] for f in fontset['after']['ttfs']]
+        'fonts': [f['full_name'] for f in fonts['after']['ttfs']]
     })
 
 

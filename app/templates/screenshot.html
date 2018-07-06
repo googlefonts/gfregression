@@ -38,5 +38,28 @@
   {% block content %}
     <h1>View: {{ view.title() }}</h1>
     <h1>Font Set: {{ font_position.title() }}</h1>
-  {% include page_to_load %}
+  
+  {% if view == 'glyphs-modified' %}
+    {% with name="glyph-modified", comparison="glyphs_modified", pass_msg="No modified glyphs" %}
+    {% include "pallette.html" %}
+  {% endwith %}
+
+  {% elif view == 'glyphs-new' %}
+    {% with name="glyph-new", comparison="glyphs_new", pass_msg="No new glyphs" %}
+      {% include "pallette.html" %}
+    {% endwith %}
+
+  {% elif view == 'glyphs-missing' %}
+    {% with name="glyph-missing", comparison="glyphs_missing", pass_msg="No missing glyphs" %}
+      {% include "pallette.html" %}
+    {% endwith %}
+
+  {% elif view == 'glyphs-all' %}
+    {% include "page-glyphs-all.html" %}
+
+  {% elif view == 'waterfall' %}
+    {% include "page-waterfall.html" %}
+
+  {% endif %}
+
   {% endblock %}

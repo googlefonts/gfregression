@@ -1,0 +1,21 @@
+<div id="page-{{ name }}" class="pages">
+  {% for test in comparisons[comparison]['tests'] %}
+    <div class="box-large">
+      <div class="box-header"><p>{{ test["font_before"]["full_name"] }}</p></div>
+      <div class="box-content">
+        {% if test["glyphs"] %}
+          {% for item in test["glyphs"] %}
+              <div class="swap-fonts-{{ font_position }}">
+                <div class="box-char" style="font-feature-settings: '{{ item['glyph']['features'] | join("', '") }}'">
+                  <span class={{ test["font_before"]["span_name"] }} style="font-size: 60px">{{ item['glyph']['characters'] }}</span>
+                  <div class="caption">{{ item['glyph']['name'] }}</div>
+                </div>
+              </div>
+          {% endfor %}
+        {% else %}
+          <p>No missing glyphs</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

@@ -34,9 +34,18 @@
 
 {% block content %}
 
-  {% include "page-glyphs-modified.html" %}
-  {% include "page-glyphs-new.html" %}
-  {% include "page-glyphs-missing.html" %}
+  {% with name="glyph-modified", comparison="glyphs_modified", pass_msg="No modified glyphs" %}
+    {% include "pallette.html" %}
+  {% endwith %}
+
+  {% with name="glyph-new", comparison="glyphs_new", pass_msg="No new glyphs" %}
+    {% include "pallette.html" %}
+  {% endwith %}
+
+  {% with name="glyph-missing", comparison="glyphs_missing", pass_msg="No missing glyphs" %}
+    {% include "pallette.html" %}
+  {% endwith %}
+
   {% include "page-waterfall.html" %}
   {% include "page-editor.html" %}
 

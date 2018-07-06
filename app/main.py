@@ -84,7 +84,6 @@ def upload_fonts():
 
     comparison = compare_fonts(fonts_before, fonts_after, uuid)
     r.table('comparisons').insert(comparison).run(g.rdb_conn)
-
     fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
     r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
 
@@ -121,13 +120,6 @@ def compare(uuid):
 @app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
 def screenshot(uuid, view, font_position, font_size):
     """View gets used with Browserstack's screenshot api"""
-    pages = {
-        'waterfall': 'page-waterfall.html',
-        'glyphs-modified': 'page-glyphs-modified.html',
-        'glyphs-new': 'page-glyphs-new.html',
-        'glyphs-missing': 'page-glyphs-missing.html',
-        'glyphs-all': 'page-glyphs-all.html',
-    }
     fonts = list(r.table('fontsets')
                  .filter({'uuid': uuid}).run(g.rdb_conn))[0]
     comparison = list(r.table('comparisons')
@@ -143,9 +135,7 @@ def screenshot(uuid, view, font_position, font_size):
         view=view,
         font_position=font_position,
         font_size=int(font_size),
-        page_to_load=pages[view],
     )
-
 
 
 @app.route("/api/upload/<upload_type>", methods=['POST'])

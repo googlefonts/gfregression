@@ -123,7 +123,7 @@ def add_fonts_comparison(fonts_before, fonts_after, uuid):
         comparison = diff_fonts(font_before_path, font_after_path)
 
         for cat in comparison:
-            if cat not in ('glyphs', 'kern', 'metrics', 'marks', 'mkmks'):
+            if cat not in ('glyphs', 'kerns', 'metrics', 'marks', 'mkmks'):
                 continue
             for subcat in comparison[cat]:
                 key = '{}_{}'.format(cat, subcat)

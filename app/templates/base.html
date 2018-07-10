@@ -24,11 +24,13 @@
       <div class="button">
         <i class="material-icons" id="info-button">info</i>
       </div>
-      <div class="button" id="dropdown-button">New Glyphs  <span class="caret">&#x25BC;</span></div>
+      <div class="button" id="dropdown-button">Glyphs New <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
-        <li span class="container-button" data-page="page-glyph-new" data-info="info-glyphs">New Glyphs</li>
-        <li span class="container-button" data-page="page-glyph-modified" data-info="info-glyphs">Modified Glyphs</li>
-        <li span class="container-button" data-page="page-glyph-missing" data-info="info-glyphs">Missing Glyphs</li>
+        {% for key in comparisons.keys() %}
+        {% if key != 'glyphs_new' and '_' in key %}
+          <li span class="container-button" data-page="page-{{ key }}" data-info="info-glyphs">{{ comparisons[key]['title'] }}</li>
+        {% endif %}
+        {% endfor %}
         <li span class="container-button" data-page="page-waterfall">Waterfall</li>
         <li span class="container-button" data-page="page-editor" data-info="info-glyphs">Editor</li>
       </div>

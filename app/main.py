@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, redirect, url_for
 from uuid import uuid4
 import os
@@ -62,7 +63,7 @@ def upload_fonts():
         families_to_dl = set(map(filename_to_family_name, after))
         before = downloadfonts.google_fonts(families_to_dl)
         fonts_before = models.add_fonts(before, 'before', uuid)
-        
+
     # User wants to compare upstream github fonts against GF hosted.
     elif form.get('fonts') == 'from_github_url':
         after = downloadfonts.github_dir(form.get('github-url'))
@@ -75,7 +76,7 @@ def upload_fonts():
     elif form.get('fonts') == 'from_local':
         after = downloadfonts.user_upload(request, "fonts_after")
         fonts_after = models.add_fonts(after, 'after', uuid)
-        
+
         before = downloadfonts.user_upload(request, "fonts_before")
         fonts_before = models.add_fonts(before, 'before', uuid)
 
@@ -83,6 +84,7 @@ def upload_fonts():
     r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
     comparison = compare_fonts(fonts_before, fonts_after, uuid)
+    print(comparison)
     r.table('comparisons').insert(comparison).run(g.rdb_conn)
     fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
     r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)

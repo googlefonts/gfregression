@@ -28,23 +28,21 @@
       display: block;
       font-family: {{ fonts['after']['css_family_name'] }};
     }
+    /* Show default page */
+    #page-glyphs_new{
+        display: block;
+    }
 
   </style>
 {% endblock %}
 
 {% block content %}
 
-  {% with name="glyph-modified", comparison="glyphs_modified", pass_msg="No modified glyphs" %}
-    {% include "pallette.html" %}
-  {% endwith %}
-
-  {% with name="glyph-new", comparison="glyphs_new", pass_msg="No new glyphs" %}
-    {% include "pallette.html" %}
-  {% endwith %}
-
-  {% with name="glyph-missing", comparison="glyphs_missing", pass_msg="No missing glyphs" %}
-    {% include "pallette.html" %}
-  {% endwith %}
+  {% for test in comparisons %}
+    {% with name=test, comparison=test, pass_msg="No " + test %}
+      {% include "pallette.html" %}
+    {% endwith %}
+  {% endfor %}
 
   {% include "page-waterfall.html" %}
   {% include "page-editor.html" %}

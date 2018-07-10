@@ -20,10 +20,6 @@
     {% if request.path != '/' %}
     <div class="header-nav">
       <div class="button" id="font-toggle-button">Fonts Before</div>
-      <!-- Info button -->
-      <div class="button">
-        <i class="material-icons" id="info-button">info</i>
-      </div>
       <div class="button" id="dropdown-button">Glyphs New <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
         {% for key in comparisons.keys() %}
@@ -59,108 +55,5 @@
 
   });
   </script>
-  {% if request.path != '/' %}
-  <div id="info">
-
-    <table id="info-vertical-metrics" class="info">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Local</th>
-          <th>fonts.google.com</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for l_font, r_font in grouped_fonts %}
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><b>{{ l_font.cssname }}</b></td>
-        <td><b>{{ r_font.fullname }}</b></td>
-      </tr>
-      <tr>
-        <td>sTypoAscender</td>
-        <td>{{ l_font.sTypoAscender }}</td>
-        <td>{{ r_font.sTypoAscender }}</td>
-      </tr>
-      <tr>
-        <td>sTypoDescender</td>
-        <td>{{ l_font.sTypoDescender }}</td>
-        <td>{{ r_font.sTypoDescender }}</td>
-      </tr>
-      <tr>
-        <td>sTypoLineGap</td>
-        <td>{{ l_font.sTypoLineGap }}</td>
-        <td>{{ r_font.sTypoLineGap }}</td>
-      </tr>
-      <tr>
-        <td>usWinAscent</td>
-        <td>{{ l_font.usWinAscent }}</td>
-        <td>{{ r_font.usWinAscent }}</td>
-      </tr>
-      <tr>
-        <td>usWinDescent</td>
-        <td>{{ l_font.usWinDescent }}</td>
-        <td>{{ r_font.usWinDescent }}</td>
-      </tr>
-      <tr>
-        <td>hheaAscender</td>
-        <td>{{ l_font.hheaAscender }}</td>
-        <td>{{ r_font.hheaAscender }}</td>
-      </tr>
-      <tr>
-        <td>hheaDescender</td>
-        <td>{{ l_font.hheaDescender }}</td>
-        <td>{{ r_font.hheaDescender }}</td>
-      </tr>
-      <tr>
-        <td>hheaLineGap</td>
-        <td>{{ l_font.hheaLineGap }}</td>
-        <td>{{ r_font.hheaLineGap }}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-
-    <table id="info-glyphs" class="info">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Local</th>
-          <th>fonts.google.com</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for l_font, r_font in grouped_fonts %}
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><b>{{ l_font.cssname }}</b></td>
-        <td><b>{{ r_font.fullname }}</b></td>
-      </tr>
-      <tr>
-        <td>Glyph count</td>
-        <td>{{ l_font.glyph_count }}</td>
-        <td>{{ r_font.glyph_count }}</td>
-      </tr>
-      <tr>
-        <td>Encoded count</td>
-        <td>{{ l_font.glyph_encoded_count }}</td>
-        <td>{{ r_font.glyph_encoded_count }}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-
-  </div>
-  {% endif %}
 </body>
 </html>

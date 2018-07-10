@@ -1,10 +1,14 @@
 <div id="page-{{ name }}" class="pages">
   {% for test in comparisons[comparison]['tests'] %}
     <div class="box-large">
-      <div class="box-header"><p>{{ test["font_before"]["full_name"] }}</p></div>
+    {% if test['glyphs']|length > limit %}
+      <div class="box-header"><p>{{ test["font_before"]["full_name"] }}: {{ test['glyphs']|length}} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
+    {% else %}
+       <div class="box-header"><p>{{ test["font_before"]["full_name"] }}: {{ test['glyphs']|length}} items</p></div>
+    {% endif %}
       <div class="box-content">
         {% if test["glyphs"] %}
-          {% for item in test["glyphs"][:800] %}
+          {% for item in test["glyphs"][:limit] %}
             <div class="swap-fonts-{{ font_position }}">
                 <div class="box-char">
                   <span class={{ test["font_before"]["span_name"] }} style="font-size: 60px">{{ item['string'] }}</span>

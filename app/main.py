@@ -12,6 +12,8 @@ from comparefonts import compare_fonts
 from glyphpalette import fonts_all_glyphs
 import init_db
 from utils import filename_to_family_name
+from settings import DIFF_LIMIT
+
 
 __version__ = 2.000
 
@@ -84,7 +86,6 @@ def upload_fonts():
     r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
     comparison = compare_fonts(fonts_before, fonts_after, uuid)
-    print(comparison)
     r.table('comparisons').insert(comparison).run(g.rdb_conn)
     fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
     r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
@@ -114,6 +115,7 @@ def compare(uuid):
         fonts=fonts,
         comparisons=comparison,
         font_position='before',
+        limit=DIFF_LIMIT
     )
 
 
@@ -137,6 +139,7 @@ def screenshot(uuid, view, font_position, font_size):
         view=view,
         font_position=font_position,
         font_size=int(font_size),
+        limit=DIFF_LIMIT
     )
 
 

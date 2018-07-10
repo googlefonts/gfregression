@@ -167,7 +167,7 @@ def api_upload_fonts(upload_type):
         fontset = models.add_fontset(fonts_before, fonts_after, uuid)
         r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-        comparison = add_fonts_comparison(fonts_before, fonts_after, uuid)
+        comparison = models.add_fonts_comparison(fonts_before, fonts_after, uuid)
         r.table('comparisons').insert(comparison).run(g.rdb_conn)
 
         fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)

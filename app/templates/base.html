@@ -22,8 +22,8 @@
       <div class="button" id="font-toggle-button">Fonts Before</div>
       <div class="button" id="dropdown-button">Glyphs New <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
-        {% for key in comparisons.keys() %}
-        {% if key != 'glyphs_new' and '_' in key %}
+        {% for key in comparisons.keys()|sort %}
+        {% if '_' in key %}
           <li span class="container-button" data-page="page-{{ key }}" data-info="info-glyphs">{{ comparisons[key]['title'] }}</li>
         {% endif %}
         {% endfor %}

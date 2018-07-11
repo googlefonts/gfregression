@@ -1,6 +1,7 @@
 import os
 from uuid import uuid4
 from diffenator import diff_fonts
+from diffenator.font import InputFont
 from settings import FONTS_DIR
 
 
@@ -117,10 +118,10 @@ def add_fonts_comparison(fonts_before, fonts_after, uuid):
     fonts_after = {f['full_name']: f for f in fonts_after}
 
     for font in shared_fonts:
-        font_before_path = fonts_before[font]['filename']
-        font_after_path = fonts_after[font]['filename']
+        input_font_before = InputFont(fonts_before[font]['filename'])
+        input_font_after = InputFont(fonts_after[font]['filename'])
 
-        comparison = diff_fonts(font_before_path, font_after_path)
+        comparison = diff_fonts(input_font_before, input_font_after)
 
         for cat in comparison:
             if cat not in ('glyphs', 'kerns', 'metrics', 'marks', 'mkmks'):

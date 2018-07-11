@@ -188,5 +188,20 @@ def api_uuid_info(uuid):
     })
 
 
+@app.errorhandler(500)
+def internal_error(error):
+    import traceback
+    return render_template(
+        "error.html",
+        traceback=traceback.format_exc()
+    )
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template(
+        "404.html"), 404
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

@@ -9,7 +9,7 @@
       <div class="box-content">
         {% if test["glyphs"] %}
           {% for item in test["glyphs"][:limit] %}
-            <div class="swap-fonts-{{ font_position }}">
+            <div class="swap-fonts-{{ font_position }}" style="font-feature-settings: '{{ item['features'] }}'">
                 <div class="box-char">
                   <span class={{ test["font_before"]["span_name"] }} style="font-size: 60px">{{ item['string'] }}</span>
                   <div class="caption">{{ item['description'] }}</div>

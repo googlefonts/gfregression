@@ -17,7 +17,7 @@
     <div class="header-title" id="home">
       <h1><a href="/">Google Fonts Regression</a></h1>
     </div>
-    {% if request.path != '/' %}
+    {% if 'compare' in request.path %}
     <div class="header-nav">
       <div class="button" id="font-toggle-button">Fonts Before</div>
       <div class="button" id="dropdown-button">Glyphs New <span class="caret">&#x25BC;</span></div>

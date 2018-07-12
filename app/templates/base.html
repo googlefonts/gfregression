@@ -20,15 +20,13 @@
     {% if 'compare' in request.path %}
     <div class="header-nav">
       <div class="button" id="font-toggle-button">Fonts Before</div>
-      <div class="button" id="dropdown-button">Glyphs New <span class="caret">&#x25BC;</span></div>
+      <div class="button" id="dropdown-button">{{ view | replace('_', ' ') | title }} <span class="caret">&#x25BC;</span></div>
       <div class="dropdown">
-        {% for key in comparisons.keys()|sort %}
-        {% if '_' in key %}
-          <li span class="container-button" data-page="page-{{ key }}" data-info="info-glyphs">{{ comparisons[key]['title'] }}</li>
-        {% endif %}
+        {% for view in views %}
+            <li span class="container-button"><a href="{{ url_for('compare', uuid=uuid, view=view, font_size=font_size) }}">{{ view | replace('_', ' ') | title }}</a></li>
         {% endfor %}
-        <li span class="container-button" data-page="page-waterfall">Waterfall</li>
-        <li span class="container-button" data-page="page-editor" data-info="info-glyphs">Editor</li>
+        <li span class="container-button"><a href="{{ url_for('compare', uuid=uuid, view='waterfall', font_size=font_size) }}">Waterfall</a></li>
+        <li span class="container-button"><a href="{{ url_for('compare', uuid=uuid, view='editor', font_size=font_size) }}">Editor</a></li>
       </div>
     </div>
     {% endif %}
@@ -47,11 +45,7 @@
       $('.dropdown').hide();
     })
 
-    $('li').on('click', function(){
-      var selectedText = $(this).text()
-      $('#dropdown-button').html(selectedText + ' <span class="caret">&#x25BC;</span>')
-      $('.dropdown').hide();
-    })
+
 
   });
   </script>

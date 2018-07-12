@@ -63,17 +63,18 @@ a, ul, li {
 .box-char{
   position: relative;
   float: left;
-  width: 100px;
-  height: 100px;
-  padding: 10px;
+  padding-bottom: 20px;
   margin: 10px;
+  margin-top: 15px;
   background-color: #fcfcfc;
   text-align: center;
   }
 .caption{
+  position: absolute;
   font-family: sans-serif;
   font-size: 8pt;
-  z-index: 1;
+  bottom: 5px;
+  width: 100%;
 }
 .line{
   float: left;
@@ -132,9 +133,6 @@ a, ul, li {
   padding-top: 10px;
   padding-bottom: 10px;
   cursor: pointer;
-}
-.pages{
-  display: none;
 }
 #alert{
   position: fixed;

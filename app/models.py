@@ -2,6 +2,7 @@ import os
 from uuid import uuid4
 from diffenator import diff_fonts
 from diffenator.font import InputFont
+from diffenator.glyphs import dump_glyphs
 from settings import FONTS_DIR
 
 
@@ -110,34 +111,48 @@ def add_fontset(fonts_before, fonts_after, uuid):
     }
 
 
-def add_fonts_comparison(fonts_before, fonts_after, uuid):
-    comparisons = {'uuid': uuid}
+def add_font_diffs(fonts_before, fonts_after, uuid):
     shared_fonts = set([f['full_name'] for f in fonts_before]) & \
                    set([f['full_name'] for f in fonts_after])
     fonts_before = {f['full_name']: f for f in fonts_before}
     fonts_after = {f['full_name']: f for f in fonts_after}
 
+    diffs = []
     for font in shared_fonts:
         input_font_before = InputFont(fonts_before[font]['filename'])
         input_font_after = InputFont(fonts_after[font]['filename'])
 
-        comparison = diff_fonts(input_font_before, input_font_after)
+        font_diff = diff_fonts(
+            input_font_before,
+            input_font_after,
+        )
 
-        for cat in comparison:
-            if cat not in ('glyphs', 'kerns', 'metrics', 'marks', 'mkmks'):
+        for cat in font_diff:
+            # TODO (M Foley) users should be able to diff what cats they want
+            # in diffenator.
+            if cat not in ['glyphs', 'kerns', 'marks', 'mkmks', 'metrics']:
                 continue
-            for subcat in comparison[cat]:
-                key = '{}_{}'.format(cat, subcat)
-                if not key in comparisons:
-                    title = '{} {}'.format(cat.title(), subcat.title())
-                    comparisons[key] = {'title': title, 'tests': []}
-                comparisons[key]['tests'].append({
-                        'font_before': fonts_before[font],
-                        'font_after': fonts_after[font],
-                        'glyphs': comparison[cat][subcat]
-                })
-    _comparisons_serialiser(comparisons)
-    return comparisons
+            for subcat in font_diff[cat]:
+                diff = {
+                    'uuid': uuid,
+                    'title': '{} {}'.format(cat.title(), subcat.title()),
+                    'view': '{}_{}'.format(cat, subcat),
+                    'font_before': fonts_before[font]['span_name'],
+                    'font_after': fonts_after[font]['span_name'],
+                    'items': font_diff[cat][subcat]
+                }
+                diffs.append(diff)
+
+        all_glyphs = {
+            'uuid': uuid,
+            'title': 'Glyph All',
+            'view': 'glyphs_all',
+            'font_before': fonts_before[font]['span_name'],
+            'font_after': fonts_after[font]['span_name'],
+            'items': dump_glyphs(input_font_before),
+        }
+        diffs.append(all_glyphs)
+    return map(_comparisons_serialiser, diffs)
 
 
 def _comparisons_serialiser(d):

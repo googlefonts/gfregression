@@ -11,7 +11,7 @@ import models
 from glyphpalette import fonts_all_glyphs
 import init_db
 from utils import filename_to_family_name
-from settings import DIFF_LIMIT
+from settings import DIFF_LIMIT, VIEWS
 
 
 __version__ = 2.000
@@ -84,14 +84,12 @@ def upload_fonts():
     fontset = models.add_fontset(fonts_before, fonts_after, uuid)
     r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-    comparison = models.add_fonts_comparison(fonts_before, fonts_after, uuid)
-    r.table('comparisons').insert(comparison).run(g.rdb_conn)
-    fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
-    r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
+    font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
+    r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
 
     if is_ajax:
         return ajax_response(True, uuid)
-    return redirect(url_for("compare", uid=uuid))
+    return redirect(url_for("compare", uid=uuid, view="glyphs_new"))
 
 
 def ajax_response(status, msg):
@@ -102,39 +100,47 @@ def ajax_response(status, msg):
     ))
 
 
-@app.route('/compare/<uuid>')
-def compare(uuid):
+@app.route('/compare/<uuid>/<view>/<font_size>')
+@app.route('/compare/<uuid>', defaults={"view": "glyphs_new", "font_size": 60})
+def compare(uuid, view, font_size):
     fonts = list(r.table('fontsets')
                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
-    comparison = list(r.table('comparisons')
-                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    font_diffs = list(r.table('font_diffs')
+                .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
+
+    if not font_diffs and view not in ['editor', 'waterfall']:
+        return render_template('404.html'), 404
 
     return render_template(
         "test_fonts.html",
         fonts=fonts,
-        comparisons=comparison,
+        font_diffs=font_diffs,
         font_position='before',
-        limit=DIFF_LIMIT
+        limit=DIFF_LIMIT,
+        view=view,
+        views=VIEWS,
+        uuid=uuid,
+        font_size=int(font_size)
     )
 
 
 @app.route('/screenshot/<uuid>/<view>/<font_position>',
-           defaults={'font_size': 20})
+           defaults={'font_size': 60})
 @app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
 def screenshot(uuid, view, font_position, font_size):
     """View gets used with Browserstack's screenshot api"""
     fonts = list(r.table('fontsets')
-                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
-    comparison = list(r.table('comparisons')
-                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
-    glyphs = list(r.table('glyphs')
-                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    font_diffs = list(r.table('font_diffs')
+                .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
+
+    if not font_diffs and view not in ['editor', 'waterfall']:
+        return render_template('404.html'), 404
 
     return render_template(
         "screenshot.html",
         fonts=fonts,
-        comparisons=comparison,
-        glyphs=glyphs,
+        font_diffs=font_diffs,
         view=view,
         font_position=font_position,
         font_size=int(font_size),
@@ -167,11 +173,9 @@ def api_upload_fonts(upload_type):
         fontset = models.add_fontset(fonts_before, fonts_after, uuid)
         r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-        comparison = models.add_fonts_comparison(fonts_before, fonts_after, uuid)
-        r.table('comparisons').insert(comparison).run(g.rdb_conn)
+        font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
+        r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
 
-        fonts_glyphsets = fonts_all_glyphs(fonts_before, fonts_after, uuid)
-        r.table('glyphs').insert(fonts_glyphsets).run(g.rdb_conn)
     except Exception, e:
         return json.dumps({'error': str(e)})
     return redirect(url_for("api_uuid_info", uuid=uuid))
@@ -204,4 +208,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

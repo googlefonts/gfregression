@@ -1,19 +1,34 @@
-<div id="page-{{ name }}" class="pages">
-  {% for test in comparisons[comparison]['tests'] %}
+<div class="pages">
+
+  {% for diff in font_diffs %}
     <div class="box-large">
-    {% if test['glyphs']|length > limit %}
-      <div class="box-header"><p>{{ test["font_before"]["full_name"] }}: {{ test['glyphs']|length}} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
+    {% if diff['items']|length > limit and view != 'glyphs_all' %}
+      <div class="box-header">
+        <p>{{ diff["font_before"] | replace('-before', '') }}: {{ diff['items']|length }} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
     {% else %}
-       <div class="box-header"><p>{{ test["font_before"]["full_name"] }}: {{ test['glyphs']|length}} items</p></div>
+       <div class="box-header"><p>{{ diff["font_before"] | replace('-before', '') }}: {{ diff['items']|length }} items</p></div>
     {% endif %}
+
       <div class="box-content">
-        {% if test["glyphs"] %}
-          {% for item in test["glyphs"][:limit] %}
+        {% if diff["items"] %}
+          {% for item in diff['items'][:limit] %}
             <div class="swap-fonts-{{ font_position }}" style="font-feature-settings: '{{ item['features'] }}'">
-                <div class="box-char">
-                  <span class={{ test["font_before"]["span_name"] }} style="font-size: 60px">{{ item['string'] }}</span>
+
+                {% if font_size >= 50 %}
+                <div class="box-char" style="width: {{ font_size * 2 }}px; height: {{ font_size * 2 }}px">
+                    <div class="box-contents">
+                      <span class={{ diff["font_before"] }} style="font-size: {{ font_size }}px">{{ item['string'] }}</span>
+                    </div>
                   <div class="caption">{{ item['description'] }}</div>
+                 </div>
+                  {% else %}
+
+                <div style="float: left; width: {{ font_size * 1.5 }}px; line-height: {{ font_size * 1.5 }}px;">
+
+                <span class="{{ diff["font_before"] }}" style="font-feature-settings: '{{ feat }}' on;
+                    font-size: {{ font_size }}px;"> {{ item['string'] }} </span>
                 </div>
+                {% endif %}
               </div>
           {% endfor %}
         {% else %}

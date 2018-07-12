@@ -40,20 +40,13 @@
     <h1>Font Set: {{ font_position.title() }}</h1>
   
 
-  {% for test in comparisons %}
-    {% if view == test %}
-    {% with name=test, comparison=test, pass_msg="No " + test %}
-      {% include "pallette.html" %}
-    {% endwith %}
-    {% endif %}
-  {% endfor %}
+{% if '_' in view %}
+{% with name=view, comparison=view, pass_msg="No " + view | replace('_', ' ') %}
+  {% include "pallette.html" %}
+{% endwith %}
 
-  {% if view == 'glyphs-all' %}
-    {% include "page-glyphs-all.html" %}
-
-  {% elif view == 'waterfall' %}
-    {% include "page-waterfall.html" %}
-
-  {% endif %}
+{% elif view == 'waterfall' %}
+{% include "page-waterfall.html" %}
+{% endif %}
 
   {% endblock %}

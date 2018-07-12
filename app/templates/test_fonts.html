@@ -28,31 +28,26 @@
       display: block;
       font-family: {{ fonts['after']['css_family_name'] }};
     }
-    /* Show default page */
-    #page-glyphs_new{
-        display: block;
-    }
+
 
   </style>
 {% endblock %}
 
 {% block content %}
 
-  {% for test in comparisons %}
-    {% with name=test, comparison=test, pass_msg="No " + test %}
-      {% include "pallette.html" %}
-    {% endwith %}
-  {% endfor %}
+{% if '_' in view %}
+{% with name=view, comparison=view, pass_msg="No " + view | replace('_', ' ') %}
+  {% include "pallette.html" %}
+{% endwith %}
 
+{% elif 'waterfall' == view %}
   {% include "page-waterfall.html" %}
+{% elif 'editor' == view %}
   {% include "page-editor.html" %}
+{% endif %}
 
 <script>
 
-  $('#info-button').on('click', function(){
-    $('#info').toggle();
-    $('.dropdown').hide();
-  })
 
   $('#font-toggle-button').on('click', function() {
     swapFonts()
@@ -62,16 +57,6 @@
     else {
       $(this).text('Fonts Before')
     }
-  })
-
-
-  $('.container-button').on('click', function() {
-    $('.pages').hide();
-    $('.info').hide();
-    var page = '#' + $(this).data('page')
-    var infopanel = '#' + $(this).data('info')
-    $(page).show()
-    $(infopanel).show()
   })
 
   // Editor slider toggle

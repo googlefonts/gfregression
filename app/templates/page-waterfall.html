@@ -1,12 +1,12 @@
 <div id="page-waterfall" class="pages">
-  {% for font in fonts[font_position]['ttfs'] %}
+  {% for style in fonts['css_classes'] %}
   <div class="box-large">
-    <div class="box-header"><p>{{ font['full_name'] }}</p></div>
+    <div class="box-header"><p>{{ style }}</p></div>
     <div class="box-content">
     {% for n in range(7, 22) %}
       <div class="box-header"><p>{{ n }}pt</p></div>
       <div class="swap-fonts-{{ font_position }}">
-        <span class={{ font['span_name'] }} style="font-size: {{ n }}pt">
+        <span class={{ style['full_name'] }} style="font-size: {{ n }}pt">
           QUICK WAFTING ZEPHYRS VEX BOLD JIM.<br>
           quick wafting zephyrs vex bold jim.<br>
           $14.95<br>

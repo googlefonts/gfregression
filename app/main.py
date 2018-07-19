@@ -81,11 +81,24 @@ def upload_fonts():
         before = downloadfonts.user_upload(request, "fonts_before")
         fonts_before = models.add_fonts(before, 'before', uuid)
 
-    fontset = models.add_fontset(fonts_before, fonts_after, uuid)
+    styles_before = models.add_styles(fonts_before)
+    styles_after = models.add_styles(fonts_after)
+
+    styles_before, styles_after = models.match_styles(
+        styles_before, styles_after
+    )
+
+    fontset = models.add_fontset(
+        fonts_before, styles_before,
+        fonts_after, styles_after,
+        uuid)
     r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-    font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
+    print('making font diffs')
+    font_diffs = models.add_font_diffs(styles_before, styles_after, uuid)
+    print('inserting font diffs')
     r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
+    print('getting view')
 
     if is_ajax:
         return ajax_response(True, uuid)
@@ -170,11 +183,24 @@ def api_upload_fonts(upload_type):
             before = downloadfonts.user_upload(request, "fonts_before")
             fonts_before = models.add_fonts(before, 'before', uuid)
 
-        fontset = models.add_fontset(fonts_before, fonts_after, uuid)
+        styles_before = models.add_styles(fonts_before)
+        styles_after = models.add_styles(font_after)
+
+        styles_before, styles_after = models.match_styles(
+            styles_before, styles_after
+        )
+
+        fontset = models.add_fontset(
+            fonts_before, styles_before,
+            fonts_after, styles_after,
+            uuid)
         r.table('fontsets').insert(fontset).run(g.rdb_conn)
 
-        font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
+        print('adding font diffs')
+        font_diffs = models.add_font_diffs(styles_before, styles_after, uuid)
+        print('insertings diffs')
         r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
+        print('getting view')
 
     except Exception, e:
         return json.dumps({'error': str(e)})

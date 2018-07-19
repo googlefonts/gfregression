@@ -3,20 +3,16 @@
   {{ super() }}
   <style>
     /* @font-face before and after families */
-    {% for f in fonts['before']['ttfs'] %}
-      {{ f['font_face'] }}
+    {% for font_face in fonts['before']['css_fontfaces'] %}
+      {{ font_face }}
     {% endfor %}
 
-    {% for f in fonts['after']['ttfs'] %}
-      {{ f['font_face'] }}
+    {% for font_face in fonts['after']['css_fontfaces'] %}
+      {{ font_face }}
     {% endfor %}
 
-    {% for f in fonts['before']['ttfs'] %}
-      {{ f['span_class'] }}
-    {% endfor %}
-
-    {% for f in fonts['after']['ttfs'] %}
-      {{ f['span_class'] }}
+    {% for css_class in fonts['css_classes'] %}
+      {{ css_class }}
     {% endfor %}
 
     /* swap div*/

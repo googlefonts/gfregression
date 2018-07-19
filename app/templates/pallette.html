@@ -4,9 +4,9 @@
     <div class="box-large">
     {% if diff['items']|length > limit and view != 'glyphs_all' %}
       <div class="box-header">
-        <p>{{ diff["font_before"] | replace('-before', '') }}: {{ diff['items']|length }} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
+        <p>{{ diff["font_before"] }} | {{ font_position }}: {{ diff['items']|length }} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
     {% else %}
-       <div class="box-header"><p>{{ diff["font_before"] | replace('-before', '') }}: {{ diff['items']|length }} items</p></div>
+       <div class="box-header"><p>{{ diff["font_before"] }} | {{ font_position }}: {{ diff['items']|length }} items</p></div>
     {% endif %}
 
       <div class="box-content">
@@ -17,7 +17,7 @@
                 {% if font_size >= 50 %}
                 <div class="box-char" style="width: {{ font_size * 2 }}px; height: {{ font_size * 2 }}px">
                     <div class="box-contents">
-                      <span class={{ diff["font_before"] }} style="font-size: {{ font_size }}px">{{ item['string'] }}</span>
+                      <span class='{{ diff["font_before"] }}' style="font-size: {{ font_size }}px">{{ item['string'] }}</span>
                     </div>
                   <div class="caption">{{ item['description'] }}</div>
                  </div>
@@ -25,7 +25,7 @@
 
                 <div style="float: left; width: {{ font_size * 1.5 }}px; line-height: {{ font_size * 1.5 }}px;">
 
-                <span class="{{ diff["font_before"] }}" style="font-feature-settings: '{{ feat }}' on;
+                <span class="{{ diff['font_before'] }}" style="font-feature-settings: '{{ feat }}' on;
                     font-size: {{ font_size }}px;"> {{ item['string'] }} </span>
                 </div>
                 {% endif %}

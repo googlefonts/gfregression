@@ -1,27 +1,48 @@
 <div id="page-editor" class="pages">
-  {% for font in fonts['before']['ttfs'] %}
+  {% for style in family['styles'] %}
   <div class="box-large">
-    <div class="box-header"><p>{{ font['full_name'] }}</p></div>
+    <div class="box-header"><p>{{ style }}</p></div>
       <div class="width-33">
       </div>
       <div class="width-33">
         <i class="material-icons" id="textsize-icon">text_fields</i>
         <input class="mdl-slider mdl-js-slider" type="range"
-        min="7" max="100" value="50" tabindex="0" id="{{ font['full_name'] }}-sl">
-        <span id="{{ font['full_name'] }}-textsize">50px</span>
+        min="7" max="100" value="50" tabindex="0" id="{{ style['name'] }}-sl">
+        <span id="{{ style['name'] }}-textsize">50px</span>
       </div>
       <div class="width-33">
-        <i class="material-icons" id="{{ font['full_name'] }}-hide">remove_circle_outline</i>
+        <i class="material-icons" id="{{ style['name'] }}-hide">remove_circle_outline</i>
       </div>
     </div>
 
-    <div class="box-content" id="{{ font['full_name'] }}-textbox" style="font-size: 50px;">
+    <div class="box-content" id="{{ style['name'] }}-textbox" style="font-size: 50px;">
       <div class="swap-fonts-{{ font_position }}">
-        <span class={{ font['span_name'] }} contenteditable="true" spellcheck="false">
+        <span class="{{ style }}" contenteditable="true" spellcheck="false">
           This is a live editor... get typing
         </span>&nbsp;
       </div>
     </div>
   {% endfor %}
   </div>
+
+<script>
+      // Editor slider toggle
+  $('[id*=sl]').on('input', function(){
+    text_box = $(this).prop('id').replace("sl", "textbox");
+    text_size = $(this).prop('id').replace("sl", "textsize");
+    $('#' + text_box).css('font-size', $(this)[0].value + 'px');
+    $('#' + text_size).html($(this)[0].value + 'px');
+  })
+
+  $('[id*=hide]').on('click', function(){
+    text_box = $(this).prop('id').replace("hide", "textbox");
+    $('#' + text_box).toggle();
+    if ($(this).text() == 'remove_circle_outline') {
+      $(this).html("add_circle_outline");
+    } else {
+      $(this).html("remove_circle_outline")
+    }
+
+  })
+</script>
 </div>

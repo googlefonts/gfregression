@@ -11,7 +11,7 @@ def build_tables(host, port, db):
     except r.errors.ReqlOpFailedError:
         print 'Skipping db creation, it already exists'
 
-    for table in ('fonts', 'fontsets', 'font_diffs'):
+    for table in ('families', 'families_diffs'):
         try:
             r.db(db).table_create(table).run()
             print 'Created %s table' % table

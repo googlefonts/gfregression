@@ -7,6 +7,32 @@ from blacklist import FONT_EXCEPTIONS
 import json
 
 
+# Info taken from https://caniuse.com/#feat=variable-fonts
+MIN_VF_BROWSERS = {
+    'chrome': 67,
+    'firefox': 62,
+    'edge': 17,
+    'safari': 11,
+}
+
+
+def browser_supports_vfs(user_agent):
+    """Check if the user's browser supports variable fonts
+
+    Parameters
+    ----------
+    user_agent: werkzeug.useragents.UserAgent
+
+    Returns
+    -------
+    Boolean"""
+    user_browser = user_agent.browser
+    browser_version = int(user_agent.version.split('.')[0])
+    if browser_version < MIN_VF_BROWSERS[user_browser]:
+        return False
+    return True
+
+
 def download_file(url, dst_path=None):
     """Download a file from a url. If no url is specified, store the file
     as a StringIO object"""

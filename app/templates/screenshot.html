@@ -3,35 +3,29 @@
   {{ super() }}
   <head>
     <style>
-      /* @font-face family */
-      {% for f in fonts['before']['ttfs'] %}
-          {{ f['font_face'] }}
+      /* @font-face before and after families */
+      {% for font_face in family['before']['css_font_faces'] %}
+        {{ font_face }}
       {% endfor %}
-      {% for f in fonts['after']['ttfs'] %}
-          {{ f['font_face'] }}
+
+      {% for font_face in family['after']['css_font_faces'] %}
+        {{ font_face }}
       {% endfor %}
-      {% for f in fonts['before']['ttfs'] %}
-          {{ f['span_class'] }}
+
+      {% for css_class in family['css_classes'] %}
+        {{ css_class }}
       {% endfor %}
-      {% for f in fonts['after']['ttfs'] %}
-          {{ f['span_class'] }}
-      {% endfor %}
+
 
       /* swap div*/
       .swap-fonts-before {
         display: block;
-        font-family: {{ fonts['before']['css_family_name'] }};
+        font-family: {{ family['before']['name'] }};
       }
       .swap-fonts-after {
         display: block;
-        font-family: {{ fonts['after']['css_family_name'] }};
+        font-family: {{ family['after']['name'] }};
       }
-    #header{
-        display: none;
-    }
-    .pages{
-      display: block;
-  }
     </style>
 {% endblock %}
   </head>

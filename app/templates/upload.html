@@ -9,24 +9,16 @@
 
   <div id="family-upload">
     <div class="box-large">
-      <form id="upload-form" action="{{ url_for('upload_fonts') }}" method="POST" enctype="multipart/form-data">
+      <form id="upload-form" action="/upload-fonts" method=post enctype=multipart/form-data>
 
-      <input type="radio" name="fonts" value="from_gf" class="comparison-toggle" checked><p>Compare fonts against hosted fonts on fonts.google.com</p>
-      <input type="radio" name="fonts" value="from_github_url" class="comparison-toggle"><p>Compare upstream github repository fonts folder against hosted fonts on fonts.google.com</p>
-      <input type="radio" name="fonts" value="from_local" class="comparison-toggle"><p>Compare two sets of local fonts</p>
-
-        <div id="git_url_text">
-            <input type="text" name="github-url">
-        </div>
-
-        <div id="fonts_before_dropbox">
-          Drag and drop ttfs
-        </div>
-
-        <div id="fonts_after_dropbox">
-          Drag and drop ttfs
-        </div>
-
+      <input type="radio" name="fonts" value="googlefonts" id="checkbox-googlefonts" checked>
+        <p>Compare uploaded family against hosted family on fonts.google.com</p>
+      <input type="radio" name="fonts" value="user" id="checkbox-user">
+        <p>Compare two uploaded families</p>
+      <label for="fonts-before" id="label-fonts-before">Fonts Before:</label>
+      <input type=file name=fonts_before id="fonts-before" multiple value="Fonts Before">
+      <label for="fonts-after" id="label-fonts-after">Fonts After:</label>
+      <input type=file name=fonts_after id="fonts-after" multiple value="Fonts After">
         <input type="submit" value="Upload!" id="upload-button">
       </form>
     </div>
@@ -41,34 +33,22 @@
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/uploadr.js') }}"></script>
+
 <script>
+    var uploadForm = document.getElementById('family-upload')
+    document.addEventListener('DOMContentLoaded', toggle)
+    uploadForm.addEventListener('change', toggle)
 
-    $('.comparison-toggle').on('change', function() {
-      if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_gf') {
-        $('#fonts_before_dropbox').hide();
-        $('#fonts_after_dropbox').show();
-        $('#fonts_after_dropbox').text('Drag and drop ttfs')
-        $('#git_url_text').hide();
-      }
-
-      else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_local') {
-        $('#fonts_before_dropbox').show();
-        $('#fonts_before_dropbox').text('Drag and drop before ttfs')
-
-        $('#fonts_after_dropbox').show();
-        $('#fonts_after_dropbox').text('Drag and drop after ttfs')
-        $('#git_url_text').hide();
-      }
-
-      else if ($('input[name=fonts]:checked', '#upload-form').val() == 'from_github_url') {
-        $('#fonts_before_dropbox').hide();
-
-        $('#fonts_after_dropbox').hide();
-        $('#git_url_text').show();
-      }
-    })
-
-  $('#git_url_text').hide();
+    function toggle() {
+        if (document.getElementById('checkbox-googlefonts').checked) {
+            document.getElementById('fonts-before').style.display = "none";
+            document.getElementById('label-fonts-before').style.display = "none";
+        }
+        else if (document.getElementById('checkbox-user').checked) {
+            document.getElementById('fonts-before').style.display = "inline";
+            document.getElementById('label-fonts-before').style.display = "inline";
+        }
+    }
+    
 </script>
 {% endblock %}

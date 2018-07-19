@@ -2,14 +2,13 @@ import os
 import unittest
 import requests
 from main import app
+from utils import browser_supports_vfs
+from werkzeug.useragents import UserAgent
 
 
 class TestApiEndPoints(unittest.TestCase):
     # TODO make test run from test_client, not through live server
     def setUp(self):
-        app.config['testing'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        self.app = app.test_client()
         self.local_base_url = 'http://127.0.0.1:5000'
 
     def test_api_upload_fonts_gf_upload(self):
@@ -23,7 +22,7 @@ class TestApiEndPoints(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Regular.ttf'),
             os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Bold.ttf'),
         ]
-        payload = [('fonts', open(f, 'rb')) for f in fonts]
+        payload = [('fonts_after', open(f, 'rb')) for f in fonts]
         request = requests.post(url, files=payload)
         self.assertEqual(request.status_code, 200)
 
@@ -38,10 +37,24 @@ class TestApiEndPoints(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Bold.ttf'),
         ]
         fonts2 = fonts
-        payload = [('fonts', open(f, 'rb')) for f in fonts] + \
-                  [('fonts2', open(f, 'rb')) for f in fonts2]
+        payload = [('fonts_before', open(f, 'rb')) for f in fonts] + \
+                  [('fonts_after', open(f, 'rb')) for f in fonts2]
         request = requests.post(url, files=payload)
         self.assertEqual(request.status_code, 200)
+
+
+class TestNonVFBrowser(unittest.TestCase):
+
+    def setUp(self):
+        self.mock_header_safari_vf_supported = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15'
+        self.mock_header_safari_vf_not_supported = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/10.1.2 Safari/605.1.15'
+
+    def test_non_vf_browser_cant_view_vf_diff(self):
+        user_agent = UserAgent(self.mock_header_safari_vf_supported)
+        self.assertEqual(browser_supports_vfs(user_agent), True)
+
+        user_agent = UserAgent(self.mock_header_safari_vf_not_supported)
+        self.assertEqual(browser_supports_vfs(user_agent), False)
 
 
 if __name__ == '__main__':

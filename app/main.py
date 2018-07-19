@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, g, request, render_template, redirect, url_for
+from werkzeug.useragents import UserAgent
 from uuid import uuid4
 import os
 import json
 import rethinkdb as r
-from rethinkdb.errors import RqlRuntimeError, RqlDriverError
+from rethinkdb.errors import RqlDriverError
+import family
 
-import downloadfonts
-import models
-from glyphpalette import fonts_all_glyphs
 import init_db
-from utils import filename_to_family_name
 from settings import DIFF_LIMIT, VIEWS
+from utils import browser_supports_vfs
 
 
 __version__ = 2.101
@@ -43,80 +42,72 @@ def teardown_request(exception):
 
 @app.route('/')
 def index():
+    print(request.user_agent.string)
     return render_template('upload.html')
 
 
+@app.route("/api/upload/<upload_type>", methods=['POST'])
 @app.route('/upload-fonts', methods=["POST"])
-def upload_fonts():
-    """Upload/download the two sets of fonts to compare"""
+def upload_fonts(upload_type=None):
+    """Upload fonts to diff."""
 
-    # # Is the upload using Ajax, or a direct POST by the form?
-    form = request.form
-    is_ajax = True if form.get("__ajax", None) == "true" else False
+    from_api = False
+    if 'api' in request.path:
+        upload_type = upload_type
+        from_api = True
+    else:
+        upload_type = request.form.get('fonts')
 
+    # try:
+    if upload_type == 'googlefonts':
+        family_after = family.from_user_upload(request.files.getlist('fonts_after'))
+        family_before = family.from_googlefonts(family_after.name)
+    elif upload_type == 'user':
+        family_after = family.from_user_upload(request.files.getlist('fonts_after'))
+        family_before = family.from_user_upload(request.files.getlist('fonts_before'))
+    # TODO (M Foley) get fonts from a github dir
     uuid = str(uuid4())
 
-    # User wants to compare fonts against GF hosted.
-    if form.get('fonts') == 'from_gf':
-        after = downloadfonts.user_upload(request, "fonts_after")
-        fonts_after = models.add_fonts(after, 'after', uuid)
-
-        families_to_dl = set(map(filename_to_family_name, after))
-        before = downloadfonts.google_fonts(families_to_dl)
-        fonts_before = models.add_fonts(before, 'before', uuid)
-
-    # User wants to compare upstream github fonts against GF hosted.
-    elif form.get('fonts') == 'from_github_url':
-        after = downloadfonts.github_dir(form.get('github-url'))
-        fonts_after = models.add_fonts(after, 'after', uuid)
-
-        before = downloadfonts.google_fonts(map(os.path.basename, after))
-        fonts_before = models.add_fonts(before, 'before', uuid)
-
-    # User wants to compare two sets of local fonts.
-    elif form.get('fonts') == 'from_local':
-        after = downloadfonts.user_upload(request, "fonts_after")
-        fonts_after = models.add_fonts(after, 'after', uuid)
-
-        before = downloadfonts.user_upload(request, "fonts_before")
-        fonts_before = models.add_fonts(before, 'before', uuid)
-
-    fontset = models.add_fontset(fonts_before, fonts_after, uuid)
-    r.table('fontsets').insert(fontset).run(g.rdb_conn)
-
-    font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
-    r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
-
-    if is_ajax:
-        return ajax_response(True, uuid)
-    return redirect(url_for("compare", uid=uuid, view="glyphs_new"))
+    diff_families = family.diff_families(family_before, family_after, uuid)
+    for diff in diff_families:
+        r.table('families_diffs').insert(diff).run(g.rdb_conn)
+    families = family.get_families(family_before, family_after, uuid)
+    r.table('families').insert(families).run(g.rdb_conn)
+    # except Exception, e:
+    #     return json.dumps({'error': str(e)})
+    if from_api:
+        return redirect(url_for("api_uuid_info", uuid=uuid))
+    return redirect(url_for("compare", view='glyphs_new', uuid=uuid))
 
 
-def ajax_response(status, msg):
-    status_code = "ok" if status else "error"
-    return json.dumps(dict(
-        status=status_code,
-        msg=msg,
-    ))
-
-
-@app.route('/compare/<uuid>', defaults={"view": "glyphs_new", "font_size": 60})
-@app.route('/compare/<uuid>/<view>', defaults={"font_size": 60})
+@app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
+@app.route('/screenshot/<uuid>/<view>/<font_position>',
+           defaults={'font_size': 60})
 @app.route('/compare/<uuid>/<view>/<font_size>')
-def compare(uuid, view, font_size):
-    fonts = list(r.table('fontsets')
-                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
-    font_diffs = list(r.table('font_diffs')
-                .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
+@app.route('/compare/<uuid>', defaults={"view": "glyphs_new", "font_size": 60})
+def compare(uuid, view, font_size, font_position='before'):
+    families = list(r.table('families')
+        .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    families_diffs = list(r.table('families_diffs')
+        .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
 
-    if not font_diffs and view not in ['editor', 'waterfall']:
+    user_agent = UserAgent(request.user_agent.string)
+    if families['has_vfs'] and not browser_supports_vfs(user_agent):
+        raise Exception("Browser does not support variable fonts!")
+
+    if not families_diffs and view not in ['editor', 'waterfall']:
         return render_template('404.html'), 404
 
+    if 'screenshot' in request.path:
+        html_page = "screenshot.html"
+    else:
+        html_page = "test_fonts.html"
+
     return render_template(
-        "test_fonts.html",
-        fonts=fonts,
-        font_diffs=font_diffs,
-        font_position='before',
+        html_page,
+        family=families,
+        font_diffs=families_diffs,
+        font_position=font_position,
         limit=DIFF_LIMIT,
         view=view,
         views=VIEWS,
@@ -125,71 +116,23 @@ def compare(uuid, view, font_size):
     )
 
 
-@app.route('/screenshot/<uuid>/<view>/<font_position>',
-           defaults={'font_size': 60})
-@app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
-def screenshot(uuid, view, font_position, font_size):
-    """View gets used with Browserstack's screenshot api"""
-    fonts = list(r.table('fontsets')
-                .filter({'uuid': uuid}).run(g.rdb_conn))[0]
-    font_diffs = list(r.table('font_diffs')
-                .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
-
-    if not font_diffs and view not in ['editor', 'waterfall']:
-        return render_template('404.html'), 404
-
-    return render_template(
-        "screenshot.html",
-        fonts=fonts,
-        font_diffs=font_diffs,
-        view=view,
-        font_position=font_position,
-        font_size=int(font_size),
-        limit=DIFF_LIMIT
-    )
-
-
-@app.route("/api/upload/<upload_type>", methods=['POST'])
-def api_upload_fonts(upload_type):
-    """Upload fonts via the api.
-    TODO (M Foley) use std upload_fonts view"""
-    uuid = str(uuid4())
-
-    try:
-        if upload_type == 'googlefonts':
-            after = downloadfonts.user_upload(request, "fonts_after")
-            fonts_after = models.add_fonts(after, 'after', uuid)
-
-            families_to_dl = set(map(filename_to_family_name, after))
-            before = downloadfonts.google_fonts(families_to_dl)
-            fonts_before = models.add_fonts(before, 'before', uuid)
-
-        elif upload_type == 'user':
-            after = downloadfonts.user_upload(request, "fonts_after")
-            fonts_after = models.add_fonts(after, 'after', uuid)
-
-            before = downloadfonts.user_upload(request, "fonts_before")
-            fonts_before = models.add_fonts(before, 'before', uuid)
-
-        fontset = models.add_fontset(fonts_before, fonts_after, uuid)
-        r.table('fontsets').insert(fontset).run(g.rdb_conn)
-
-        font_diffs = models.add_font_diffs(fonts_before, fonts_after, uuid)
-        r.table('font_diffs').insert(font_diffs).run(g.rdb_conn)
-
-    except Exception, e:
-        return json.dumps({'error': str(e)})
-    return redirect(url_for("api_uuid_info", uuid=uuid))
-
-
 @app.route("/api/info/<uuid>")
 def api_uuid_info(uuid):
-    """Return info regarding a uuid comparison"""
-    fonts = list(r.table('fontsets')
+    """Return info regarding a diff"""
+    families = list(r.table('families')
                  .filter({'uuid': uuid}).run(g.rdb_conn))[0]
+    families_diffs = list(r.table('families_diffs')
+        .filter({'uuid': uuid}).run(g.rdb_conn))
+
+    changed = set({})
+    for diff in families_diffs:
+        if len(diff['items']) != 0:
+            changed.add(diff['view'])
+
     return json.dumps({
         'uuid': uuid,
-        'fonts': [f['full_name'] for f in fonts['after']['ttfs']]
+        'fonts': families['styles'],
+        'diffs': list(changed),
     })
 
 

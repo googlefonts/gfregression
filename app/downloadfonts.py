@@ -8,32 +8,36 @@ import re
 from zipfile import ZipFile
 from StringIO import StringIO
 import shutil
+import uuid
 
 from utils import download_file, secret
 from blacklist import FONT_EXCEPTIONS
 from settings import FONTS_DIR
 
 
-def google_fonts(families):
+def googlefonts(family):
     """Download a collection of font families from Google Fonts"""
-    googlefonts_has_families(families)
-    url = _gf_download_url(families)
+    has_family = _gf_has_family(family)
+    if not has_family:
+        raise Exception('Family {} does not exist on Google Fonts!'.format(family))
+    url = 'https://fonts.google.com/download?family={}'.format(
+        family.replace(' ', '%20')
+    )
     fonts_zip = ZipFile(download_file(url))
-    fonts = fonts_from_zip(fonts_zip, FONTS_DIR)
-    return fonts
+    fonts_paths = _fonts_from_zip(fonts_zip, FONTS_DIR)
+    return fonts_paths
 
 
-def googlefonts_has_families(families):
+def _gf_has_family(family):
     """Check if Google Fonts has the specified font family"""
     api_url = 'https://www.googleapis.com/webfonts/v1/webfonts?key={}'.format(
         secret('GF_API_KEY')
     )
     r = requests.get(api_url)
     families_on_gf = [f['family'] for f in r.json()['items']]
-
-    for family in families:
-        if family not in families_on_gf:
-            raise Exception('Family {} does not exist on Google Fonts!'.format(family))
+    if family in families_on_gf:
+        return True
+    return False
 
 
 def github_dir(url):
@@ -43,6 +47,8 @@ def github_dir(url):
     request = requests.get(api_url, params={'ref': branch})
     api_request = json.loads(request.text)
     for item in api_request:
+        if not 'download_url' in item:
+            raise Exception('Directory contains no fonts')
         dl_url = item['download_url']
         file_path = os.path.join(FONTS_DIR, item['name'])
         fonts.append(file_path)
@@ -50,14 +56,14 @@ def github_dir(url):
     return fonts
 
 
-def user_upload(request, ajax_key):
+def user_upload(files):
     """Upload fonts from a user's system"""
     fonts = []
-    for upload in request.files.getlist(ajax_key):
-        filename = upload.filename
+    for f in files:
+        filename = str(uuid.uuid4()) + '.ttf'
         destination = os.path.join(FONTS_DIR, filename)
-        upload.save(destination)
-        fonts.append(destination) 
+        f.save(destination)
+        fonts.append(destination)
     return fonts
 
 
@@ -73,43 +79,14 @@ def _convert_github_url_to_api(url):
     )
 
 
-def _gf_download_url(families):
-    """Assemble download url for families"""
-    gf_url_prefix = 'https://fonts.google.com/download?family='
-    families_name = [f.replace(' ', '%20') for f in families]
-    families_url_suffix = '|'.join(families_name)
-    return gf_url_prefix + families_url_suffix
-
-
-def fonts_from_zip(zipfile, to):
+def _fonts_from_zip(zipfile, to):
     """download the fonts and store them locally"""
-    unnest = False
     fonts = []
     for filename in zipfile.namelist():
         if filename.endswith(".ttf"):
-            fonts.append(os.path.join(to, filename))
+            current = os.path.join(to, filename)
+            target = os.path.join(to, str(uuid.uuid4()) + '.ttf')
             zipfile.extract(filename, to)
-        if '/' in filename:
-            unnest = True
-    if unnest:
-        fonts = _unnest_folder(to)
+            os.rename(current, target)
+            fonts.append(target)
     return fonts
-
-
-def _unnest_folder(folder):
-    """If multiple fonts have been downloaded, move them from sub dirs to
-    parent dir"""
-    fonts = []
-    for r, path, files, in os.walk(folder):
-        for file in files:
-            if file.endswith('.ttf'):
-                os.path.join(r, file)
-                shutil.move(font_path, folder)
-                new_font_path = os.path.join(folder, file)
-                font.append(new_font_path)
-
-    for f in os.listdir(folder):
-        if os.path.isdir(os.path.join(folder, f)):
-            os.rmdir(os.path.join(folder, f))
-    return fonts
-

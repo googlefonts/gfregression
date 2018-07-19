@@ -3,33 +3,28 @@
   {{ super() }}
   <style>
     /* @font-face before and after families */
-    {% for f in fonts['before']['ttfs'] %}
-      {{ f['font_face'] }}
+    {% for font_face in family['before']['css_font_faces'] %}
+      {{ font_face }}
     {% endfor %}
 
-    {% for f in fonts['after']['ttfs'] %}
-      {{ f['font_face'] }}
+    {% for font_face in family['after']['css_font_faces'] %}
+      {{ font_face }}
     {% endfor %}
 
-    {% for f in fonts['before']['ttfs'] %}
-      {{ f['span_class'] }}
+    {% for css_class in family['css_classes'] %}
+      {{ css_class }}
     {% endfor %}
 
-    {% for f in fonts['after']['ttfs'] %}
-      {{ f['span_class'] }}
-    {% endfor %}
 
     /* swap div*/
     .swap-fonts-before {
       display: block;
-      font-family: {{ fonts['before']['css_family_name'] }};
+      font-family: {{ family['before']['name'] }};
     }
     .swap-fonts-after {
       display: block;
-      font-family: {{ fonts['after']['css_family_name'] }};
+      font-family: {{ family['after']['name'] }};
     }
-
-
   </style>
 {% endblock %}
 
@@ -57,25 +52,6 @@
     else {
       $(this).text('Fonts Before')
     }
-  })
-
-  // Editor slider toggle
-  $('[id*=sl]').on('input', function(){
-    text_box = $(this).prop('id').replace("sl", "textbox");
-    text_size = $(this).prop('id').replace("sl", "textsize");
-    $('#' + text_box).css('font-size', $(this)[0].value + 'px');
-    $('#' + text_size).html($(this)[0].value + 'px');
-  })
-
-  $('[id*=hide]').on('click', function(){
-    text_box = $(this).prop('id').replace("hide", "textbox");
-    $('#' + text_box).toggle();
-    if ($(this).text() == 'remove_circle_outline') {
-      $(this).html("add_circle_outline");
-    } else {
-      $(this).html("remove_circle_outline")
-    }
-
   })
 
     // Swap fonts between before and after

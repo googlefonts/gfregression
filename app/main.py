@@ -100,8 +100,9 @@ def ajax_response(status, msg):
     ))
 
 
-@app.route('/compare/<uuid>/<view>/<font_size>')
 @app.route('/compare/<uuid>', defaults={"view": "glyphs_new", "font_size": 60})
+@app.route('/compare/<uuid>/<view>', defaults={"font_size": 60})
+@app.route('/compare/<uuid>/<view>/<font_size>')
 def compare(uuid, view, font_size):
     fonts = list(r.table('fontsets')
                 .filter({'uuid': uuid}).run(g.rdb_conn))[0]

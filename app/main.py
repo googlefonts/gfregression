@@ -14,7 +14,7 @@ from utils import filename_to_family_name
 from settings import DIFF_LIMIT, VIEWS
 
 
-__version__ = 2.100
+__version__ = 2.101
 
 app = Flask(__name__, static_url_path='/static')
 

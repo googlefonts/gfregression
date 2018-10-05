@@ -6,13 +6,15 @@ import requests
 import os
 import re
 from zipfile import ZipFile
-from StringIO import StringIO
 import shutil
 import uuid
 
 from utils import download_file, secret
-from blacklist import FONT_EXCEPTIONS
 from settings import FONTS_DIR
+try:
+    from StringIO import StringIO
+except ModuleNotFoundError:  # py3 workaround
+    from io import BytesIO as StringIO
 
 
 def googlefonts(family):

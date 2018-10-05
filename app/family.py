@@ -102,8 +102,7 @@ class Font:
                 )
 
     def _get_styles(self):
-        if 'fvar' in self.font:
-            self.is_vf = True
+        if self.is_vf:
             instance_names = [
                 self.font['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
                 for i in self.font['fvar'].instances

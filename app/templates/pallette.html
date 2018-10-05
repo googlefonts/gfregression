@@ -4,7 +4,7 @@
     <div class="box-large">
     {% if diff['items']|length > limit and view != 'glyphs_all' %}
       <div class="box-header">
-        <p>{{ diff["font_before"] }} | {{ font_position }}: {{ diff['items']|length }} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
+        <p>{{ diff["font_before"] }} | {{ diff['items']|length }} items. Warning {{ limit }} diff item limit reached! Only displaying most significant {{ limit }} items.</p></div>
     {% else %}
        <div class="box-header"><p>{{ diff["font_before"] }} | {{ font_position }}: {{ diff['items']|length }} items</p></div>
     {% endif %}

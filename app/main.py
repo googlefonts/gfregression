@@ -42,7 +42,6 @@ def teardown_request(exception):
 
 @app.route('/')
 def index():
-    print(request.user_agent.string)
     return render_template('upload.html')
 
 
@@ -50,7 +49,6 @@ def index():
 @app.route('/upload-fonts', methods=["POST"])
 def upload_fonts(upload_type=None):
     """Upload fonts to diff."""
-
     from_api = False
     if 'api' in request.path:
         upload_type = upload_type

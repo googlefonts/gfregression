@@ -2,10 +2,11 @@ import os
 import re
 import shutil
 import requests
-from StringIO import StringIO
-from blacklist import FONT_EXCEPTIONS
 import json
-
+try:
+    from StringIO import StringIO
+except ModuleNotFoundError:  # py3 workaround
+    from io import BytesIO as StringIO
 
 # Info taken from https://caniuse.com/#feat=variable-fonts
 MIN_VF_BROWSERS = {

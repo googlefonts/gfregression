@@ -30,12 +30,12 @@ class Font:
 
     def __init__(self, path):
         self.font = InputFont(path)
+        self._is_vf = self.is_vf
         self.family_name = self._get_family_name()
         self.path = path
         self.styles = []
         self._get_styles()
         self.axes = self._get_axes()
-        self._is_vf = self.is_vf
 
     def _get_family_name(self):
         """Get the family name of a font.
@@ -72,7 +72,7 @@ class Font:
         string: str
             string for css @font_Face
         """
-        if self.is_vf:
+        if self._is_vf:
             string = """@font-face{
                 src: url(/%s);
                 font-family: %s;
@@ -102,7 +102,7 @@ class Font:
                 )
 
     def _get_styles(self):
-        if self.is_vf:
+        if self._is_vf:
             instance_names = [
                 self.font['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
                 for i in self.font['fvar'].instances

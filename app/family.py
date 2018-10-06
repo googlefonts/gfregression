@@ -78,9 +78,14 @@ class Font:
                 font-family: %s;
             """ % (self.path, self.family_name)
             if 'wght' in self.axes:
+                try:
+                    min_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue]
+                    max_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
+                except KeyError:
+                    raise Exception("wght axis not in range 250-900")
                 string += '\nfont-weight: {} {};'.format(
-                    self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue],
-                    self.OS2_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
+                    min_wght,
+                    max_wght
                 )
             if 'slnt' in self.axes:
                 string += '\nfont-style: oblique {}deg {}deg;'.format(
@@ -200,14 +205,15 @@ class Family:
         font = Font(font_path)
         if not self.name:
             self.name = font.family_name
-            print(font.family_name, font.path)
         if font.family_name != self.name:
             truncate_name = font.family_name
             while truncate_name != font.family_name:
                 if len(truncate_name) == 0:
-                    raise Exception(('"%s" does not belong to the famiy "%s". '
-                                     'Fonts must belong to the same family.' % (
-                                        font.family_name, self.name)))
+                    raise Exception(
+                        ('"%s" does not belong to the famiy "%s". Fonts '
+                         'must belong to the same family.' % (
+                            font.family_name, self.name))
+                        )
                 truncate_name = truncate_name[:-1]
             font.family_name = truncate_name
         self.fonts.append(font)
@@ -222,7 +228,6 @@ class Family:
     @property
     def has_vfs(self):
         """Determine whether the family has variable fonts"""
-        print('Running')
         return any([f.is_vf for f in self.fonts])
 
 
@@ -304,7 +309,7 @@ def diff_families(family_before, family_after, uuid):
         style_diff = diff_fonts(
             font_a,
             font_b,
-            categories_to_diff=['glyphs', 'kerns', 'marks', 'names', 'mkmks', 'metrics']
+            categories_to_diff=['glyphs', 'kerns', 'marks', 'names', 'mkmks', 'metrics'],
         )
         for cat in style_diff:
             for subcat in style_diff[cat]:
@@ -339,7 +344,7 @@ def _diff_serialiser(d):
             for idx, item in enumerate(d[k]):
                 _diff_serialiser(item)
         if hasattr(d[k], 'font'):
-            d[k].font = d[k].font.path
+            d[k].font = None
         if hasattr(d[k], 'kkey'):
             d[k] = dict(d[k].__dict__)
     return d

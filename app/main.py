@@ -9,7 +9,7 @@ from rethinkdb.errors import RqlDriverError
 import family
 
 import init_db
-from settings import DIFF_LIMIT, VIEWS
+from settings import DIFF_LIMIT, VIEWS, MEDIA_DIR
 from utils import browser_supports_vfs
 
 
@@ -132,6 +132,24 @@ def api_uuid_info(uuid):
         'fonts': families['styles'],
         'diffs': list(changed),
     })
+
+
+@app.route("/api/upload-media", methods=['POST'])
+def upload_media():
+    """Media upload end point"""
+    if 'uuid' not in request.form:
+        raise Exception('No uuid specified')
+    uuid = request.form['uuid']
+    uploaded_files = request.files.getlist('files')
+    media_dir = os.path.join(MEDIA_DIR, uuid)
+    if not os.path.isdir(media_dir):
+        os.mkdir(media_dir)
+    paths = []
+    for f in uploaded_files:
+        destination = os.path.join(media_dir, f.filename)
+        f.save(destination)
+        paths.append(destination)
+    return json.dumps({'media': paths})
 
 
 @app.errorhandler(500)

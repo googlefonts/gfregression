@@ -43,4 +43,34 @@
 {% include "page-waterfall.html" %}
 {% endif %}
 
-  {% endblock %}
+<script>
+
+function labeller(position) {
+    // place a text label down the right hand margin every 200px
+    // This function is used to tell the viewer which font set is
+    // currently being viewed.
+    // https://github.com/googlefonts/diffbrowsers/issues/10
+    var height = document.body.scrollHeight;
+
+    if (height >= 300) {
+        var i = 0;
+        for (i = 300; i <= height; i += 200) {
+            var label = document.createElement("div");
+            label.style.fontFamily = 'arial';
+            label.style.fontSize = '11px';
+            label.style.position = 'absolute';
+            label.style.top = i+'px';
+            label.style.right = '5px';
+            label.style.transform = 'rotate(90deg)';
+            var labelText = document.createTextNode(position);
+            label.appendChild(labelText);
+            document.body.appendChild(label);
+        }
+    }
+}
+
+labeller('{{ font_position.title() }}')
+
+</script>
+
+{% endblock %}

@@ -131,6 +131,7 @@ def api_uuid_info(uuid):
         'uuid': uuid,
         'fonts': families['styles'],
         'diffs': list(changed),
+        'has_vfs': families['has_vfs']
     })
 
 

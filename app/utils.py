@@ -29,6 +29,8 @@ def browser_supports_vfs(user_agent):
     Boolean"""
     user_browser = user_agent.browser
     browser_version = int(user_agent.version.split('.')[0])
+    if user_browser not in MIN_VF_BROWSERS:
+        return False
     if browser_version < MIN_VF_BROWSERS[user_browser]:
         return False
     return True

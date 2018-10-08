@@ -2,6 +2,7 @@ import os
 
 GLYPH_AREA_THRESHOLD = 7000
 FONTS_DIR = os.path.join('static', 'fonts')
+MEDIA_DIR = os.path.join('static', 'media')
 VIEWS = (
     'waterfall',
     'glyphs_all', 'glyphs_new', 'glyphs_missing', 'glyphs_modified',

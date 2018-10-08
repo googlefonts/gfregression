@@ -1,4 +1,5 @@
 """Module to assemble families from ttfs and diff families"""
+from copy import deepcopy
 from diffenator.font import InputFont
 from diffenator.diff import diff_fonts
 from diffenator.utils import vf_instance_from_static
@@ -297,8 +298,8 @@ def diff_families(family_before, family_after, uuid):
     shared_styles = set(styles_before) & set(styles_after)
     diffs = []
     for style in shared_styles:
-        font_a = styles_before[style].font.font
-        font_b = styles_after[style].font.font
+        font_a = deepcopy(styles_before[style].font.font)
+        font_b = deepcopy(styles_after[style].font.font)
 
         if 'fvar' in font_a and 'fvar' not in font_b:
             font_a = vf_instance_from_static(font_a, font_b)

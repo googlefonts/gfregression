@@ -150,7 +150,7 @@ def upload_media():
         destination = os.path.join(media_dir, f.filename)
         f.save(destination)
         paths.append(destination)
-    return json.dumps({'media': paths})
+    return json.dumps({'items': paths})
 
 
 @app.errorhandler(500)

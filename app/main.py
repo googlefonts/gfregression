@@ -29,7 +29,7 @@ def before_request():
     try:
         g.rdb_conn = r.connect(host=RDB_HOST, port=RDB_PORT, db=DB)
     except RqlDriverError:
-        abort(503, "No database connection could be established.")
+        raise Exception("No database connection could be established.")
 
 
 @app.teardown_request

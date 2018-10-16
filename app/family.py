@@ -18,6 +18,7 @@ class Font:
 
     """
     OS2_TO_CSS_WEIGHT = {
+        100: 100,
         250: 100,
         275: 200,
         300: 300,
@@ -83,7 +84,7 @@ class Font:
                     min_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue]
                     max_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
                 except KeyError:
-                    raise Exception("wght axis not in range 250-900")
+                    raise Exception("wght axis not in range 100-900")
                 string += '\nfont-weight: {} {};'.format(
                     min_wght,
                     max_wght

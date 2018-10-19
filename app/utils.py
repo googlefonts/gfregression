@@ -122,11 +122,9 @@ def style_name_from_filename(filename, seperator=' '):
     """RubikMonoOne-Regular --> Regular"""
     try:
         style = filename.split('-')[1]
-    except ValueError:
-        style = 'Regular'
-    if style not in GF_STYLE_TERMS:
-        raise Exception("%s not supported by GF weight" % style)
-    return GF_STYLE_TERMS[style]  
+        return GF_STYLE_TERMS[style]
+    except:
+        return 'Regular'
 
 
 with open("secrets.json") as f:

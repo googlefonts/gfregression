@@ -1,10 +1,15 @@
 """Module to assemble families from ttfs and diff families"""
+import os
+import re
+import uuid
 from copy import deepcopy
 from diffenator.font import InputFont
 from diffenator.diff import diff_fonts
 from diffenator.utils import vf_instance_from_static
 from diffenator.glyphs import dump_glyphs
 import downloadfonts
+from settings import FONTS_DIR
+from utils import family_name_from_filename, style_name_from_filename
 
 
 class Font:
@@ -19,8 +24,9 @@ class Font:
     """
     OS2_TO_CSS_WEIGHT = {
         100: 100,
-        250: 100,
-        275: 200,
+        200: 200,
+        250: 100, # static gf Thin
+        275: 200, # static gf ExtraLight
         300: 300,
         400: 400,
         500: 500,
@@ -30,29 +36,26 @@ class Font:
         900: 900
     }
 
-    def __init__(self, path):
-        self.font = InputFont(path)
-        self._is_vf = self.is_vf
-        self.family_name = self._get_family_name()
+    def __init__(self, path, family_name=None, style_name=None):
         self.path = path
+        self.filename = os.path.basename(self.path)[:-4]
+        self.font = InputFont(self.path)
+        self._is_vf = self.is_vf
+        if not family_name:
+            self.family_name = family_name_from_filename(self.filename)
+        else:
+            self.family_name = family_name
         self.styles = []
-        self._get_styles()
+        if style_name and not self._is_vf:
+            style = FontStyle(style_name, self)
+            self.styles.append(style)
+        elif not style_name and not self._is_vf:
+            style_name = style_name_from_filename(self.filename)
+            style = FontStyle(style_name, self)
+            self.styles.append(style)
+        elif self._is_vf:
+            self._get_vf_styles()
         self.axes = self._get_axes()
-
-    def _get_family_name(self):
-        """Get the family name of a font.
-
-        Use a font's preferred family name if it exists. Fontmake
-        and Glyphsapp will both use this name field for non RIBBI fonts
-        """
-        nametable = self.font['name']
-        preferred_name = nametable.getName(16, 3, 1, 1033)
-        if preferred_name:
-            return preferred_name.toUnicode()
-        ribbi_name = nametable.getName(1, 3, 1, 1033)
-        if ribbi_name:
-            return ribbi_name.toUnicode()
-        raise Exception("Font name table lacks family name")
 
     def set_family_name(self, name):
         self.family_name = name
@@ -108,24 +111,13 @@ class Font:
                     self.family_name,
                 )
 
-    def _get_styles(self):
-        if self._is_vf:
-            instance_names = [
-                self.font['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
-                for i in self.font['fvar'].instances
-            ]
-            for style_name in instance_names:
-                style = FontStyle(style_name, self)
-                self.styles.append(style)
-        else:
-            preferred_style = self.font['name'].getName(17, 3, 1, 1033)
-            stylename = self.font['name'].getName(2, 3, 1, 1033)
-            if preferred_style:
-                style = FontStyle(preferred_style.toUnicode(), self)
-            elif stylename:
-                style = FontStyle(stylename.toUnicode(), self)
-            else:
-                style = None
+    def _get_vf_styles(self):
+        instance_names = [
+            self.font['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
+            for i in self.font['fvar'].instances
+        ]
+        for style_name in instance_names:
+            style = FontStyle(style_name, self)
             self.styles.append(style)
 
     def _get_axes(self):
@@ -174,7 +166,7 @@ class FontStyle:
     def _get_weight_class(self):
         """Extract the weight from the style name"""
         for weight in sorted(self.WEIGHT_MAP.keys(), key=lambda k: len(k), reverse=True):
-            if weight in self.name:
+            if weight.lower() in self.name.lower():
                 return self.WEIGHT_MAP[weight]
         raise Exception("{} is not supported. Only supports {}".format(
             self.name, self.WEIGHT_MAP.keys())
@@ -202,22 +194,20 @@ class Family:
         self.fonts = []
         self._has_vfs = self.has_vfs
 
-    def append(self, font_path):
+    def append(self, font_path, family_name=None, style_name=None):
         """append font"""
-        font = Font(font_path)
+        if not family_name and not style_name:
+            font = Font(font_path)
+        else:
+            font = Font(font_path, family_name, style_name)
         if not self.name:
             self.name = font.family_name
         if font.family_name != self.name:
-            truncate_name = font.family_name
-            while truncate_name != font.family_name:
-                if len(truncate_name) == 0:
-                    raise Exception(
-                        ('"%s" does not belong to the famiy "%s". Fonts '
-                         'must belong to the same family.' % (
-                            font.family_name, self.name))
-                        )
-                truncate_name = truncate_name[:-1]
-            font.family_name = truncate_name
+            raise Exception(
+                ('"%s" does not belong to the famiy "%s". Fonts '
+                 'must belong to the same family.' % (
+                    font.family_name, self.name))
+                )
         self.fonts.append(font)
 
     def set_name(self, name):
@@ -234,7 +224,7 @@ class Family:
 
 
 def from_googlefonts(family_name):
-    """Get a family from Google Fonts
+    """Get a family from Google Fonts and save the files to GFR's static dir
 
     Parameters
     ----------
@@ -245,10 +235,7 @@ def from_googlefonts(family_name):
     -------
     family: Family"""
     fonts = downloadfonts.googlefonts(family_name)
-    family = Family()
-    for font in fonts:
-        family.append(font)
-    return family
+    return create_family(fonts)
 
 
 def from_github_dir(url):
@@ -264,20 +251,26 @@ def from_github_dir(url):
     family: Family
     """
     fonts = downloadfonts.github_dir(url)
-    family = Family()
-    for font in fonts:
-        family.append(font)
-    return family
+    return create_family(fonts)
 
 
 def from_user_upload(request):
     """Get a family from a user upload"""
     fonts = downloadfonts.user_upload(request)
-    family = Family()
-    for font in fonts:
-        family.append(font)
-    return family
+    return create_family(fonts)
 
+
+def create_family(paths):
+    """Create a Family from a list of paths"""
+    family = Family()
+    for path in paths:
+        filename = os.path.basename(path)[:-4]
+        family_name = family_name_from_filename(filename)
+        style_name = style_name_from_filename(filename)
+        uuid_file = os.path.join(FONTS_DIR, str(uuid.uuid4()) + '.ttf')
+        os.rename(path, uuid_file)
+        family.append(uuid_file, family_name, style_name)
+    return family
 
 def diff_families(family_before, family_after, uuid):
     """Diff two families which have the same family name.

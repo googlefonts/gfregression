@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # py3 workaround
     from io import BytesIO as StringIO
 
 
-def googlefonts(family):
+def googlefonts(family, dst=FONTS_DIR):
     """Download a collection of font families from Google Fonts"""
     has_family = _gf_has_family(family)
     if not has_family:
@@ -26,7 +26,7 @@ def googlefonts(family):
         family.replace(' ', '%20')
     )
     fonts_zip = ZipFile(download_file(url))
-    fonts_paths = _fonts_from_zip(fonts_zip, FONTS_DIR)
+    fonts_paths = _fonts_from_zip(fonts_zip, dst)
     return fonts_paths
 
 
@@ -58,12 +58,11 @@ def github_dir(url):
     return fonts
 
 
-def user_upload(files):
+def user_upload(files, dst=FONTS_DIR):
     """Upload fonts from a user's system"""
     fonts = []
     for f in files:
-        filename = str(uuid.uuid4()) + '.ttf'
-        destination = os.path.join(FONTS_DIR, filename)
+        destination = os.path.join(dst, f.filename)
         f.save(destination)
         fonts.append(destination)
     return fonts
@@ -81,14 +80,12 @@ def _convert_github_url_to_api(url):
     )
 
 
-def _fonts_from_zip(zipfile, to):
+def _fonts_from_zip(zipfile, dst):
     """download the fonts and store them locally"""
     fonts = []
     for filename in zipfile.namelist():
         if filename.endswith(".ttf"):
-            current = os.path.join(to, filename)
-            target = os.path.join(to, str(uuid.uuid4()) + '.ttf')
-            zipfile.extract(filename, to)
-            os.rename(current, target)
+            target = os.path.join(dst, filename)
+            zipfile.extract(filename, dst)
             fonts.append(target)
     return fonts

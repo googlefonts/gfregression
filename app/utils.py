@@ -16,6 +16,69 @@ MIN_VF_BROWSERS = {
     'safari': 11,
 }
 
+GF_FAMILY_IGNORE_CAMEL = {
+    'ABeeZee': 'ABeeZee',
+    'AlegreyaSC': 'Alegreya SC',
+    'AlegreyaSansSC': 'Alegreya Sans SC',
+    'AlmendraSC': 'Almendra SC',
+    'AmaticSC': 'Amatic SC',
+    'AmaticaSC': 'Amatica SC',
+    'BowlbyOneSC': 'Bowlby One SC',
+    'CarroisGothicSC': 'Carrois Gothic SC',
+    'CormorantSC': 'Cormorant SC',
+    'DiplomataSC': 'Diplomata SC',
+    'EBGaramond': 'EB Garamond',
+    'GFSDidot': 'GFS Didot',
+    'GFSNeohellenic': 'GFS Neohellenic',
+    'HoltwoodOneSC': 'Holtwood One SC',
+    'IMFellDWPica': 'IM Fell DW Pica',
+    'IMFellDWPicaSC': 'IM Fell DW Pica SC',
+    'IMFellDoublePica': 'IM Fell Double Pica',
+    'IMFellDoublePicaSC': 'IM Fell Double Pica SC',
+    'IMFellEnglish': 'IM Fell English',
+    'IMFellEnglishSC': 'IM Fell English SC',
+    'IMFellFrenchCanon': 'IM Fell French Canon',
+    'IMFellFrenchCanonSC': 'IM Fell French Canon SC',
+    'IMFellGreatPrimer': 'IM Fell Great Primer',
+    'IMFellGreatPrimerSC': 'IM Fell Great Primer SC',
+    'MarcellusSC': 'Marcellus SC',
+    'MateSC': 'Mate SC',
+    'NTR': 'NTR',
+    'OldStandardTT': 'Old Standard TT',
+    'OverlockSC': 'Overlock SC',
+    'PTMono': 'PT Mono',
+    'PTSans': 'PT Sans',
+    'PTSansCaption': 'PT Sans Caption',
+    'PTSansNarrow': 'PT Sans Narrow',
+    'PTSerif': 'PT Serif',
+    'PTSerifCaption': 'PT Serif Caption',
+    'PatrickHandSC': 'Patrick Hand SC',
+    'PlayfairDisplaySC': 'Playfair Display SC',
+    'VollkornSC': 'Vollkorn SC',
+    'VT323': 'VT323',
+}
+
+GF_STYLE_TERMS = {
+    'Thin': 'Thin',
+    'ExtraLight': 'Extralight',
+    'Light': 'Light',
+    'Regular': 'Regular',
+    'Medium': 'Medium',
+    'SemiBold': 'SemiBold',
+    'Bold': 'Bold',
+    'ExtraBold': 'ExtraBold',
+    'Black': 'Black',
+    'ThinItalic': 'Thin Italic',
+    'ExtraLightItalic': 'ExtraLight Italic',
+    'LightItalic': 'Light Italic',
+    'Italic': 'Italic',
+    'MediumItalic': 'MediumItalic',
+    'SemiBoldItalic': 'SemiBold Italic',
+    'BoldItalic': 'Bold Italic',
+    'ExtraBoldItalic': 'ExtraBold Italic',
+    'BlackItalic': 'Black Italic',
+}
+
 
 def browser_supports_vfs(user_agent):
     """Check if the user's browser supports variable fonts
@@ -46,22 +109,24 @@ def download_file(url, dst_path=None):
         shutil.copyfileobj(request.raw, downloaded_file)
 
 
-def filename_to_family_name(path):
-    '''Convert a fontpath into a font name.
-    /path/to/SomeSans-Regular.ttf --> Some Sans'''
-    filename = os.path.basename(path)[:-4]
+def family_name_from_filename(filename, seperator=' '):
+    """RubikMonoOne-Regular > Rubik Mono One"""
     family = filename.split('-')[0]
-    family = _convert_camelcase(family)
-    return family
-
-
-def _convert_camelcase(fam_name, seperator=' '):
-    '''RubikMonoOne > Rubik Mono One'''
-    if fam_name not in FONT_EXCEPTIONS:
-        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, fam_name)
+    if family not in list(GF_FAMILY_IGNORE_CAMEL.keys()):
+        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, family)
     else:
-        fam_name = FONT_EXCEPTIONS[fam_name].replace(' ', seperator)
-        return fam_name
+        return GF_FAMILY_IGNORE_CAMEL[family]
+
+
+def style_name_from_filename(filename, seperator=' '):
+    """RubikMonoOne-Regular --> Regular"""
+    try:
+        style = filename.split('-')[1]
+    except ValueError:
+        style = 'Regular'
+    if style not in GF_STYLE_TERMS:
+        raise Exception("%s not supported by GF weight" % style)
+    return GF_STYLE_TERMS[style]  
 
 
 with open("secrets.json") as f:

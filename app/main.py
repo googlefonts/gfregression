@@ -9,7 +9,7 @@ from rethinkdb.errors import RqlDriverError
 import family
 
 import init_db
-from settings import DIFF_LIMIT, VIEWS, MEDIA_DIR
+from settings import DIFF_LIMIT, VIEWS, MEDIA_DIR, DIFF_FAMILIES
 from utils import browser_supports_vfs
 
 
@@ -66,23 +66,24 @@ def upload_fonts(upload_type=None):
     # TODO (M Foley) get fonts from a github dir
     uuid = str(uuid4())
 
-    diff_families = family.diff_families(family_before, family_after, uuid)
-    for diff in diff_families:
-        r.table('families_diffs').insert(diff).run(g.rdb_conn)
+    if DIFF_FAMILIES:
+        diff_families = family.diff_families(family_before, family_after, uuid)
+        for diff in diff_families:
+            r.table('families_diffs').insert(diff).run(g.rdb_conn)
     families = family.get_families(family_before, family_after, uuid)
     r.table('families').insert(families).run(g.rdb_conn)
     # except Exception, e:
     #     return json.dumps({'error': str(e)})
     if from_api:
         return redirect(url_for("api_uuid_info", uuid=uuid))
-    return redirect(url_for("compare", view='glyphs_new', uuid=uuid))
+    return redirect(url_for("compare", view='waterfall', uuid=uuid))
 
 
 @app.route('/screenshot/<uuid>/<view>/<font_position>/<font_size>')
 @app.route('/screenshot/<uuid>/<view>/<font_position>',
            defaults={'font_size': 60})
 @app.route('/compare/<uuid>/<view>/<font_size>')
-@app.route('/compare/<uuid>', defaults={"view": "glyphs_new", "font_size": 60})
+@app.route('/compare/<uuid>', defaults={"view": "waterfall", "font_size": 60})
 def compare(uuid, view, font_size, font_position='before'):
     families = list(r.table('families')
         .filter({'uuid': uuid}).run(g.rdb_conn))[0]

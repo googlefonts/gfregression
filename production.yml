@@ -9,6 +9,8 @@ web:
     - db
   environment:
     - RDB_HOST=db
+    - GFR_DO_NOT_DIFF_FAMILIES=True
+    - GFR_PRODUCTION_MODE=True
 
 db:
   image: rethinkdb

@@ -13,3 +13,4 @@ rethinkdb==2.3.0.post6
 urllib3==1.23
 Werkzeug==0.14.1
 wheel==0.24.0
+Pillow==5.2.0

@@ -4,7 +4,12 @@ GLYPH_AREA_THRESHOLD = 7000
 FONTS_DIR = os.path.join('static', 'fonts')
 MEDIA_DIR = os.path.join('static', 'media')
 
-DIFF_FAMILIES = True
+
+if 'GFR_DO_NOT_DIFF_FAMILIES' in os.environ:
+    DIFF_FAMILIES = False
+else:
+    DIFF_FAMILIES = True
+
 if DIFF_FAMILIES:
     VIEWS = [
         'glyphs_all', 'glyphs_new', 'glyphs_missing', 'glyphs_modified',
@@ -14,5 +19,12 @@ if DIFF_FAMILIES:
         'metrics_modified',
     ]
 else:
-    VIEWS = []
+    VIEWS = ['glyphs_all']
+
 DIFF_LIMIT = 800
+
+
+if "GFR_PRODUCTION_MODE" in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True

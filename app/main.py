@@ -9,9 +9,14 @@ from rethinkdb.errors import RqlDriverError
 import family
 
 import init_db
-from settings import DIFF_LIMIT, VIEWS, MEDIA_DIR, DIFF_FAMILIES
 from utils import browser_supports_vfs
-
+from settings import (
+    DIFF_LIMIT,
+    VIEWS,
+    MEDIA_DIR,
+    DIFF_FAMILIES,
+    DEBUG
+)
 
 __version__ = 2.101
 
@@ -65,11 +70,14 @@ def upload_fonts(upload_type=None):
         family_before = family.from_user_upload(request.files.getlist('fonts_before'))
     # TODO (M Foley) get fonts from a github dir
     uuid = str(uuid4())
-
     if DIFF_FAMILIES:
         diff_families = family.diff_families(family_before, family_after, uuid)
-        for diff in diff_families:
-            r.table('families_diffs').insert(diff).run(g.rdb_conn)
+        diff_families += family.diff_families_glyphs_all(
+            family_before, family_after, uuid)
+    else:
+        diff_families = family.diff_families_glyphs_all(
+            family_before, family_after, uuid)
+    r.table('families_diffs').insert(diff_families).run(g.rdb_conn)
     families = family.get_families(family_before, family_after, uuid)
     r.table('families').insert(families).run(g.rdb_conn)
     # except Exception, e:
@@ -170,4 +178,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=DEBUG)

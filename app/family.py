@@ -272,6 +272,7 @@ def create_family(paths):
         family.append(uuid_file, family_name, style_name)
     return family
 
+
 def diff_families(family_before, family_after, uuid):
     """Diff two families which have the same family name.
 
@@ -317,7 +318,32 @@ def diff_families(family_before, family_after, uuid):
                     'items': style_diff[cat][subcat]
                 }
                 diffs.append(diff)
-        # even though this isn't a diff it's convientient to add it.
+    return map(_diff_serialiser, diffs)
+
+
+def diff_families_glyphs_all(family_before, family_after, uuid):
+    """Dump every glyph for each font in family_before.
+
+    This diff is useful to see whether family_after can access all the glyphs
+    in family_before
+
+    Parameters
+    ----------
+    input_font: InputFont
+
+    Returns
+    -------
+    glyphs: list
+    """
+    styles_before = {s.name: s for f in family_before.fonts for s in f.styles}
+    styles_after = {s.name: s for f in family_after.fonts for s in f.styles}
+
+    shared_styles = set(styles_before) & set(styles_after)
+    items = []
+    for style in shared_styles:
+        font_a = deepcopy(styles_before[style].font.font)
+        font_b = deepcopy(styles_after[style].font.font)
+
         all_glyphs = {
             'uuid': uuid,
             'title': 'Glyph All',
@@ -326,8 +352,8 @@ def diff_families(family_before, family_after, uuid):
             'font_after': styles_after[style].full_name,
             'items': dump_glyphs(styles_before[style].font.font),
         }
-        diffs.append(all_glyphs)
-    return map(_diff_serialiser, diffs)
+        items.append(all_glyphs)
+    return map(_diff_serialiser, items)
 
 
 def _diff_serialiser(d):

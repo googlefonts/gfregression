@@ -2,7 +2,7 @@ import os
 import unittest
 import requests
 from main import app
-from utils import browser_supports_vfs
+from utils import browser_supports_vfs, secret
 from werkzeug.useragents import UserAgent
 
 
@@ -40,6 +40,17 @@ class TestApiEndPoints(unittest.TestCase):
         payload = [('fonts_before', open(f, 'rb')) for f in fonts] + \
                   [('fonts_after', open(f, 'rb')) for f in fonts2]
         request = requests.post(url, files=payload)
+        self.assertEqual(request.status_code, 200)
+
+    def test_api_upload_media(self):
+        """Test we can upload media to the media endpoint"""
+        url = self.local_base_url + '/api/upload-media'
+        img_path = os.path.join(os.path.dirname(__file__), 'data', 'test_img.gif')
+        payload = [('files', open(img_path, 'rb'))]
+        request = requests.post(url,
+                                files=payload,
+                                data={"uuid": "12345"},
+                                headers={"Access-Token": secret("ACCESS_TOKEN")})
         self.assertEqual(request.status_code, 200)
 
 

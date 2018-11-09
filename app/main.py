@@ -9,7 +9,7 @@ from rethinkdb.errors import RqlDriverError
 import family
 
 import init_db
-from utils import browser_supports_vfs
+from utils import browser_supports_vfs, secret
 from settings import (
     DIFF_LIMIT,
     VIEWS,
@@ -146,7 +146,15 @@ def api_uuid_info(uuid):
 
 @app.route("/api/upload-media", methods=['POST'])
 def upload_media():
-    """Media upload end point"""
+    """Media upload end point. This endpoint can be used to store data
+    regarding a session. This is useful for constructing good github
+    pull requests or messages.
+
+    The gf bot will use this endpoint to upload diff images and zips
+    for the CI"""
+    if request.headers['Access-Token'] != secret("ACCESS_TOKEN"):
+        return json.dumps({"error": "Access-Token is incorrect"})
+
     if 'uuid' not in request.form:
         raise Exception('No uuid specified')
     uuid = request.form['uuid']

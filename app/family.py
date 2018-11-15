@@ -318,7 +318,7 @@ def diff_families(family_before, family_after, uuid):
                     'items': style_diff[cat][subcat]
                 }
                 diffs.append(diff)
-    return map(_diff_serialiser, diffs)
+    return list(map(_diff_serialiser, diffs))
 
 
 def diff_families_glyphs_all(family_before, family_after, uuid):
@@ -353,7 +353,7 @@ def diff_families_glyphs_all(family_before, family_after, uuid):
             'items': dump_glyphs(styles_before[style].font.font),
         }
         items.append(all_glyphs)
-    return map(_diff_serialiser, items)
+    return list(map(_diff_serialiser, items))
 
 
 def _diff_serialiser(d):

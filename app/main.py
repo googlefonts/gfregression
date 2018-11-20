@@ -18,7 +18,7 @@ from settings import (
     DEBUG
 )
 
-__version__ = 2.101
+__version__ = 3.000
 
 app = Flask(__name__, static_url_path='/static')
 

@@ -56,6 +56,8 @@ GF_FAMILY_IGNORE_CAMEL = {
     'PlayfairDisplaySC': 'Playfair Display SC',
     'VollkornSC': 'Vollkorn SC',
     'VT323': 'VT323',
+    'B612': 'B612',
+    'B612Mono': 'B612 Mono',
 }
 
 GF_STYLE_TERMS = {

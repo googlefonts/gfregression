@@ -81,7 +81,9 @@ class Font:
             string = """@font-face{
                 src: url(/%s);
                 font-family: %s;
-            """ % (self.path, self.family_name)
+                font-style: %s;
+            """ % (self.path, self.family_name,
+                   'italic' if self.font["post"].italicAngle != 0. else "normal")
             if 'wght' in self.axes:
                 try:
                     min_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue]

@@ -16,49 +16,11 @@ MIN_VF_BROWSERS = {
     'safari': 11,
 }
 
-GF_FAMILY_IGNORE_CAMEL = {
-    'ABeeZee': 'ABeeZee',
-    'AlegreyaSC': 'Alegreya SC',
-    'AlegreyaSansSC': 'Alegreya Sans SC',
-    'AlmendraSC': 'Almendra SC',
-    'AmaticSC': 'Amatic SC',
-    'AmaticaSC': 'Amatica SC',
-    'BowlbyOneSC': 'Bowlby One SC',
-    'CarroisGothicSC': 'Carrois Gothic SC',
-    'CormorantSC': 'Cormorant SC',
-    'DiplomataSC': 'Diplomata SC',
-    'EBGaramond': 'EB Garamond',
-    'GFSDidot': 'GFS Didot',
-    'GFSNeohellenic': 'GFS Neohellenic',
-    'HoltwoodOneSC': 'Holtwood One SC',
-    'IMFellDWPica': 'IM Fell DW Pica',
-    'IMFellDWPicaSC': 'IM Fell DW Pica SC',
-    'IMFellDoublePica': 'IM Fell Double Pica',
-    'IMFellDoublePicaSC': 'IM Fell Double Pica SC',
-    'IMFellEnglish': 'IM Fell English',
-    'IMFellEnglishSC': 'IM Fell English SC',
-    'IMFellFrenchCanon': 'IM Fell French Canon',
-    'IMFellFrenchCanonSC': 'IM Fell French Canon SC',
-    'IMFellGreatPrimer': 'IM Fell Great Primer',
-    'IMFellGreatPrimerSC': 'IM Fell Great Primer SC',
-    'MarcellusSC': 'Marcellus SC',
-    'MateSC': 'Mate SC',
-    'NTR': 'NTR',
-    'OldStandardTT': 'Old Standard TT',
-    'OverlockSC': 'Overlock SC',
-    'PTMono': 'PT Mono',
-    'PTSans': 'PT Sans',
-    'PTSansCaption': 'PT Sans Caption',
-    'PTSansNarrow': 'PT Sans Narrow',
-    'PTSerif': 'PT Serif',
-    'PTSerifCaption': 'PT Serif Caption',
-    'PatrickHandSC': 'Patrick Hand SC',
-    'PlayfairDisplaySC': 'Playfair Display SC',
-    'VollkornSC': 'Vollkorn SC',
-    'VT323': 'VT323',
-    'B612': 'B612',
-    'B612Mono': 'B612 Mono',
-}
+current_dir = os.path.dirname(__file__)
+
+with open(os.path.join(current_dir, "gf_families_ignore_camelcase.json")) as f:
+    GF_FAMILY_IGNORE_CAMEL = json.loads(f.read())
+
 
 GF_STYLE_TERMS = {
     'Thin': 'Thin',
@@ -129,7 +91,7 @@ def style_name_from_filename(filename, seperator=' '):
         return 'Regular'
 
 
-with open("secrets.json") as f:
+with open(os.path.join(current_dir, "secrets.json")) as f:
     secrets = json.loads(f.read())
 
 def secret(key, secret=secrets):

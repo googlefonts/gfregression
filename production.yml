@@ -3,6 +3,7 @@ web:
   build: .
   volumes:
     - fonts:/app/static/fonts
+    - media:/app/static/media
   ports:
     - "80:80"
   links:

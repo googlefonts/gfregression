@@ -3,10 +3,9 @@ import os
 import re
 import uuid
 from copy import deepcopy
-from diffenator.font import InputFont
-from diffenator.diff import diff_fonts
-from diffenator.utils import vf_instance_from_static
-from diffenator.glyphs import dump_glyphs
+from diffenator.font import DFont
+from diffenator.diff import DiffFonts
+from diffenator.dump import dump_glyphs
 import downloadfonts
 from settings import FONTS_DIR
 from utils import family_name_from_filename, style_name_from_filename
@@ -39,7 +38,7 @@ class Font:
     def __init__(self, path, family_name=None, style_name=None):
         self.path = path
         self.filename = os.path.basename(self.path)[:-4]
-        self.font = InputFont(self.path)
+        self.font = DFont(self.path)
         self._is_vf = self.is_vf
         if not family_name:
             self.family_name = family_name_from_filename(self.filename)
@@ -62,7 +61,7 @@ class Font:
 
     @property
     def is_vf(self):
-        if 'fvar' in self.font:
+        if 'fvar' in self.font.ttfont:
             return True
         return False
 
@@ -83,7 +82,7 @@ class Font:
                 font-family: %s;
                 font-style: %s;
             """ % (self.path, self.family_name,
-                   'italic' if self.font["post"].italicAngle != 0. else "normal")
+                   'italic' if self.font.ttfont["post"].italicAngle != 0. else "normal")
             if 'wght' in self.axes:
                 try:
                     min_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue]
@@ -115,8 +114,8 @@ class Font:
 
     def _get_vf_styles(self):
         instance_names = [
-            self.font['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
-            for i in self.font['fvar'].instances
+            self.font.ttfont['name'].getName(i.subfamilyNameID, 3, 1, 1033).toUnicode()
+            for i in self.font.ttfont['fvar'].instances
         ]
         for style_name in instance_names:
             style = FontStyle(style_name, self)
@@ -124,8 +123,8 @@ class Font:
 
     def _get_axes(self):
         axes = {}
-        if 'fvar' in self.font:
-            for axis in self.font['fvar'].axes:
+        if 'fvar' in self.font.ttfont:
+            for axis in self.font.ttfont['fvar'].axes:
                 axes[axis.axisTag] = axis
         return axes
 
@@ -295,29 +294,32 @@ def diff_families(family_before, family_after, uuid):
     shared_styles = set(styles_before) & set(styles_after)
     diffs = []
     for style in shared_styles:
-        font_a = deepcopy(styles_before[style].font.font)
-        font_b = deepcopy(styles_after[style].font.font)
+        font_a = styles_before[style].font.font
+        font_b = styles_after[style].font.font
 
-        if 'fvar' in font_a and 'fvar' not in font_b:
-            font_a = vf_instance_from_static(font_a, font_b)
+        if font_a.is_variable and not font_b.is_variable:
+            font_a.set_variations_from_static(font_b)
 
-        elif 'fvar' not in font_a and 'fvar' in font_b:
-            font_b = vf_instance_from_static(font_b, font_a)
+        elif not font_a.is_variable and font_b.is_variable:
+            font_b.set_variations_from_static(font_a)
+        # TODO (M Foley) vfs against vfs
 
-        style_diff = diff_fonts(
+        style_diff = DiffFonts(
             font_a,
             font_b,
-            categories_to_diff=['glyphs', 'kerns', 'marks', 'names', 'mkmks', 'metrics'],
+            settings=dict(
+                to_diff=set(['glyphs', 'kerns', 'marks', 'names', 'mkmks', 'metrics'])
+            ),
         )
-        for cat in style_diff:
-            for subcat in style_diff[cat]:
+        for cat in style_diff._data:
+            for subcat in style_diff._data[cat]:
                 diff = {
                     'uuid': uuid,
                     'title': '{} {}'.format(cat.title(), subcat.title()),
                     'view': '{}_{}'.format(cat, subcat),
                     'font_before': styles_before[style].full_name,
                     'font_after': styles_after[style].full_name,
-                    'items': style_diff[cat][subcat]
+                    'items': style_diff._data[cat][subcat]._data
                 }
                 diffs.append(diff)
     return list(map(_diff_serialiser, diffs))
@@ -343,8 +345,8 @@ def diff_families_glyphs_all(family_before, family_after, uuid):
     shared_styles = set(styles_before) & set(styles_after)
     items = []
     for style in shared_styles:
-        font_a = deepcopy(styles_before[style].font.font)
-        font_b = deepcopy(styles_after[style].font.font)
+        font_a = styles_before[style].font.font
+        font_b = styles_after[style].font.font
 
         all_glyphs = {
             'uuid': uuid,
@@ -352,7 +354,7 @@ def diff_families_glyphs_all(family_before, family_after, uuid):
             'view': 'glyphs_all',
             'font_before': styles_before[style].full_name,
             'font_after': styles_after[style].full_name,
-            'items': dump_glyphs(styles_before[style].font.font),
+            'items': dump_glyphs(styles_before[style].font.font)._data,
         }
         items.append(all_glyphs)
     return list(map(_diff_serialiser, items))
@@ -368,7 +370,7 @@ def _diff_serialiser(d):
                 _diff_serialiser(item)
         if hasattr(d[k], 'font'):
             d[k].font = None
-        if hasattr(d[k], 'kkey'):
+        if hasattr(d[k], 'key'):
             d[k] = dict(d[k].__dict__)
     return d
 

@@ -2,7 +2,7 @@ certifi==2018.10.15
 chardet==3.0.4
 Click==7.0
 Flask==1.0.2
-fontdiffenator==0.7.15
+fontdiffenator==0.7.16
 fonttools==3.32.0
 idna==2.7
 itsdangerous==1.1.0

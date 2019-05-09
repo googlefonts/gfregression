@@ -12,7 +12,7 @@
     {% endfor %}
 
     {% for css_class in family['css_classes'] %}
-      {{ css_class }}
+      {{ css_class|safe }}
     {% endfor %}
 
 

@@ -78,6 +78,7 @@ def upload_fonts(upload_type=None):
         family_before = family.from_user_upload(request.files.getlist('fonts_before'))
     # TODO (M Foley) get fonts from a github dir
     uuid = str(uuid4())
+    DIFF_FAMILIES = False
     if DIFF_FAMILIES:
         diff_families = family.diff_families(family_before, family_after, uuid)
         diff_families += family.diff_families_glyphs_all(

@@ -35,6 +35,11 @@ class Font:
         900: 900
     }
 
+    FVAR_TO_CSS_STRETCH = {
+        75: "75%",
+        100: "100%",
+    }
+
     def __init__(self, path, family_name=None, style_name=None):
         self.path = path
         self.filename = os.path.basename(self.path)[:-4]
@@ -92,6 +97,16 @@ class Font:
                 string += '\nfont-weight: {} {};'.format(
                     min_wght,
                     max_wght
+                )
+            if 'wdth' in self.axes:
+                try:
+                    min_wdth = self.FVAR_TO_CSS_STRETCH[self.axes['wdth'].minValue]
+                    max_wdth = self.FVAR_TO_CSS_STRETCH[self.axes['wdth'].maxValue]
+                except KeyError:
+                    raise Exception("wdth axis not in range 75-100")
+                string += '\nfont-stretch: {} {};'.format(
+                    min_wdth,
+                    max_wdth
                 )
             if 'slnt' in self.axes:
                 string += '\nfont-style: oblique {}deg {}deg;'.format(
@@ -153,6 +168,10 @@ class FontStyle:
         'ExtraBold': 800,
         'Black': 900,
     }
+    WIDTH_MAP = {
+        'Condensed': 75,
+        '': 100,
+    }
 
     def __init__(self, name, font):
         self.name = name.replace(' ', '-')
@@ -175,16 +194,20 @@ class FontStyle:
 
     def _get_width_class(self):
         # TODO (M Foley)
-        return None
+        for width in sorted(self.WIDTH_MAP.keys(), key=lambda k: len(k), reverse=True):
+            if width.lower() in self.name.lower():
+                return self.WIDTH_MAP[width]
+        # TODO Raise exception
 
     @property
     def css_class(self):
         font_style = 'normal' if not self.italic else 'italic'
         string = """.%s{
             font-weight: %s;
+            font-variation-settings: "wdth" %s;
             font-style: %s;
         }
-        """ % (self.full_name.replace(' ', '-'), self.weight_class, font_style)
+        """ % (self.full_name.replace(' ', '-'), self.weight_class, self.width_class, font_style)
         return string
 
 

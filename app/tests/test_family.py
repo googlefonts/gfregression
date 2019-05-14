@@ -95,6 +95,13 @@ class TestFontStyle(unittest.TestCase):
         style = FontStyle('Expanded Thin', self.font)
         self.assertEqual(100, style.weight_class)
 
+    def test_width_class(self):
+        style = FontStyle("SemiExpanded Black Italic", self.font)
+        self.assertEqual(112.5, style.width_class)
+
+        style = FontStyle("Semi Expanded Black Italic", self.font)
+        self.asserEqual(112.5, style.width_class)
+
     def test_is_italic(self):
         style = FontStyle('Italic', self.font)
         self.assertEqual(True, style.italic)
@@ -117,8 +124,6 @@ class TestFromFamily(unittest.TestCase):
         family = from_github_dir('https://github.com/googlefonts/comfortaa/tree/master/fonts/TTF')
         self.assertEqual('Comfortaa', family.name)
 
-#     def test_family_from_user_upload(self):
-#         pass
 
 
 class TestDiffFamilies(unittest.TestCase):

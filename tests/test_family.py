@@ -126,5 +126,31 @@ class TestDiffFamilies(unittest.TestCase):
         pass
 
 
+class TestGoogleFontsAPI(unittest.TestCase):
+
+    def setUp(self):
+        from gfregression.downloadfonts import GoogleFonts
+        self.googlefonts = GoogleFonts()
+
+    def test_download_family(self):
+        with tempfile.TemporaryDirectory() as fp:
+            fonts = self.googlefonts.download_family("Comfortaa", fp)
+            self.assertGreaterEqual(1, len(fonts))
+
+    def test_sibling_families(self):
+        families = self.googlefonts.related_families("Cabin")
+        self.assertIn("Cabin Sketch", families)
+
+    def test_width_families(self):
+        families = self.googlefonts.width_families("Cabin")
+        self.assertIn("Cabin Condensed", families)
+
+    def test_has_family(self):
+        family = self.googlefonts.has_family("Some Generic Family")
+        self.assertEqual(False, family)
+
+        family = self.googlefonts.has_family("Roboto")
+        self.assertEqual(True, family)
+
 if __name__ == '__main__':
     unittest.main()

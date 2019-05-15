@@ -163,7 +163,7 @@ class Font:
                     min_wdth = self.USWIDTH_CLASS_TO_CSS_STRETCH[self.axes['wdth'].minValue]
                     max_wdth = self.USWIDTH_CLASS_TO_CSS_STRETCH[self.axes['wdth'].maxValue]
                 except KeyError:
-                    raise Exception("wdth axis not in range 75-100")
+                    raise Exception("wdth axis not in range 50-200")
                 string += '\nfont-stretch: {} {};'.format(
                     min_wdth,
                     max_wdth

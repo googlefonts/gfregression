@@ -14,7 +14,13 @@ import os
 import json
 import rethinkdb as r
 from rethinkdb.errors import RqlDriverError
-import family
+from gfregression import (
+    family_from_user_upload,
+    family_from_googlefonts,
+    diff_families,
+    families_glyphs_all,
+    get_families,
+)
 
 import init_db
 from utils import browser_supports_vfs, secret
@@ -23,7 +29,8 @@ from settings import (
     VIEWS,
     MEDIA_DIR,
     DIFF_FAMILIES,
-    DEBUG
+    DEBUG,
+    FONTS_DIR
 )
 
 __version__ = 3.000
@@ -69,28 +76,28 @@ def upload_fonts(upload_type=None):
     else:
         upload_type = request.form.get('fonts')
 
-    # try:
     if upload_type == 'googlefonts':
-        family_after = family.from_user_upload(request.files.getlist('fonts_after'))
-        family_before = family.from_googlefonts(family_after.name)
+        family_after = family_from_user_upload(request.files.getlist('fonts_after'),
+                                              FONTS_DIR)
+        family_before = family_from_googlefonts(family_after.name,
+                                                FONTS_DIR,
+                                                api_key=secret("GF_API_KEY"),
+                                                include_width_families=True)
     elif upload_type == 'user':
-        family_after = family.from_user_upload(request.files.getlist('fonts_after'))
-        family_before = family.from_user_upload(request.files.getlist('fonts_before'))
-    # TODO (M Foley) get fonts from a github dir
+        family_after = family_from_user_upload(request.files.getlist('fonts_after'),
+                                               FONTS_DIR)
+        family_before = family_from_user_upload(request.files.getlist('fonts_before'),
+                                                FONTS_DIR)
+
     uuid = str(uuid4())
-    DIFF_FAMILIES = False
     if DIFF_FAMILIES:
-        diff_families = family.diff_families(family_before, family_after, uuid)
-        diff_families += family.diff_families_glyphs_all(
-            family_before, family_after, uuid)
+        diff_families = diff_families(family_before, family_after, uuid)
+        diff_families += families_glyphs_all(family_before, family_after, uuid)
     else:
-        diff_families = family.diff_families_glyphs_all(
-            family_before, family_after, uuid)
+        diff_families = families_glyphs_all(family_before, family_after, uuid)
     r.table('families_diffs').insert(diff_families).run(g.rdb_conn)
-    families = family.get_families(family_before, family_after, uuid)
+    families = get_families(family_before, family_after, uuid)
     r.table('families').insert(families).run(g.rdb_conn)
-    # except Exception, e:
-    #     return json.dumps({'error': str(e)})
     if from_api:
         return redirect(url_for("api_uuid_info", uuid=uuid))
     return redirect(url_for("compare", view='waterfall', uuid=uuid))
@@ -209,3 +216,4 @@ def not_found(error):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=DEBUG)
+

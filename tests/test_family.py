@@ -3,7 +3,8 @@ from gfregression import (
     Font,
     FontStyle,
     family_from_googlefonts,
-    family_from_github_dir
+    family_from_github_dir,
+    get_families,
 )
 import tempfile
 import os
@@ -120,6 +121,38 @@ class TestFromFamily(unittest.TestCase):
             self.assertEqual('Comfortaa', family.name)
 
 
+class TestGetFamilies(unittest.TestCase):
+
+    def setUp(self):
+        current_dir = os.path.dirname(__file__)
+        roboto_fonts_dir = os.path.join(current_dir, "data", "Roboto")
+        self.roboto_fonts = glob(os.path.join(roboto_fonts_dir, "*.ttf"))
+
+    def test_matching_styles(self):
+        family_before = Family()
+        for path in self.roboto_fonts:
+            family_before.append(path)
+
+        family_after = Family()
+        for path in self.roboto_fonts:
+            if "Italic" in path:
+                continue
+            family_after.append(path)
+
+        uuid = "1234"
+        family_match = get_families(family_before, family_after, uuid)
+        self.assertEqual(sorted(["Regular", "Bold"]), sorted(family_match["styles"]))
+
+    def test_matching_styles_with_widths_from_googlefonts(self):
+        with tempfile.TemporaryDirectory() as fp_before, tempfile.TemporaryDirectory() as fp_after:
+            family_before = family_from_googlefonts("Cabin", fp_before, include_width_families=True)
+            family_after = family_from_googlefonts("Cabin Condensed", fp_after)
+            uuid = "1234"
+            family_match = get_families(family_before, family_after, uuid)
+            styles = ["CondensedRegular", "CondensedMedium", "CondensedSemiBold", "CondensedBold"]
+            self.assertEqual(sorted(styles), sorted(family_match["styles"]), uuid)
+
+
 class TestDiffFamilies(unittest.TestCase):
 
     def test_diff_families(self):
@@ -152,5 +185,7 @@ class TestGoogleFontsAPI(unittest.TestCase):
         family = self.googlefonts.has_family("Roboto")
         self.assertEqual(True, family)
 
+
 if __name__ == '__main__':
     unittest.main()
+

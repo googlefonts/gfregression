@@ -72,8 +72,7 @@ class GoogleFonts(object):
             if (string in family and "Condensed" in family) or \
                (string in family and "Expanded" in family):
                    results.append(family)
-        if results:
-            results.insert(0, string)
+        results.insert(0, string)
         return results
 
 

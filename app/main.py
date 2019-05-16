@@ -91,11 +91,11 @@ def upload_fonts(upload_type=None):
 
     uuid = str(uuid4())
     if DIFF_FAMILIES:
-        diff_families = diff_families(family_before, family_after, uuid)
-        diff_families += families_glyphs_all(family_before, family_after, uuid)
+        diff = diff_families(family_before, family_after, uuid)
+        diff += families_glyphs_all(family_before, family_after, uuid)
     else:
-        diff_families = families_glyphs_all(family_before, family_after, uuid)
-    r.table('families_diffs').insert(diff_families).run(g.rdb_conn)
+        diff = families_glyphs_all(family_before, family_after, uuid)
+    r.table('families_diffs').insert(diff).run(g.rdb_conn)
     families = get_families(family_before, family_after, uuid)
     r.table('families').insert(families).run(g.rdb_conn)
     if from_api:

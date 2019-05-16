@@ -1,15 +1,17 @@
 import os
 import unittest
 import requests
-from main import app
-from utils import browser_supports_vfs, secret
 from werkzeug.useragents import UserAgent
+import sys
+cwd = os.path.dirname(__file__)
+sys.path.append(os.path.join(cwd, "..", "app"))
+from utils import browser_supports_vfs, secret
 
 
 class TestApiEndPoints(unittest.TestCase):
     # TODO make test run from test_client, not through live server
     def setUp(self):
-        self.local_base_url = 'http://127.0.0.1:5000'
+        self.local_base_url = 'http://0.0.0.0:5000'
 
     def test_api_upload_fonts_gf_upload(self):
         """Test we can upload fonts via the /upload/googlefonts endpoint.
@@ -19,8 +21,8 @@ class TestApiEndPoints(unittest.TestCase):
         url = self.local_base_url + '/api/upload/googlefonts'
         # TODO make local
         fonts = [
-            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Regular.ttf'),
-            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Bold.ttf'),
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto', 'Roboto-Regular.ttf'),
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto', 'Roboto-Bold.ttf'),
         ]
         payload = [('fonts_after', open(f, 'rb')) for f in fonts]
         request = requests.post(url, files=payload)
@@ -33,8 +35,8 @@ class TestApiEndPoints(unittest.TestCase):
         url = self.local_base_url + '/api/upload/user'
         # TODO make local
         fonts = [
-            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Regular.ttf'),
-            os.path.join(os.path.dirname(__file__), 'data', 'Roboto-Bold.ttf'),
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto', 'Roboto-Regular.ttf'),
+            os.path.join(os.path.dirname(__file__), 'data', 'Roboto', 'Roboto-Bold.ttf'),
         ]
         fonts2 = fonts
         payload = [('fonts_before', open(f, 'rb')) for f in fonts] + \

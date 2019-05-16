@@ -33,7 +33,7 @@ from settings import (
     FONTS_DIR
 )
 
-__version__ = 3.000
+__version__ = 4.000
 
 app = Flask(__name__, static_url_path='/static')
 

@@ -6,9 +6,62 @@ from copy import deepcopy
 from diffenator.font import DFont
 from diffenator.diff import DiffFonts
 from diffenator.dump import dump_glyphs
-import downloadfonts
-from settings import FONTS_DIR
-from utils import family_name_from_filename, style_name_from_filename
+from gfregression import downloadfonts
+import json
+
+current_dir = os.path.dirname(__file__)
+
+with open(os.path.join(current_dir, "gf_families_ignore_camelcase.json")) as f:
+    GF_FAMILY_IGNORE_CAMEL = json.loads(f.read())
+
+
+GF_WEIGHTS = [
+    'Thin',
+    'ExtraLight',
+    'Light',
+    'Regular',
+    'Medium',
+    'SemiBold',
+    'Bold',
+    'ExtraBold',
+    'Black',
+]
+GF_WIDTHS = [
+    "UltraCondensed",
+    "ExtraCondensed",
+    "Condensed",
+    "SemiCondensed",
+    "",
+    "SemiExpanded",
+    "Expanded",
+    "ExtraExpanded",
+    "UltraExpanded",
+]
+
+def find_closest_substring(string, items):
+    for item in sorted(items, key=lambda k: len(k), reverse=True):
+        if item.lower() in string.lower():
+            return item
+    return ""
+
+
+def familyname_from_filename(filename, seperator=' '):
+    """RubikMonoOne-Regular > Rubik Mono One"""
+    family = filename.split('-')[0]
+    if family not in list(GF_FAMILY_IGNORE_CAMEL.keys()):
+        return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, family)
+    return GF_FAMILY_IGNORE_CAMEL[family]
+
+
+def stylename_from_filename(filename):
+    if filename.endswith(".ttf"):
+        filename = filename[:-4]
+    width = find_closest_substring(filename, GF_WIDTHS)
+    if "-" in filename:
+        stylename = filename.split("-")[1]
+    else:
+        stylename = "Regular"
+    return width + stylename
 
 
 class Font:
@@ -21,7 +74,7 @@ class Font:
         path to ttf
 
     """
-    OS2_TO_CSS_WEIGHT = {
+    USWEIGHT_CLASS_TO_CSS_WEIGHT = {
         100: 100,
         200: 200,
         250: 100, # static gf Thin
@@ -35,13 +88,25 @@ class Font:
         900: 900
     }
 
+    USWIDTH_CLASS_TO_CSS_STRETCH = {
+        50: "50%",
+        62.5: "62.5%",
+        75: "75%",
+        87.5: "87.5%",
+        100: "100%",
+        112.5: "112.5%",
+        125: "125%",
+        150: "150%",
+        200: "200%",
+    }
+
     def __init__(self, path, family_name=None, style_name=None):
         self.path = path
         self.filename = os.path.basename(self.path)[:-4]
         self.font = DFont(self.path)
         self._is_vf = self.is_vf
         if not family_name:
-            self.family_name = family_name_from_filename(self.filename)
+            self.family_name = familyname_from_filename(self.filename)
         else:
             self.family_name = family_name
         self.styles = []
@@ -49,7 +114,7 @@ class Font:
             style = FontStyle(style_name, self)
             self.styles.append(style)
         elif not style_name and not self._is_vf:
-            style_name = style_name_from_filename(self.filename)
+            style_name = stylename_from_filename(self.filename)
             style = FontStyle(style_name, self)
             self.styles.append(style)
         elif self._is_vf:
@@ -85,13 +150,23 @@ class Font:
                    'italic' if self.font.ttfont["post"].italicAngle != 0. else "normal")
             if 'wght' in self.axes:
                 try:
-                    min_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].minValue]
-                    max_wght = self.OS2_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
+                    min_wght = self.USWEIGHT_CLASS_TO_CSS_WEIGHT[self.axes['wght'].minValue]
+                    max_wght = self.USWEIGHT_CLASS_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
                 except KeyError:
                     raise Exception("wght axis not in range 100-900")
                 string += '\nfont-weight: {} {};'.format(
                     min_wght,
                     max_wght
+                )
+            if 'wdth' in self.axes:
+                try:
+                    min_wdth = self.USWIDTH_CLASS_TO_CSS_STRETCH[self.axes['wdth'].minValue]
+                    max_wdth = self.USWIDTH_CLASS_TO_CSS_STRETCH[self.axes['wdth'].maxValue]
+                except KeyError:
+                    raise Exception("wdth axis not in range 50-200")
+                string += '\nfont-stretch: {} {};'.format(
+                    min_wdth,
+                    max_wdth
                 )
             if 'slnt' in self.axes:
                 string += '\nfont-style: oblique {}deg {}deg;'.format(
@@ -104,11 +179,13 @@ class Font:
             return """@font-face{
                 src: url(/%s);
                 font-weight: %s;
+                font-stretch: %s;
                 font-style: %s;
                 font-family: %s;}""" % (
                     self.path,
-                    self.styles[0].weight_class,
-                    'italic' if self.styles[0].italic else 'normal',
+                    self.styles[0].css_weight,
+                    self.styles[0].css_width_name,
+                    self.styles[0].css_style,
                     self.family_name,
                 )
 
@@ -130,18 +207,8 @@ class Font:
 
 
 class FontStyle:
-    """Style which exists within a Font. If Font is static, then there's only
-    one style. If Font is a variable font, there may be multiple styles.
 
-    Parameters
-    ----------
-    name: str
-        The name for the style
-    font: Font
-        The font which holds the style
-    """
-
-    WEIGHT_MAP = {
+    CSS_WEIGHTS = {
         'Thin': 100,
         'ExtraLight': 200,
         'Light': 300,
@@ -153,39 +220,67 @@ class FontStyle:
         'ExtraBold': 800,
         'Black': 900,
     }
+    CSS_WIDTH_VALS = {
+        'UltraCondensed': 50,
+        'ExtraCondensed': 62.5,
+        'Condensed': 75,
+        'SemiCondensed': 87.5,
+        '': 100,
+        'SemiExpanded': 112.5,
+        'Expanded': 125,
+        'ExtraExpanded': 150,
+        'UltraExpanded': 200,
+    }
+    CSS_WIDTH_NAMES = {
+        'UltraCondensed': 'ultra-condensed',
+        'ExtraCondensed': 'extra-condensed',
+        'Condensed': 'condensed',
+        'SemiCondensed': 'semi-condensed',
+        '': 'normal',
+        'SemiExpanded': 'semi-expanded',
+        'Expanded': 'expanded',
+        'ExtraExpanded': 'extra-expanded',
+        'UltraExpanded': 'ultra-expanded',
+    }
+    WEIGHTS = GF_WEIGHTS
+    WIDTHS = GF_WIDTHS
 
-    def __init__(self, name, font):
-        self.name = name.replace(' ', '-')
+    def __init__(self, style, font):
+        """Get GF spec style info from a filename or an fvar instance entry."""
+        self.name = style.replace(" ", "")
         self.font = font
-        self.full_name = '{}-{}'.format(
-            self.font.family_name.replace(' ', '-'), self.name
-        )
-        self.weight_class = self._get_weight_class()
-        self.width_class = self._get_width_class()
-        self.italic = True if 'Italic' in self.name else False
 
-    def _get_weight_class(self):
-        """Extract the weight from the style name"""
-        for weight in sorted(self.WEIGHT_MAP.keys(), key=lambda k: len(k), reverse=True):
-            if weight.lower() in self.name.lower():
-                return self.WEIGHT_MAP[weight]
-        raise Exception("{} is not supported. Only supports {}".format(
-            self.name, self.WEIGHT_MAP.keys())
-        )
+        self.weight = find_closest_substring(self.name, GF_WEIGHTS)
+        self.width = find_closest_substring(self.name, GF_WIDTHS)
+        self.italic = self._get_italic()
 
-    def _get_width_class(self):
-        # TODO (M Foley)
-        return None
+        self.css_name = self.name
+        self.css_weight = self.CSS_WEIGHTS[self.weight]
+        self.css_width_name = self.CSS_WIDTH_NAMES[self.width]
+        self.css_width_val = self.CSS_WIDTH_VALS[self.width]
+        self.css_style = 'normal' if not self.italic else 'italic'
+
+    def _get_italic(self):
+        if "Oblique" in self.name:
+            return True
+        return True if "Italic" in self.name else False
 
     @property
     def css_class(self):
-        font_style = 'normal' if not self.italic else 'italic'
-        string = """.%s{
-            font-weight: %s;
-            font-style: %s;
-        }
-        """ % (self.full_name.replace(' ', '-'), self.weight_class, font_style)
-        return string
+        return """
+            .%s{
+                font-weight: %s;
+                font-variation-settings: "wdth" %s;
+                font-stretch: %s;
+                font-style: %s;
+            }
+        """ % (
+                self.css_name,
+                self.css_weight,
+                self.css_width_val,
+                self.css_width_name,
+                self.css_style
+            )
 
 
 class Family:
@@ -224,8 +319,9 @@ class Family:
         return any([f.is_vf for f in self.fonts])
 
 
-def from_googlefonts(family_name):
-    """Get a family from Google Fonts and save the files to GFR's static dir
+def family_from_googlefonts(family_name, dst, api_key=None,
+                            include_width_families=False):
+    """Get a family from Google Fonts
 
     Parameters
     ----------
@@ -235,11 +331,28 @@ def from_googlefonts(family_name):
     Returns
     -------
     family: Family"""
-    fonts = downloadfonts.googlefonts(family_name)
-    return create_family(fonts)
+    if not api_key:
+        api_key = os.environ["GF_API_KEY"]
+
+    googlefonts = downloadfonts.GoogleFonts(api_key)
+    if include_width_families:
+        family = Family()
+        gf_families = googlefonts.width_families(family_name)
+        for width_family in gf_families:
+            fonts = googlefonts.download_family(width_family, dst)
+            for path in fonts:
+                filename = os.path.basename(path)[:-4]
+                style_name = stylename_from_filename(filename)
+                uuid_file = os.path.join(dst, str(uuid.uuid4()) + '.ttf')
+                os.rename(path, uuid_file)
+                family.append(uuid_file, family_name, style_name)
+        return family
+
+    fonts = googlefonts.download_family(family_name, dst)
+    return _create_family(fonts, dst)
 
 
-def from_github_dir(url):
+def family_from_github_dir(url, dst):
     """Get a family from a github dir e.g
     https://github.com/googlefonts/comfortaa/tree/master/fonts/TTF
 
@@ -251,24 +364,24 @@ def from_github_dir(url):
     -------
     family: Family
     """
-    fonts = downloadfonts.github_dir(url)
-    return create_family(fonts)
+    fonts = downloadfonts.github_dir(url, dst)
+    return _create_family(fonts, dst)
 
 
-def from_user_upload(request):
+def family_from_user_upload(request, dst):
     """Get a family from a user upload"""
-    fonts = downloadfonts.user_upload(request)
-    return create_family(fonts)
+    fonts = downloadfonts.user_upload(request, dst)
+    return _create_family(fonts, dst)
 
 
-def create_family(paths):
+def _create_family(paths, dst):
     """Create a Family from a list of paths"""
     family = Family()
     for path in paths:
         filename = os.path.basename(path)[:-4]
-        family_name = family_name_from_filename(filename)
-        style_name = style_name_from_filename(filename)
-        uuid_file = os.path.join(FONTS_DIR, str(uuid.uuid4()) + '.ttf')
+        family_name = familyname_from_filename(filename)
+        style_name = stylename_from_filename(filename)
+        uuid_file = os.path.join(dst, str(uuid.uuid4()) + '.ttf')
         os.rename(path, uuid_file)
         family.append(uuid_file, family_name, style_name)
     return family
@@ -317,15 +430,15 @@ def diff_families(family_before, family_after, uuid):
                     'uuid': uuid,
                     'title': '{} {}'.format(cat.title(), subcat.title()),
                     'view': '{}_{}'.format(cat, subcat),
-                    'font_before': styles_before[style].full_name,
-                    'font_after': styles_after[style].full_name,
+                    'font_before': styles_before[style].name,
+                    'font_after': styles_after[style].name,
                     'items': style_diff._data[cat][subcat]._data
                 }
                 diffs.append(diff)
     return list(map(_diff_serialiser, diffs))
 
 
-def diff_families_glyphs_all(family_before, family_after, uuid):
+def families_glyphs_all(family_before, family_after, uuid):
     """Dump every glyph for each font in family_before.
 
     This diff is useful to see whether family_after can access all the glyphs
@@ -352,8 +465,8 @@ def diff_families_glyphs_all(family_before, family_after, uuid):
             'uuid': uuid,
             'title': 'Glyph All',
             'view': 'glyphs_all',
-            'font_before': styles_before[style].full_name,
-            'font_after': styles_after[style].full_name,
+            'font_before': styles_before[style].name,
+            'font_after': styles_after[style].name,
             'items': dump_glyphs(styles_before[style].font.font)._data,
         }
         items.append(all_glyphs)
@@ -395,7 +508,8 @@ def get_families(family_before, family_after, uuid):
         ),
         css_classes=[s.css_class for f in family_before.fonts for s in f.styles
                      if s.name in shared_styles],
-        styles=[s.full_name for f in family_before.fonts for s in f.styles
+        styles=[s.name for f in family_before.fonts for s in f.styles
                 if s.name in shared_styles],
         has_vfs=any([family_before.has_vfs, family_after.has_vfs])
     )
+

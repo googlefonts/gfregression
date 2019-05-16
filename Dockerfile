@@ -1,8 +1,11 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.7
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN mkdir /gfr
+COPY ./Lib /gfr/Lib
+COPY ./setup.py /gfr/setup.py
+RUN pip install /gfr
 
+COPY ./entrypoint.sh /entrypoint.sh
 COPY ./app /app
-COPY entrypoint.sh /entrypoint.sh
+
 RUN chmod +x /entrypoint.sh

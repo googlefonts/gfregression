@@ -41,6 +41,9 @@ class TestFont(unittest.TestCase):
         font_path = os.path.join(cwd, 'data', 'Roboto', 'Roboto-BoldItalic.ttf')
         self.font = Font(font_path)
 
+        vf_font_path = os.path.join(cwd, 'data', 'Cabin', 'Cabin-VF.ttf')
+        self.vf_font = Font(vf_font_path)
+
     def test_get_family_name(self):
         """Test case taken from Roboto Black, https://www.github.com/google/roboto
 
@@ -54,7 +57,10 @@ class TestFont(unittest.TestCase):
         self.assertEqual(self.font.styles[0].name, 'BoldItalic')
 
     def test_vf_get_styles(self):
-        pass
+        styles = [s.name for s in self.vf_font.styles]
+        self.assertIn("CondensedRegular", styles)
+        self.assertIn("Regular", styles)
+
  
  
 class TestFontStyle(unittest.TestCase):

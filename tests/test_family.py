@@ -5,6 +5,8 @@ from gfregression import (
     family_from_googlefonts,
     family_from_github_dir,
     get_families,
+    diff_families,
+    families_glyphs_all,
 )
 import tempfile
 import os
@@ -161,8 +163,25 @@ class TestGetFamilies(unittest.TestCase):
 
 class TestDiffFamilies(unittest.TestCase):
 
+    def setUp(self):
+        current_dir = os.path.dirname(__file__)
+        roboto_fonts_dir = os.path.join(current_dir, "data", "Roboto")
+        self.roboto_fonts = glob(os.path.join(roboto_fonts_dir, "*.ttf"))
+        self.family_before = Family()
+        self.family_after = Family()
+        for path in self.roboto_fonts:
+            self.family_before.append(path)
+            self.family_after.append(path)
+
     def test_diff_families(self):
-        pass
+        uuid = '1234'
+        diff = diff_families(self.family_before, self.family_after, uuid)
+        self.assertNotEqual(0, len(diff))
+
+    def test_families_glyphs_all(self):
+        uuid = '1234'
+        diff = families_glyphs_all(self.family_before, self.family_after, uuid)
+        self.assertNotEqual(0, len(diff))
 
 
 class TestGoogleFontsAPI(unittest.TestCase):

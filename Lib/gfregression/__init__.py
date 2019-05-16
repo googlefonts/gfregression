@@ -430,8 +430,8 @@ def diff_families(family_before, family_after, uuid):
                     'uuid': uuid,
                     'title': '{} {}'.format(cat.title(), subcat.title()),
                     'view': '{}_{}'.format(cat, subcat),
-                    'font_before': styles_before[style].full_name,
-                    'font_after': styles_after[style].full_name,
+                    'font_before': styles_before[style].name,
+                    'font_after': styles_after[style].name,
                     'items': style_diff._data[cat][subcat]._data
                 }
                 diffs.append(diff)

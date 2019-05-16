@@ -10,7 +10,6 @@ if 'GFR_DO_NOT_DIFF_FAMILIES' in os.environ:
 else:
     DIFF_FAMILIES = True
 
-DIFF_FAMILIES = False
 if DIFF_FAMILIES:
     VIEWS = [
         'glyphs_all', 'glyphs_new', 'glyphs_missing', 'glyphs_modified',

@@ -206,7 +206,7 @@ class TestGoogleFontsAPI(unittest.TestCase):
     def test_download_family(self):
         with tempfile.TemporaryDirectory() as fp:
             fonts = self.googlefonts.download_family("Comfortaa", fp)
-            self.assertGreaterEqual(1, len(fonts))
+            self.assertGreaterEqual(6, len(fonts))
 
     def test_sibling_families(self):
         families = self.googlefonts.related_families("Cabin")

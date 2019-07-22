@@ -4,9 +4,11 @@ from gfregression import (
     FontStyle,
     family_from_googlefonts,
     family_from_github_dir,
+    familyname_from_filename,
     get_families,
     diff_families,
     families_glyphs_all,
+
 )
 import tempfile
 import os
@@ -150,6 +152,17 @@ class TestGetFamilies(unittest.TestCase):
         uuid = "1234"
         family_match = get_families(family_before, family_after, uuid)
         self.assertEqual(sorted(["Regular", "Bold"]), sorted(family_match["styles"]))
+
+    def test_familyname_from_filename(self):
+        filename = "Kreon[wght].ttf"
+        self.assertEqual("Kreon", familyname_from_filename(filename))
+
+        filename = "Kreon-Regular.ttf"
+        self.assertEqual("Kreon", familyname_from_filename(filename))
+
+        filename = "Kreon-Italic-VF.ttf"
+        self.assertEqual("Kreon", familyname_from_filename(filename))
+
 
     def test_matching_styles_with_widths_from_googlefonts(self):
         with tempfile.TemporaryDirectory() as fp_before, tempfile.TemporaryDirectory() as fp_after:

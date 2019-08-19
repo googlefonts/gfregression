@@ -46,8 +46,10 @@ def find_closest_substring(string, items):
 
 
 def familyname_from_filename(filename, seperator=' '):
-    """RubikMonoOne-Regular > Rubik Mono One"""
-    family = filename.split('-')[0]
+    """Determine font family name from a filename."""
+    # Kreon[wght].ttf --> Kreon
+    # Kreon-Regular.ttf --> Kreon
+    family = re.split(r"[-\[]", filename)[0]
     if family not in list(GF_FAMILY_IGNORE_CAMEL.keys()):
         return re.sub('(?!^)([A-Z]|[0-9]+)', r'%s\1' % seperator, family)
     return GF_FAMILY_IGNORE_CAMEL[family]

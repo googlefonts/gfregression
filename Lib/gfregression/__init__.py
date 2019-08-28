@@ -491,8 +491,8 @@ def _diff_serialiser(d):
 
 
 def get_families(family_before, family_after, uuid):
-    family_before.set_name(family_before.name + '-before')
-    family_after.set_name(family_after.name + '-after')
+    family_before.set_name(family_before.name.replace(" ", "-") + '-before')
+    family_after.set_name(family_after.name.replace(" ", "-") + '-after')
 
     styles_before = {s.name: s for f in family_before.fonts for s in f.styles}
     styles_after = {s.name: s for f in family_after.fonts for s in f.styles}

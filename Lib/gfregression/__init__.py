@@ -383,7 +383,8 @@ def _create_family(paths, dst):
         filename = os.path.basename(path)[:-4]
         family_name = familyname_from_filename(filename)
         style_name = stylename_from_filename(filename)
-        uuid_file = os.path.join(dst, str(uuid.uuid4()) + '.ttf')
+        ext = path[-4:]
+        uuid_file = os.path.join(dst, str(uuid.uuid4()) + ext)
         os.rename(path, uuid_file)
         family.append(uuid_file, family_name, style_name)
     return family

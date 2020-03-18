@@ -119,6 +119,9 @@ def _fonts_from_zip(zipfile, dst):
     fonts = []
     for filename in zipfile.namelist():
         if filename.endswith(".ttf"):
+            # ignore files which exist in static dirs.
+            if 'static' in filename:
+                continue
             target = os.path.join(dst, filename)
             zipfile.extract(filename, dst)
             fonts.append(target)

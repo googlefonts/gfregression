@@ -114,6 +114,16 @@ def compare(uuid, view, font_size, font_position='before'):
     families_diffs = list(r.table('families_diffs')
         .filter({'uuid': uuid, 'view': view}).run(g.rdb_conn))
 
+    # if user includes <url>?styles=Regular,Bold etc
+    # only show Regular and Bold styles
+    filter_styles = request.args.get("styles")
+    filter_styles = filter_styles.split(",") if filter_styles else []
+    filter_styles = [s for s in filter_styles if s in families['styles']]
+    if filter_styles:
+        families['styles'] = [s for s in families['styles'] if s in filter_styles]
+    if filter_styles and families_diffs:
+        families_diffs = [d for d in families_diffs if d['font_before'] in filter_styles]
+
     user_agent = UserAgent(request.user_agent.string)
     if families['has_vfs'] and not browser_supports_vfs(user_agent):
         raise Exception("Browser does not support variable fonts!")

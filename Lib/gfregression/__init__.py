@@ -16,6 +16,8 @@ with open(os.path.join(current_dir, "gf_families_ignore_camelcase.json")) as f:
 
 
 GF_WEIGHTS = [
+    'Hairline',
+    'ExtraThin',
     'Thin',
     'ExtraLight',
     'Light',
@@ -25,6 +27,7 @@ GF_WEIGHTS = [
     'Bold',
     'ExtraBold',
     'Black',
+    'ExtraBlack',
 ]
 GF_WIDTHS = [
     "UltraCondensed",
@@ -77,6 +80,8 @@ class Font:
 
     """
     USWEIGHT_CLASS_TO_CSS_WEIGHT = {
+        1: 1,
+        50: 50,
         100: 100,
         200: 200,
         250: 100, # static gf Thin
@@ -87,7 +92,8 @@ class Font:
         600: 600,
         700: 700,
         800: 800,
-        900: 900
+        900: 900,
+        1000: 1000,
     }
 
     USWIDTH_CLASS_TO_CSS_STRETCH = {
@@ -155,7 +161,7 @@ class Font:
                     min_wght = self.USWEIGHT_CLASS_TO_CSS_WEIGHT[self.axes['wght'].minValue]
                     max_wght = self.USWEIGHT_CLASS_TO_CSS_WEIGHT[self.axes['wght'].maxValue]
                 except KeyError:
-                    raise Exception("wght axis not in range 100-900")
+                    raise Exception("wght axis not in range 1-1000")
                 string += '\nfont-weight: {} {};'.format(
                     min_wght,
                     max_wght
@@ -211,6 +217,8 @@ class Font:
 class FontStyle:
 
     CSS_WEIGHTS = {
+        'Hairline': 1,
+        'ExtraThin': 50,
         'Thin': 100,
         'ExtraLight': 200,
         'Light': 300,
@@ -221,6 +229,7 @@ class FontStyle:
         'Bold': 700,
         'ExtraBold': 800,
         'Black': 900,
+        'ExtraBlack': 1000,
     }
     CSS_WIDTH_VALS = {
         'UltraCondensed': 50,

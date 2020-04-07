@@ -2,7 +2,7 @@
 
 Compare local font families against each other, or if a Google Fonts family, again the lastest release hosted on fonts.google.com
 
-Try it out at [GF-Regression.com](http://gf-regression.com)
+Web version can be found [here](http://35.238.63.0/)
 
 # ![GF Regression Screenshot](screenshot.png)
 

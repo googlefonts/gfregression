@@ -19,6 +19,7 @@ from gfregression import (
     family_from_googlefonts,
     diff_families,
     families_glyphs_all,
+    families_text,
     get_families,
 )
 
@@ -93,8 +94,10 @@ def upload_fonts(upload_type=None):
     if DIFF_FAMILIES:
         diff = diff_families(family_before, family_after, uuid)
         diff += families_glyphs_all(family_before, family_after, uuid)
+        diff += families_text(family_before, family_after, uuid)
     else:
         diff = families_glyphs_all(family_before, family_after, uuid)
+        diff += families_text(family_before, family_after, uuid)
     r.table('families_diffs').insert(diff).run(g.rdb_conn)
     families = get_families(family_before, family_after, uuid)
     r.table('families').insert(families).run(g.rdb_conn)
@@ -128,7 +131,7 @@ def compare(uuid, view, font_size, font_position='before'):
     if families['has_vfs'] and not browser_supports_vfs(user_agent):
         raise Exception("Browser does not support variable fonts!")
 
-    if not families_diffs and view not in ['editor', 'waterfall']:
+    if not families_diffs and view not in ['editor', 'waterfall', 'text']:
         return render_template('404.html'), 404
 
     if 'screenshot' in request.path:

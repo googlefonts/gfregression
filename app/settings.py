@@ -12,14 +12,14 @@ else:
 
 if DIFF_FAMILIES:
     VIEWS = [
-        'glyphs_all', 'glyphs_new', 'glyphs_missing', 'glyphs_modified',
+        'glyphs_all', 'text', 'glyphs_new', 'glyphs_missing', 'glyphs_modified',
         'marks_new', 'marks_missing', 'marks_modified',
         'mkmks_new', 'mkmks_missing', 'mkmks_modified',
         'kerns_new', 'kerns_missing', 'kerns_modified',
         'metrics_modified',
     ]
 else:
-    VIEWS = ['glyphs_all']
+    VIEWS = ['glyphs_all', 'text']
 
 DIFF_LIMIT = 800
 

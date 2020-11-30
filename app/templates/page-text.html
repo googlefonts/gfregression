@@ -1,0 +1,15 @@
+<div id="page-text" class="pages">
+  {% for style in family['styles'] %}
+  <div class="box-large">
+    <div class="box-header"><p>{{ style }}</p></div>
+    <div class="box-content">
+      <div class="box-header"><p>{{ font_size }}pt</p></div>
+      <div class="swap-fonts-{{ font_position }}">
+        <span class="{{ style }}" style="font-size: {{ font_size }}pt">
+	  {{ font_diffs[0]['text'] }}
+        </span>
+      </div> <!-- swap-fonts-before -->
+    </div> <!-- box-content -->
+  </div> <!-- box-large -->
+  {% endfor %}
+</div>  <!-- page-text -->

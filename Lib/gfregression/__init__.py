@@ -455,14 +455,6 @@ def families_glyphs_all(family_before, family_after, uuid):
 
     This diff is useful to see whether family_after can access all the glyphs
     in family_before
-
-    Parameters
-    ----------
-    input_font: InputFont
-
-    Returns
-    -------
-    glyphs: list
     """
     styles_before = {s.name: s for f in family_before.fonts for s in f.styles}
     styles_after = {s.name: s for f in family_after.fonts for s in f.styles}
@@ -483,6 +475,56 @@ def families_glyphs_all(family_before, family_after, uuid):
         }
         items.append(all_glyphs)
     return list(map(_diff_serialiser, items))
+
+
+def families_text(family_before, family_after, uuid):
+    """Return a passage of text which can be formed using the words from the
+    UDHR and family_before[0].
+
+    This diff is useful to check whether the new family is going cause
+    document reflow issues"""
+    styles_before = {s.name: s for f in family_before.fonts for s in f.styles}
+    styles_after = {s.name: s for f in family_after.fonts for s in f.styles}
+
+    shared_styles = set(styles_before) & set(styles_after)
+    words = udhr_font_words(family_before.fonts[0].font.ttfont)
+    items = []
+    for style in shared_styles:
+        font_a = styles_before[style].font.font
+        font_b = styles_after[style].font.font
+
+        text = {
+            'uuid': uuid,
+            'title': 'Text',
+            'view': 'text',
+            'font_before': styles_before[style].name,
+            'font_after': styles_after[style].name,
+            'text': " ".join(words).lower() + " " + " ".join(words).upper()
+        }
+        items.append(text)
+    return items
+
+
+def udhr_font_words(ttFont):
+    """Collect words which exist in the Universal Declaration of Human Rights
+    that can be formed using the ttFont instance.
+
+    UDHR has been chosen due to the many languages it covers"""
+    with open(os.path.join(current_dir, "udhr_all.txt"), "r") as doc:
+        text = doc.read()
+
+    cmap = set(ttFont.getBestCmap())
+    words = []
+    seen_chars = set()
+    for word in text.split():
+        chars = set(ord(l) for l in word)
+        if not chars.issubset(cmap):
+            continue
+        if chars & seen_chars == chars:
+            continue
+        seen_chars |= chars
+        words.append(word)
+    return words
 
 
 def _diff_serialiser(d):
@@ -524,4 +566,3 @@ def get_families(family_before, family_after, uuid):
                 if s.name in shared_styles],
         has_vfs=any([family_before.has_vfs, family_after.has_vfs])
     )
-

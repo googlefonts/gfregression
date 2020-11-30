@@ -4,7 +4,7 @@ from distutils import log
 
 setup(
     name='gfregression',
-    version='3.1.0',
+    version='3.2.0',
     author="Google Fonts Project Authors",
     description="GFRegression lib",
     url="https://github.com/googlefonts/gfregression",

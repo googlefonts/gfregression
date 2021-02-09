@@ -127,7 +127,7 @@ class TestFromFamily(unittest.TestCase):
 
     def test_family_from_github_dir(self):
         with tempfile.TemporaryDirectory() as fp:
-            family = family_from_github_dir('https://github.com/googlefonts/comfortaa/tree/master/fonts/TTF', fp)
+            family = family_from_github_dir('https://github.com/googlefonts/comfortaa/tree/main/fonts/TTF', fp)
             self.assertEqual('Comfortaa', family.name)
 
 

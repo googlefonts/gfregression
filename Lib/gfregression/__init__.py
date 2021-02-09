@@ -365,7 +365,7 @@ def family_from_googlefonts(family_name, dst, api_key=None,
 
 def family_from_github_dir(url, dst):
     """Get a family from a github dir e.g
-    https://github.com/googlefonts/comfortaa/tree/master/fonts/TTF
+    https://github.com/googlefonts/comfortaa/tree/main/fonts/TTF
 
     Parameters
     url: str

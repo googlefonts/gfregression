@@ -11,5 +11,5 @@ MarkupSafe==1.1.0
 Pillow>=6.2.2
 requests==2.20.1
 rethinkdb==2.3.0.post6
-urllib3==1.24.2
+urllib3==1.26.18
 werkzeug>=0.15.3

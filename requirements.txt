@@ -4,7 +4,7 @@ Click==7.0
 Flask==1.0.2
 fontdiffenator==0.9.0
 fonttools==3.32.0
-idna==2.7
+idna==3.15
 itsdangerous==1.1.0
 Jinja2>=2.10.1
 MarkupSafe==1.1.0

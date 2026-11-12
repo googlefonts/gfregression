@@ -1,6 +1,8 @@
 """Module to assemble families from ttfs and diff families"""
 import os
 import re
+import shutil
+import tempfile
 import uuid
 from copy import deepcopy
 from diffenator.font import DFont
@@ -310,7 +312,7 @@ class Family:
         if not self.name:
             self.name = font.family_name
         if font.family_name != self.name:
-            raise Exception(
+            raise ValueError(
                 ('"%s" does not belong to the famiy "%s". Fonts '
                  'must belong to the same family.' % (
                     font.family_name, self.name))
@@ -381,21 +383,42 @@ def family_from_github_dir(url, dst):
 
 def family_from_user_upload(request, dst):
     """Get a family from a user upload"""
-    fonts = downloadfonts.user_upload(request, dst)
-    return _create_family(fonts, dst)
+    if not request:
+        raise ValueError("No font files uploaded")
+    tmp_dir = tempfile.mkdtemp()
+    try:
+        fonts = downloadfonts.user_upload(request, tmp_dir)
+        if not fonts:
+            raise ValueError("No font files uploaded")
+        try:
+            return _create_family(fonts, dst)
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise ValueError("Invalid font file in upload") from exc
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
 def _create_family(paths, dst):
     """Create a Family from a list of paths"""
     family = Family()
-    for path in paths:
-        filename = os.path.basename(path)[:-4]
-        family_name = familyname_from_filename(filename)
-        style_name = stylename_from_filename(filename)
-        ext = path[-4:]
-        uuid_file = os.path.join(dst, str(uuid.uuid4()) + ext)
-        os.rename(path, uuid_file)
-        family.append(uuid_file, family_name, style_name)
+    created_files = []
+    try:
+        for path in paths:
+            filename = os.path.basename(path)[:-4]
+            family_name = familyname_from_filename(filename)
+            style_name = stylename_from_filename(filename)
+            ext = path[-4:]
+            uuid_file = os.path.join(dst, str(uuid.uuid4()) + ext)
+            shutil.move(path, uuid_file)
+            created_files.append(uuid_file)
+            family.append(uuid_file, family_name, style_name)
+    except Exception:
+        for created in created_files:
+            if os.path.exists(created) and not os.path.islink(created):
+                os.remove(created)
+        raise
     return family
 
 

@@ -92,13 +92,84 @@ def github_dir(url, dst):
     return fonts
 
 
+ALLOWED_FONT_EXTENSIONS = ('.ttf', '.otf')
+MAX_FONT_FILENAME_LEN = 255
+_SAFE_FONT_STEM_RE = re.compile(r'\A[A-Za-z0-9][A-Za-z0-9 _.\-\[\],]*\Z')
+_WINDOWS_DEVICE_FILES = frozenset({
+    'CON', 'PRN', 'AUX', 'NUL',
+    'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+    'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
+})
+
+
+def _validate_font_filename(filename):
+    """Validate and normalize an uploaded font filename."""
+    if (
+        not filename
+        or not isinstance(filename, str)
+        or len(filename) > MAX_FONT_FILENAME_LEN
+    ):
+        raise ValueError("Invalid font filename")
+    if (
+        '/' in filename
+        or '\\' in filename
+        or '\x00' in filename
+        or os.path.sep in filename
+        or (os.path.altsep and os.path.altsep in filename)
+        or os.path.basename(filename) != filename
+        or '..' in filename
+    ):
+        raise ValueError("Invalid font filename: {!r}".format(filename))
+    stem, ext = os.path.splitext(filename)
+    ext_lower = ext.lower()
+    if ext_lower not in ALLOWED_FONT_EXTENSIONS or not stem:
+        raise ValueError(
+            "Invalid font extension (expected .ttf or .otf): {!r}".format(filename)
+        )
+    if not _SAFE_FONT_STEM_RE.match(stem) or stem.endswith((' ', '.')):
+        raise ValueError("Invalid characters in font filename: {!r}".format(filename))
+    if stem.split('.')[0].upper() in _WINDOWS_DEVICE_FILES:
+        raise ValueError("Reserved font filename: {!r}".format(filename))
+    return stem + ext_lower
+
+
 def user_upload(files, dst):
     """Upload fonts from a user's system"""
-    fonts = []
+    real_dst = os.path.realpath(dst)
+    if not os.path.isdir(real_dst):
+        raise ValueError("Destination directory does not exist: {}".format(dst))
+
+    pending = []
+    seen_names = set()
     for f in files:
-        destination = os.path.join(dst, f.filename)
-        f.save(destination)
-        fonts.append(destination)
+        safe_name = _validate_font_filename(getattr(f, 'filename', None))
+        safe_key = safe_name.lower()
+        if safe_key in seen_names:
+            raise ValueError("Duplicate font filename in upload: {!r}".format(safe_name))
+        seen_names.add(safe_key)
+        destination = os.path.join(dst, safe_name)
+        real_dest = os.path.realpath(destination)
+        if (
+            os.path.islink(destination)
+            or os.path.dirname(real_dest) != real_dst
+            or real_dest == real_dst
+            or os.path.commonpath([real_dst, real_dest]) != real_dst
+        ):
+            raise ValueError("Destination path escapes target directory: {!r}".format(safe_name))
+        if os.path.lexists(destination):
+            raise ValueError("Destination file already exists: {!r}".format(safe_name))
+        pending.append((f, destination))
+
+    fonts = []
+    try:
+        for f, destination in pending:
+            f.save(destination)
+            fonts.append(destination)
+    except Exception:
+        for saved in fonts:
+            if os.path.exists(saved) and not os.path.islink(saved):
+                os.remove(saved)
+        raise
     return fonts
 
 

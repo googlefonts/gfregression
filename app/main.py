@@ -66,6 +66,14 @@ def index():
     return render_template('upload.html')
 
 
+def _cleanup_family_files(*families):
+    for family in families:
+        if family is not None:
+            for font in family.fonts:
+                if os.path.exists(font.path) and not os.path.islink(font.path):
+                    os.remove(font.path)
+
+
 @app.route("/api/upload/<upload_type>", methods=['POST'])
 @app.route('/upload-fonts', methods=["POST"])
 def upload_fonts(upload_type=None):
@@ -77,30 +85,45 @@ def upload_fonts(upload_type=None):
     else:
         upload_type = request.form.get('fonts')
 
-    if upload_type == 'googlefonts':
-        family_after = family_from_user_upload(request.files.getlist('fonts_after'),
-                                              FONTS_DIR)
-        family_before = family_from_googlefonts(family_after.name,
-                                                FONTS_DIR,
-                                                api_key=secret("GF_API_KEY"),
-                                                include_width_families=True)
-    elif upload_type == 'user':
-        family_after = family_from_user_upload(request.files.getlist('fonts_after'),
-                                               FONTS_DIR)
-        family_before = family_from_user_upload(request.files.getlist('fonts_before'),
-                                                FONTS_DIR)
+    family_after = None
+    family_before = None
+    try:
+        if upload_type == 'googlefonts':
+            family_after = family_from_user_upload(request.files.getlist('fonts_after'),
+                                                   FONTS_DIR)
+            family_before = family_from_googlefonts(family_after.name,
+                                                    FONTS_DIR,
+                                                    api_key=secret("GF_API_KEY"),
+                                                    include_width_families=True)
+        elif upload_type == 'user':
+            family_after = family_from_user_upload(request.files.getlist('fonts_after'),
+                                                   FONTS_DIR)
+            family_before = family_from_user_upload(request.files.getlist('fonts_before'),
+                                                    FONTS_DIR)
+        else:
+            return "Invalid upload type", 400
+    except Exception as exc:
+        _cleanup_family_files(family_after, family_before)
+        if isinstance(exc, ValueError):
+            return "Invalid font upload", 400
+        raise
 
-    uuid = str(uuid4())
-    if DIFF_FAMILIES:
-        diff = diff_families(family_before, family_after, uuid)
-        diff += families_glyphs_all(family_before, family_after, uuid)
-        diff += families_text(family_before, family_after, uuid)
-    else:
-        diff = families_glyphs_all(family_before, family_after, uuid)
-        diff += families_text(family_before, family_after, uuid)
-    r.table('families_diffs').insert(diff).run(g.rdb_conn)
-    families = get_families(family_before, family_after, uuid)
-    r.table('families').insert(families).run(g.rdb_conn)
+    try:
+        uuid = str(uuid4())
+        if DIFF_FAMILIES:
+            diff = diff_families(family_before, family_after, uuid)
+            diff += families_glyphs_all(family_before, family_after, uuid)
+            diff += families_text(family_before, family_after, uuid)
+        else:
+            diff = families_glyphs_all(family_before, family_after, uuid)
+            diff += families_text(family_before, family_after, uuid)
+        r.table('families_diffs').insert(diff).run(g.rdb_conn)
+        families = get_families(family_before, family_after, uuid)
+        r.table('families').insert(families).run(g.rdb_conn)
+    except Exception:
+        _cleanup_family_files(family_after, family_before)
+        raise
+
     if from_api:
         return redirect(url_for("api_uuid_info", uuid=uuid))
     return redirect(url_for("compare", view='waterfall', uuid=uuid))
